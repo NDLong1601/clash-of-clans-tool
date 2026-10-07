@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.lnk
+.pytest_cache/
+diagnostics/
+debug*.png
+extracted_digits/
+instances.json
+settings.json
+data/*.json
+data/license-key.bin

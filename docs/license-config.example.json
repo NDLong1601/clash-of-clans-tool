@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "api_url": "http://127.0.0.1:8787",
+  "check_interval_seconds": 600,
+  "offline_grace_seconds": 1800
+}
