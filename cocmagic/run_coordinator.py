@@ -130,6 +130,7 @@ class RunCoordinator:
                         + villages.get(source, source)
                         + " → "
                         + villages.get(request.target, request.target),
+                        "· " + request.reason,
                         flush=True,
                     )
                     confirmed = self.switch_village(source, request.target)
@@ -178,6 +179,10 @@ class RunCoordinator:
                 self.active._suspended = False
             with self._request_lock:
                 self._pending = None
+
+    def reset_after_input_failure(self):
+        """Discard uncertain screen/input state without assuming a game reload."""
+        self.reset_after_reload()
 
     def invalidate_after_popup(self):
         with self._input_lock:

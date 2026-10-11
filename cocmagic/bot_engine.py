@@ -285,8 +285,9 @@ class BotEngine:
     # ─── Popup Handler ──────────────────────────────────────
 
     def _input_failed(self, reason='Input ADB thất bại; chờ ảnh mới và phân loại lại', fatal=False):
+        print('[Recovery] ' + reason, flush=True)
         try:
-            self.coordinator.reset_after_reload()
+            self.coordinator.reset_after_input_failure()
         except Exception as error:
             fatal = True
             reason += f'; reset cache thất bại: {error}'

@@ -506,6 +506,159 @@ class HybridTests(unittest.TestCase):
         self.assertEqual("available", self.store.load().last_bonus_state)
         self.assertTrue(self.store.load().builder_incomplete)
 
+    def test_main_uncertain_frames_do_not_repeat_completed_builder_visit(self):
+        from cocmagic.bot_engine import BotEngine
+        from cocmagic.modules.farm_module import FarmState
+        from cocmagic.recovery import RecoveryInterrupted
+
+        self.clock.wall = self.clock.wall.replace(hour=19)
+        self.startup_complete()
+        bot = BotEngine(self.settings, stop_event=self.stop)
+        bot.coordinator, bot.farm_mod = self.coordinator, self.main
+        bot.adb = self.adb
+        self.main._classify_screen = Mock(return_value=ModuleScreen.UNKNOWN)
+        for cycle in range(4):
+            self.main.state = FarmState.ATTACKING
+            with self.assertRaises(RecoveryInterrupted):
+                bot._guard_frame(self.frame.image)
+            self.assertEqual("complete", self.store.load().last_bonus_state)
+            self.assertFalse(self.store.load().pending_builder_check)
+            # The fresh screen after a canceled attack can be RESULT before
+            # Home. Reclassification must not turn that into another startup.
+            self.main._classify_screen.return_value = ModuleScreen.RESULT
+            self.reader.classify.return_value = ScreenObservation(
+                ScreenKind.RESULT, "main result",
+                Village.MAIN if cycle % 2 == 0 else None, "main_result"
+            )
+            self.main.phase = "result"
+            self.assertTrue(self.coordinator.tick())
+            self.assertIsNone(self.coordinator.pending)
+            self.home(Village.MAIN)
+            self.main.phase = "home"
+            self.clock.advance(180)
+            self.assertTrue(self.coordinator.tick())
+            self.main._classify_screen.return_value = ModuleScreen.UNKNOWN
+        self.assertEqual(1, len(self.transitions))
+        self.rewards.collect_cart.assert_called_once()
+
+    def test_input_recovery_keeps_daily_request_until_safe_home(self):
+        from cocmagic.bot_engine import BotEngine
+
+        self.startup_complete()
+        self.clock.wall = self.clock.wall.replace(hour=16)
+        self.main.phase = "battle"
+        self.coordinator.tick()
+        bot = BotEngine(self.settings, stop_event=self.stop)
+        bot.coordinator = self.coordinator
+        bot._input_failed()
+        self.assertEqual("builder", self.coordinator.pending.target)
+        self.assertEqual("daily", self.store.load().pending_reason)
+        self.assertTrue(self.coordinator.tick())
+        self.assertEqual("main", self.coordinator.active_id)
+        self.main.phase = "home"
+        self.coordinator.tick()
+        self.coordinator.tick()
+        self.assertEqual("main", self.coordinator.active_id)
+        self.assertEqual(3, len(self.transitions))
+
+    def test_main_result_recovery_respects_retry_backoff_and_exhaustion(self):
+        self.clock.wall = self.clock.wall.replace(hour=19)
+        self.startup_complete()
+        for retry_count in (1, 3):
+            with self.subTest(retry_count=retry_count):
+                self.coordinator.runtime.retry_date = "2026-10-08"
+                self.coordinator.runtime.retry_count = retry_count - 1
+                self.coordinator._finish_error("Bonus chưa rõ")
+                self.main._classify_screen = Mock(return_value=ModuleScreen.RESULT)
+                self.reader.classify.return_value = ScreenObservation(
+                    ScreenKind.RESULT, "main result"
+                )
+                self.main.phase = "result"
+                self.coordinator.reset_after_input_failure()
+                self.coordinator.tick()
+                self.assertIsNone(self.coordinator.pending)
+                self.home(Village.MAIN)
+                self.main.phase = "home"
+                self.clock.advance(299)
+                self.coordinator.tick()
+                self.assertEqual("main", self.coordinator.active_id)
+        self.clock.advance(1)
+        self.coordinator.tick()
+        self.assertEqual("main", self.coordinator.active_id)
+        self.assertEqual(1, len(self.transitions))
+
+    def test_optional_cart_failure_at_clear_home_does_not_retry_stars(self):
+        self.clock.wall = self.clock.wall.replace(hour=19)
+        self.rewards.collect_cart.return_value = CartResult(
+            False, "Không tìm được xe ở camera hiện tại"
+        )
+        self.startup_complete()
+        for _ in range(4):
+            self.clock.advance(300)
+            self.coordinator.tick()
+        self.assertFalse(self.store.load().pending_builder_check)
+        self.assertFalse(self.store.load().builder_incomplete)
+        self.assertEqual("complete", self.store.load().last_bonus_state)
+        self.assertEqual(1, len(self.transitions))
+        self.rewards.collect_cart.assert_called_once()
+
+    def test_resumed_cart_is_not_reopened_before_main_departure(self):
+        self.reader.classify.return_value = ScreenObservation(
+            ScreenKind.MODAL, "cart", Village.BUILDER, "cart"
+        )
+
+        def close_cart(**kwargs):
+            self.home()
+            return CartResult(True, "closed", False, True, unavailable=True)
+
+        self.rewards.collect_cart.side_effect = close_cart
+        self.coordinator.tick()
+        self.coordinator.tick()
+        self.assertEqual("main", self.coordinator.active_id)
+        self.rewards.collect_cart.assert_called_once_with(resume=True)
+
+    def test_unknown_after_cart_waits_for_fresh_bonus_without_reopening_cart(self):
+        def result(state, success=True):
+            return RewardResult(success, state.value, StarBonusObservation(
+                state, self.clock.monotonic(), state.value
+            ))
+
+        self.rewards.claim_star_bonus.side_effect = [
+            result(StarBonusState.COMPLETE),
+            result(StarBonusState.UNKNOWN, False),
+            result(StarBonusState.COMPLETE),
+            result(StarBonusState.COMPLETE),
+        ]
+        self.coordinator.tick()
+        self.assertEqual("builder", self.coordinator.active_id)
+        self.assertEqual(1, self.rewards.collect_cart.call_count)
+        self.clock.advance(15)
+        self.coordinator.tick()
+        self.assertEqual("main", self.coordinator.active_id)
+        self.rewards.collect_cart.assert_called_once()
+
+    def test_late_boat_arrival_reads_stars_before_cart_and_main(self):
+        self.clock.wall = self.clock.wall.replace(hour=19)
+        initial_error = self.store.load().last_error
+        error = "Sau tap không xác nhận được Home; không tap lại"
+        self.builder.halt_reason = error
+        self.navigator.last_result = SimpleNamespace(
+            success=False, reason=error, boat_taps=1
+        )
+        self.assertTrue(self.coordinator.tick())
+        self.assertEqual("builder", self.coordinator.active_id)
+        self.rewards.collect_cart.assert_not_called()
+        self.assertEqual(initial_error, self.store.load().last_error)
+        self.assertEqual(0, self.store.load().retry_count)
+        self.assertTrue(self.coordinator.tick())
+        self.assertEqual("main", self.coordinator.active_id)
+        self.assertEqual("complete", self.store.load().last_bonus_state)
+        for _ in range(4):
+            self.clock.advance(300)
+            self.coordinator.tick()
+        self.assertEqual(1, len(self.transitions))
+        self.rewards.collect_cart.assert_called_once()
+
     def test_disk_failure_at_bonus_receipt_stops_before_attack_or_cart(self):
         self.bonus(StarBonusState.AVAILABLE, progress=(0, 7))
         before = self.store.path.read_bytes()

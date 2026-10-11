@@ -61,6 +61,7 @@ class HybridCoordinator(RunCoordinator):
         self._unknown_deadline = 0.0
         self._unknown_attempts = 0
         self._return_error = None
+        self._cart_checked = False
         self._cycle_started = self.clock.monotonic()
         self._cycle_battles = builder.metrics["battle_count"]
         self._last_progress = None
@@ -93,6 +94,7 @@ class HybridCoordinator(RunCoordinator):
     def reset_after_reload(self):
         super().reset_after_reload()
         self._startup_classified = False
+        self._cart_checked = False
         self.runtime.last_bonus_state = "unknown"
         self.runtime.bonus_progress = None
         self.runtime.builder_incomplete = True
@@ -103,6 +105,19 @@ class HybridCoordinator(RunCoordinator):
             self.request_switch("builder", self.reason)
         # Keep cycle/retry budgets: reload must not buy another infinite trip.
         self._save()
+
+    def reset_after_input_failure(self):
+        # A transient main battle frame/input is not a new star-bonus window.
+        # Keep the verified result and any already queued daily/retry request.
+        # Navigation/builder interruptions still require a fresh builder read.
+        if self.active_id != "main" or self._transition_target is not None:
+            self.reset_after_reload()
+            return
+        request = self.pending
+        super().reset_after_reload()
+        self._startup_classified = False
+        if request is not None:
+            self.request_switch(request.target, request.reason)
 
     def _poll_schedule(self):
         if self.stopping():
@@ -199,26 +214,37 @@ class HybridCoordinator(RunCoordinator):
         self.reason = message + " · về main nếu xác nhận được Home"
         self._save()
 
-    def _cart_before_main(self, builder):
+    def _cart_before_main(self, builder, *, resume=False):
         # Hybrid departure always checks the cart, even with builder-only
         # collection disabled. No waiting for unfinished defenses.
+        if self._cart_checked and not resume:
+            return True
         print("[Hybrid] Kiểm tra xe tài nguyên trước khi về Làng chính...", flush=True)
-        cart = builder.rewards.collect_cart()
+        cart = (
+            builder.rewards.collect_cart(resume=True)
+            if resume
+            else builder.rewards.collect_cart()
+        )
         print("[Hybrid] Xe tài nguyên: " + cart.reason, flush=True)
         builder.last_cart = cart
         builder._metrics["cart_collections"] += int(cart.collected)
         if self.stopping():
             return False
         if not cart.success or not cart.returned_home:
-            self._return_error = (
-                self._return_error or "Thu xe trước main: " + cart.reason
-            )
             if not builder.navigator.confirmed_home(Village.BUILDER):
+                self._return_error = (
+                    self._return_error or "Thu xe trước main: " + cart.reason
+                )
                 self._halt_reason = (
                     "Thu xe lỗi và chưa xác nhận Home; dừng riêng instance"
                 )
                 self._finish_error(self._return_error)
                 return False
+            # Optional cart collection cannot invalidate a verified no-star
+            # result. Clear Home proves departure, not a successful Collect.
+            builder.last_warning = "Bỏ qua xe: " + cart.reason
+            print("[Hybrid] " + builder.last_warning, flush=True)
+        self._cart_checked = True
         return True
 
     def _builder_home(self, builder):
@@ -238,16 +264,14 @@ class HybridCoordinator(RunCoordinator):
         frame = builder.reader.capture()
         screen = builder.reader.classify(frame.image)
         if screen.panel == "cart":
-            cart = builder.rewards.collect_cart(resume=True)
-            builder.last_cart = cart
-            builder._metrics["cart_collections"] += int(cart.collected)
-            if not cart.success or not cart.returned_home:
-                self._return_error = "Bảng xe chưa đối soát: " + cart.reason
+            if not self._cart_before_main(builder, resume=True):
                 return True
         bonus = self._observe_bonus(builder)
         if bonus is None:
             return True
         if bonus.state == StarBonusState.AVAILABLE:
+            # Another star task/battle makes cart collection relevant again.
+            self._cart_checked = False
             battles = builder.metrics["battle_count"]
             signature = bonus.progress
             if battles != self._observed_battles and signature is not None:
@@ -316,9 +340,20 @@ class HybridCoordinator(RunCoordinator):
     def _recover_builder(self, error):
         """Only fresh clear Home permits fallback; battle/modal never does."""
         builder = self.modules["builder"]
+        proof = builder.navigator.confirmed_home()
+        navigation = builder.navigator.last_result
+        if (proof and proof[1].village == Village.BUILDER
+                and navigation is not None and navigation.success is False
+                and navigation.reason == error and navigation.boat_taps > 0):
+            # The boat transition can finish just after its observation window.
+            # A fresh Home proof lets the next tick read stars, without another
+            # boat tap or an unnecessary error/cart/main/retry round trip.
+            builder.resume()
+            self._return_error = None
+            self.reason = "Đã xác nhận Làng đêm sau chuyển thuyền · đọc thưởng sao"
+            return True
         self._return_error = error
         self._finish_error(error)
-        proof = builder.navigator.confirmed_home()
         if not proof:
             self._halt_reason = (
                 error + "; không xác nhận Home để phục hồi, dừng riêng instance"
@@ -381,7 +416,9 @@ class HybridCoordinator(RunCoordinator):
                 ) or main_transaction:
                     self.active_id = "main"
                     self.modules["main"].reset_after_reload()
-                    self.request_switch("builder", self.reason)
+                    if (self.pending is None and self.runtime.pending_reason
+                            in ("startup", "recovery")):
+                        self.request_switch("builder", self.reason)
             self._poll_schedule()
             before = self.active_id
             okay = super().tick()
@@ -401,6 +438,7 @@ class HybridCoordinator(RunCoordinator):
                 self._unknown_attempts = 0
                 self._unknown_deadline = 0.0
                 self._return_error = None
+                self._cart_checked = False
                 self._same_progress_battles = 0
                 self._last_progress = None
                 self._observed_battles = self._cycle_battles

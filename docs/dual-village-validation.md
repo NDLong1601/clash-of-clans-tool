@@ -2,7 +2,9 @@
 
 Ngày 09/10/2026, UTC+7. Đối chiếu [kế hoạch](dual-village-plan.md), [quy tắc chung](dual-village-prompts.md), [baseline](dual-village-baseline.md) và toàn bộ [progress GĐ0–GĐ7](dual-village-progress.md).
 
-**Cập nhật lỗi hybrid khi người dùng test:** bản mới qua **529 test/368.462s, exit 0** và lint/syntax/asset/evidence/CLI. Đã sửa bảng Star Bonus native bị nhận thành Home, chờ camera có giới hạn và thông báo navigation. Live thu xe → main có receipt thành công 72.426s. CLAIMABLE được nhận đúng trên ảnh native; chưa có receipt bot tự bấm Okay trong chuỗi live mới. Xem [báo cáo sửa hybrid](dual-village-hybrid-fix-20261011.md).
+**Cập nhật vòng lặp hybrid mới nhất:** **538 test/328.984s, exit 0** và lint/syntax/asset/evidence/CLI. Live 3 chu kỳ main/440.159s, cả 3 lần phục hồi ảnh không tạo chuyến builder; xe kiểm tra một lượt lúc startup, không pending thưởng, dừng tại main Home. Camera/auto train bật theo instance; wall/event tắt riêng trong probe. Hash source live khớp source đã test. Chi tiết và giới hạn ở [báo cáo vòng lặp hybrid](dual-village-hybrid-repeat-fix-20261011.md).
+
+**Lượt sửa native reward trước đó:** **529 test/368.462s, exit 0** và lint/syntax/asset/evidence/CLI. Đã sửa bảng Star Bonus native bị nhận thành Home, chờ camera có giới hạn và thông báo navigation. Live thu xe → main có receipt thành công 72.426s. CLAIMABLE được nhận đúng trên ảnh native; chưa có receipt bot tự bấm Okay trong chuỗi live mới. Xem [báo cáo sửa hybrid trước](dual-village-hybrid-fix-20261011.md).
 
 **Lượt kiểm thử trước 11/10/2026:** bản `c72db1b` qua **519 test/362.975s, exit 0**, lint/syntax/asset/evidence/CLI và checkout từ Git index đạt. Sau [sửa F1–F4](dual-village-review-fixes-20261011.md), đã sửa thêm các lỗi nhận diện/deployment tìm thấy trên game thật. Có native AVAILABLE, thu xe có tiền và khóa production chặn alias trong lúc probe chạy. Chi tiết tại [báo cáo kiểm thử](dual-village-verification-20261011.md). Các số liệu/receipt ngày 09/10 bên dưới là hồ sơ lịch sử, trừ hàng có cập nhật 11/10.
 

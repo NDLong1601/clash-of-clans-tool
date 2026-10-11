@@ -2,7 +2,9 @@
 
 Cập nhật 11/10/2026, giờ Việt Nam (UTC+7). Nguồn yêu cầu: [plan](dual-village-plan.md), [prompts](dual-village-prompts.md). Không cần lịch sử chat để tiếp tục.
 
-**Sửa hybrid sau khi người dùng chạy thử:** bản mới qua **529 test/368.462s, exit 0** và năm gate source còn lại. Sửa bảng Star Bonus native bị nhận thành Home, camera timeout ảnh ổn định và thông báo tiến độ/lý do navigation. Live thu xe rồi về main đạt, có receipt 72.426s; chưa tính là toàn chuỗi bot tự nhận thưởng. Xem [báo cáo sửa hybrid](dual-village-hybrid-fix-20261011.md).
+**Sửa vòng lặp hybrid mới nhất:** **538 test/328.984s, exit 0** và năm gate source còn lại. Phục hồi main giữ kết quả sao và lịch đang chờ; phân loại lại RESULT không tạo startup builder mới, giữ backoff/giới hạn retry. Xe tùy chọn lỗi ở Home không tạo retry sao; resume/UNKNOWN sau xe không mở lại xe. Live bản cuối 3 chu kỳ main/440.159s, 3 lần phục hồi ảnh, chỉ một lượt xe lúc startup, không quay lại builder sau trận; camera/auto train bật, dừng tại Home. Hash source live khớp source đã test. Xem [báo cáo vòng lặp](dual-village-hybrid-repeat-fix-20261011.md).
+
+**Lượt sửa native reward trước đó:** **529 test/368.462s, exit 0** và năm gate source còn lại. Sửa bảng Star Bonus native bị nhận thành Home, camera timeout ảnh ổn định và thông báo tiến độ/lý do navigation. Live thu xe rồi về main đạt, có receipt 72.426s; chưa tính là toàn chuỗi bot tự nhận thưởng. Xem [báo cáo sửa hybrid trước](dual-village-hybrid-fix-20261011.md).
 
 **Lượt kiểm thử và dọn source trước:** bản `c72db1b` qua **519 test/362.975s, exit 0**, lint/syntax/asset/evidence/CLI đều đạt; kiểm checkout từ Git index cũng đạt. Đã sửa thêm nhận diện Attack/sao native, tướng đang nạp kỹ năng, camp đang chọn và plan sau chọn quân. Live có AVAILABLE và thu xe thật; phiên hybrid cuối của lượt đó xác nhận hai khu rồi Home nhưng thiếu receipt kết thúc. Khóa production chặn alias thứ hai khi probe đang chạy. Xem [báo cáo kiểm thử 11/10](dual-village-verification-20261011.md).
 
