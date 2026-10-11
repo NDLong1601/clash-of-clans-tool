@@ -1,0 +1,266 @@
+{
+  "serial": "127.0.0.1:16416",
+  "language": "en",
+  "fixtures": [
+    {
+      "path": "army.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "transform": "mask account names; home also masks resource HUD; home account name mask [130,15,410,96]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "b3b0c41a259c5f148a8bb3be25d1a1e5c37fde56e007844bbe8946aa60f671fd"
+    },
+    {
+      "path": "army-empty.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "transform": "mask account names; home also masks resource HUD; home account name mask [130,15,410,96]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "3f98327ac1dd6520ced801caff952db3a870677b20ea6f1758d76b82575e59dc"
+    },
+    {
+      "path": "scout.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "transform": "mask account names; home also masks resource HUD; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "5fba454508ca211385c8e1c23f4ecf160528d1473e90b3a35d3f8eb9e3d147b2"
+    },
+    {
+      "path": "deployed.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\hero-deployed.png",
+      "parent_sha256": "57ee11e6e5cf4de0448d4c986c4d1079c4c4d772a4c59f1f19e863b787e2c30d",
+      "transform": "mask account names; home also masks resource HUD; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "636a1c45a249098e9cefa9714cee23245052680d019bc9be4916b0d3eb7487cc"
+    },
+    {
+      "path": "stage2-used.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\stage2-skill.png",
+      "parent_sha256": "5c0d656e7a552278da8d2bee8f1e7e299151e0562d8f8c4a1b28211a9d4f98d1",
+      "transform": "mask account names; home also masks resource HUD; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "32cc228317b9c49eb0a52102d19711453d424a35096cb2f2a837566f0cf5278e"
+    },
+    {
+      "path": "home-shadow.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\live-around\\frame-0001.png",
+      "parent_sha256": "2e12944e109124ba42079722dc568946a67027985160e271b7ef1040bc44e1b0",
+      "transform": "mask account names; home also masks resource HUD; home account name mask [130,15,410,96]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "7832dccd4cbf1edac24a1a2d4a019566bf46d87dffb113e9e44785e0979d8dfc"
+    },
+    {
+      "path": "result.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-6\\frame-0022.png",
+      "parent_sha256": "ff5b01872a071b5d0b76b5c7afa99c0157a0fde7562dd0cfd935ecf6e6608068",
+      "transform": "mask account names; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "083bea7bb750ab9ceb248baa03ee6f528c6d76978457e353a7b92d20b5b109f8"
+    },
+    {
+      "path": "stage2-prep.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-5\\frame-0120.png",
+      "parent_sha256": "cab1da497ab4126a8a2700ac01f4f41882fa43ad0e72ba4b515f6fc243a3a2d6",
+      "transform": "mask account names; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "c8ebd8e8d564bd8a79e44a31fc939469b41cb35df51f84f88b7eda4e5c2aeebf"
+    },
+    {
+      "path": "cart-covered.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-3\\frame-0011.png",
+      "parent_sha256": "48522d9142857cc0ece22d4238cf5ce192fd94ea454960a62ba28f2494e483a7",
+      "transform": "mask account names; home account name mask [130,15,410,96]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "f76aeee1182185792a3775e7bce57e44f6d7f8aea0167c66aaba5101413193fc"
+    },
+    {
+      "path": "hero-ready.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-around-8/frame-0032.png",
+      "parent_sha256": "039a1aa6d8fc5afd2e6bbec31d2338ef491b0a3f5889c43326417e25e25a2aff",
+      "transform": "black masks: account names [130,44,410,96], [1350,44,1530,96]; map [0,100,1600,680]; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "1ea7373f26634533393fadb2ff409e367f9bef6c0e701e6a21e223bf842e29fa"
+    },
+    {
+      "path": "hero-cooldown.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-around-8/frame-0033.png",
+      "parent_sha256": "b140772c8294c37cd91aeaebf4e2e7247a9559ae5baa0cc009abb1718dfec1b1",
+      "transform": "black masks: account names [130,44,410,96], [1350,44,1530,96]; map [0,100,1600,680]; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "de5a4af1fe6e2c1a17f2403f6650f0ccb11a69e444bdae9f481dded32141e3d9"
+    },
+    {
+      "path": "stepped-boundary.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-around-11/frame-0036.png",
+      "parent_sha256": "b6e2fc65f865a726f83d868ef5f5244f2e5648095d46796d8fca59fa307d2af7",
+      "sha256": "9e4c883f90aba8d3b11466c110750b197d20d9949b3467a2f758292f5ae77124",
+      "transform": "black masks: names [80,44,410,100], [1350,44,1530,100]; complete name masks [80,44,410,100], [1350,44,1590,100]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "cart-defending.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-around-12/frame-0034.png",
+      "parent_sha256": "7299db24d85a7b1836a464419019e5927926fc77f2ba4fcb815805a8ab96109b",
+      "sha256": "3056204322eb55a6892fa79e59f0e0130acf4ee69e02e49d16ce1050642195b0",
+      "transform": "black masks: account [130,15,410,96], opponent [670,212,1050,250]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "menu.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/menu.png",
+      "parent_sha256": "241c8e6ada0d771b638530b738c8949a3f4c70538dd8f4b84ca2043aea487585",
+      "sha256": "36e773b28b835e3a8ae4e5a16aef99fe84d77e128796ddd9e8e64ce599be8415",
+      "transform": "black account-name mask [130,15,410,96]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "survivor-selected.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-single-5/frame-0113.png",
+      "parent_sha256": "87cc5f724670d22aa6a6a263485fb7064e0c303f440e3ce76cb03a9ddf9afeaa",
+      "sha256": "fa3470578d7f48e1202680327f34063d2d3cd0722d4d36cfe5d7e83b777698ce",
+      "transform": "black masks: names [80,44,410,100], [1350,44,1590,100], map [0,100,1600,680]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "camp4-offset.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-around-13/frame-0130.png",
+      "parent_sha256": "da7dc7e33ac30a2a003daf1e3d478b58d78c7956941abb5815337a3a38cf0252",
+      "sha256": "38a632975fa0f8799995593812e374d1b03dee64bea03164712eaa35fed8e25e",
+      "transform": "black masks: names [80,44,410,100], [1350,44,1590,100], map [0,100,1600,680]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "cart-disabled-balance.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-single-6/frame-0388.png",
+      "parent_sha256": "9e8b3bca71f8158b5970516671b4c5e2744d6760d37f49ae12536703e3553b18",
+      "sha256": "8a0a9909dadf7d961f74990c836a31e6668c443ba6f387cc669554b09215b82e",
+      "transform": "black masks: account [130,15,410,96], opponent [320,174,580,244]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "army-wrong-reinforcement.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/manual-wrong-reinforcement/wrong.png",
+      "parent_sha256": "ffbed891fb99aad5e602f06971326b2f87cd12cd92ec3275b0d3210f55a538d4",
+      "sha256": "6becb28d8135faede144de66310bcb93b83798fe00695f07cde941ae5ea24019",
+      "transform": "black account-name mask [130,15,410,96]",
+      "dimensions": [
+        1600,
+        900
+      ]
+    },
+    {
+      "path": "timer-waiting.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-single-7-restart/frame-0148.png",
+      "parent_sha256": "d7dd824fe3a33d9d64368f76e5a8a745e1b2522a480c2d3828e8c60b9447a4de",
+      "sha256": "851db9a8264a7a69abd697831292e7801cd806b586f54e8bb4ff3f811e173728",
+      "transform": "lossless native timer crop [735,49,865,91]; no input coordinates",
+      "dimensions": [
+        130,
+        42
+      ]
+    },
+    {
+      "path": "timer-ending.png",
+      "kind": "transformed_test",
+      "parent_kind": "adb_native",
+      "parent": "diagnostics/dual_village_gd5/live-single-7-restart/frame-0192.png",
+      "parent_sha256": "c09945a095d19757ef3591167b719a2d751a56d2edb0d0e91cd43418dcf9769a",
+      "sha256": "e7add66704ca05ac7db65a72cae1dbd7e030127efc2ae064612a785fe2828271",
+      "transform": "lossless native timer crop [735,49,865,91]; no input coordinates",
+      "dimensions": [
+        130,
+        42
+      ]
+    }
+  ]
+}

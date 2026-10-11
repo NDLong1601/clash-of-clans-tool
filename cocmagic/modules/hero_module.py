@@ -6,7 +6,6 @@ Quản lý Heroes: detect trạng thái và deploy trong trận.
 """
 
 import time
-import random
 import os
 import glob
 from functools import lru_cache

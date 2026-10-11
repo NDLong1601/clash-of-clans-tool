@@ -1,0 +1,1130 @@
+{
+  "schema_version": 1,
+  "resolution": [
+    1600,
+    900
+  ],
+  "native_language": "en",
+  "anchors": {
+    "profile": {
+      "path": "profile.png",
+      "region": [
+        0,
+        0,
+        150,
+        110
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        86,
+        79
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "crop_xyxy": [
+        22,
+        15,
+        108,
+        94
+      ],
+      "sha256": "53eca248d45732262b6ffd25417da7b4055e467bbc368c44db8d92f766439efd",
+      "language": "en"
+    },
+    "chat": {
+      "path": "chat.png",
+      "region": [
+        0,
+        300,
+        140,
+        190
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        88,
+        111
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "crop_xyxy": [
+        21,
+        348,
+        109,
+        459
+      ],
+      "sha256": "dca83c720042f6cc7c5185b44126a9363a60fc7b825cce2ca8beaa1415653af7",
+      "language": "en"
+    },
+    "settings": {
+      "path": "settings.png",
+      "region": [
+        1440,
+        585,
+        160,
+        150
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        82,
+        81
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "crop_xyxy": [
+        1498,
+        615,
+        1580,
+        696
+      ],
+      "sha256": "78424900fe672b1b7c79741f3c6bc7b97c6271c41d6f373878f434865d0e22ab",
+      "language": "en"
+    },
+    "master_builder": {
+      "path": "master_builder.png",
+      "region": [
+        780,
+        0,
+        230,
+        115
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        67,
+        82
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "crop_xyxy": [
+        844,
+        13,
+        911,
+        95
+      ],
+      "sha256": "2174db5e76b5b900d84035852df383d0931a4320e75f5e285e3bd7b94e03afcf",
+      "language": "en"
+    },
+    "main_builder": {
+      "path": "main_builder.png",
+      "region": [
+        660,
+        0,
+        230,
+        115
+      ],
+      "threshold": 0.84,
+      "dimensions": [
+        46,
+        57
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/initial.png",
+      "parent_sha256": "c85d26f01a2fc17c52cba0cfc76e6af8d18800ba9be5f40ed8be662d9d3802c1",
+      "crop_xyxy": [
+        735,
+        26,
+        781,
+        83
+      ],
+      "sha256": "6189235bd5515c1e9c06eb80a929bea6a7aee2682fb84b10f88e68dd0559f0c3",
+      "language": "en"
+    },
+    "builder_attack": {
+      "path": "builder_attack.png",
+      "region": [
+        15,
+        731,
+        182,
+        151
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        121,
+        114
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "crop_xyxy": [
+        49,
+        748,
+        170,
+        862
+      ],
+      "sha256": "17cc915b5565ad736a7914e7fea94272c906b8b664696cc50057ba3a27c676cf",
+      "language": "en"
+    },
+    "main_attack": {
+      "path": "main_attack.png",
+      "region": [
+        15,
+        735,
+        180,
+        147
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        137,
+        115
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/initial.png",
+      "parent_sha256": "c85d26f01a2fc17c52cba0cfc76e6af8d18800ba9be5f40ed8be662d9d3802c1",
+      "crop_xyxy": [
+        38,
+        751,
+        175,
+        866
+      ],
+      "sha256": "c2c1d7b847e6b7a735d9d03a4592f543da233a59ff3671a41df6911a248ef9e7",
+      "language": "en"
+    },
+    "builder_no_star_button": {
+      "path": "builder_no_star_button.png",
+      "region": [
+        15,
+        705,
+        182,
+        178
+      ],
+      "threshold": 0.94,
+      "dimensions": [
+        164,
+        159
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "crop_xyxy": [
+        23,
+        715,
+        187,
+        874
+      ],
+      "sha256": "86763a25661b6cb604d5cb4721e6c090d207f846876cdebed8076a4dceb3222a",
+      "language": "en"
+    },
+    "main_boat": {
+      "path": "main_boat.png",
+      "region": [
+        190,
+        115,
+        1210,
+        585
+      ],
+      "threshold": 0.8,
+      "dimensions": [
+        89,
+        95
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/main-pan.png",
+      "parent_sha256": "e894030790d811eb66aca7b4857f8561a34681eb0841093b8379124d5d7b95e7",
+      "crop_xyxy": [
+        379,
+        580,
+        468,
+        675
+      ],
+      "sha256": "10f08bd61d4b9d56b8d1ce5f8a4a4f706998ab48c29bc8b0952fb9e3e84021d9",
+      "language": "en",
+      "scales": [
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.35,
+        1.5,
+        1.7,
+        2.0
+      ]
+    },
+    "builder_boat": {
+      "path": "builder_boat.png",
+      "region": [
+        190,
+        115,
+        1210,
+        585
+      ],
+      "threshold": 0.8,
+      "dimensions": [
+        114,
+        106
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-pan.png",
+      "parent_sha256": "5ef45fc37a6d26dc073719122f229ce30bc94ca90e71e5bd856f1654adeeb2c0",
+      "crop_xyxy": [
+        1268,
+        472,
+        1382,
+        578
+      ],
+      "sha256": "1a7760377a42d902a50ec24a0340dec1aea85b7512c01f58a18df81db3174a42",
+      "language": "en",
+      "scales": [
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.35,
+        1.5,
+        1.7,
+        2.0
+      ]
+    },
+    "cart_object": {
+      "path": "cart_object.png",
+      "region": [
+        190,
+        115,
+        1210,
+        585
+      ],
+      "threshold": 0.8,
+      "dimensions": [
+        61,
+        57
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-pan.png",
+      "parent_sha256": "5ef45fc37a6d26dc073719122f229ce30bc94ca90e71e5bd856f1654adeeb2c0",
+      "crop_xyxy": [
+        953,
+        357,
+        1014,
+        414
+      ],
+      "sha256": "ea0806361b51044df6e51239b8f6816b237ec9698c901a5783431c5cd90c6170",
+      "language": "en",
+      "scales": [
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.35,
+        1.5,
+        1.7,
+        2.0
+      ]
+    },
+    "cart_title": {
+      "path": "cart_title.png",
+      "region": [
+        400,
+        40,
+        790,
+        100
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        246,
+        46
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/cart-empty-1.png",
+      "parent_sha256": "7ad8f8c18316618d336cf3a4a85f1676aa342c7d7fe382bdfaa7600f366baad8",
+      "crop_xyxy": [
+        678,
+        71,
+        924,
+        117
+      ],
+      "sha256": "bb767d9c502e771f9355269dae514ce079465fca44c98ab6deaa356eb7727119",
+      "language": "en"
+    },
+    "cart_close": {
+      "path": "cart_close.png",
+      "region": [
+        1170,
+        40,
+        240,
+        160
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        54,
+        53
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/cart-empty-1.png",
+      "parent_sha256": "7ad8f8c18316618d336cf3a4a85f1676aa342c7d7fe382bdfaa7600f366baad8",
+      "crop_xyxy": [
+        1314,
+        63,
+        1368,
+        116
+      ],
+      "sha256": "2eb03d5d35f38da49916f5f83259aaf0d63102d287cd084bfb2dfe4d4c0dc05c",
+      "language": "en"
+    },
+    "cart_disabled": {
+      "path": "cart_disabled.png",
+      "region": [
+        950,
+        680,
+        380,
+        155
+      ],
+      "threshold": 0.9,
+      "dimensions": [
+        203,
+        79
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/cart-empty-1.png",
+      "parent_sha256": "7ad8f8c18316618d336cf3a4a85f1676aa342c7d7fe382bdfaa7600f366baad8",
+      "crop_xyxy": [
+        1075,
+        721,
+        1278,
+        800
+      ],
+      "sha256": "b2a721a14aa0165a88e26b39db55f3c050dd17a1b4d4bfe1bfee687edcb609a3",
+      "language": "en"
+    },
+    "cart_empty": {
+      "path": "cart_empty.png",
+      "region": [
+        420,
+        295,
+        760,
+        270
+      ],
+      "threshold": 0.94,
+      "dimensions": [
+        626,
+        126
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/cart-empty-1.png",
+      "parent_sha256": "7ad8f8c18316618d336cf3a4a85f1676aa342c7d7fe382bdfaa7600f366baad8",
+      "crop_xyxy": [
+        488,
+        377,
+        1114,
+        503
+      ],
+      "sha256": "967bf5c8fe6bf362e0e7c87e74b52386caaa305adb4505b43cc35b637a6462ff",
+      "language": "en"
+    },
+    "builder_menu_title": {
+      "path": "builder_menu_title.png",
+      "region": [
+        430,
+        110,
+        700,
+        130
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        350,
+        56
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-menu.png",
+      "parent_sha256": "f1d7afa7d4b281c5a9c0c672d11b68da0f15c615349621954e76adba8492c64e",
+      "crop_xyxy": [
+        648,
+        143,
+        998,
+        199
+      ],
+      "sha256": "8f1d3f0d61b161600c5808458e518711c92e21c712f8cf09f2a284eab860cbdb",
+      "language": "en"
+    },
+    "builder_find": {
+      "path": "builder_find.png",
+      "region": [
+        1010,
+        510,
+        350,
+        145
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        214,
+        41
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/builder-menu.png",
+      "parent_sha256": "f1d7afa7d4b281c5a9c0c672d11b68da0f15c615349621954e76adba8492c64e",
+      "crop_xyxy": [
+        1082,
+        570,
+        1296,
+        611
+      ],
+      "sha256": "a39c923760e2d165f03197c38af9e74708cb6fe3ac25e277a41c01debe1b1abc",
+      "language": "en"
+    },
+    "main_menu_title": {
+      "path": "main_menu_title.png",
+      "region": [
+        0,
+        0,
+        400,
+        125
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        182,
+        44
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/main-menu.png",
+      "parent_sha256": "61deeea4876667a2ab3145941d9aa858c3578471f81cdc8609e013cb52b3facd",
+      "crop_xyxy": [
+        126,
+        51,
+        308,
+        95
+      ],
+      "sha256": "09140c58b965aaa7e2612b3cd4e2768803d671f3705dd6ac36f52a29ae418425",
+      "language": "en"
+    },
+    "main_find": {
+      "path": "main_find.png",
+      "region": [
+        20,
+        530,
+        490,
+        215
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        278,
+        37
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd4/main-menu.png",
+      "parent_sha256": "61deeea4876667a2ab3145941d9aa858c3578471f81cdc8609e013cb52b3facd",
+      "crop_xyxy": [
+        135,
+        625,
+        413,
+        662
+      ],
+      "sha256": "adaf47d8abbf0c690008b2aaf75eef5b08574d312406156976aa76354e308376",
+      "language": "en"
+    },
+    "result_return": {
+      "path": "result_return.png",
+      "region": [
+        300,
+        560,
+        900,
+        225
+      ],
+      "threshold": 0.89,
+      "dimensions": [
+        116,
+        54
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd3/practice-result.png",
+      "parent_sha256": "50d713c57492e0cfe195333a80e2adb161780b866893c02835622aae4b598aba",
+      "crop_xyxy": [
+        750,
+        641,
+        866,
+        695
+      ],
+      "sha256": "b704e4ba987bc52971bdbdd4decfbbbd3889ef973659507cbc247487c61c3d0d",
+      "language": "en"
+    },
+    "result_title": {
+      "path": "result_title.png",
+      "region": [
+        500,
+        190,
+        600,
+        200
+      ],
+      "threshold": 0.89,
+      "dimensions": [
+        175,
+        51
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd3/practice-result.png",
+      "parent_sha256": "50d713c57492e0cfe195333a80e2adb161780b866893c02835622aae4b598aba",
+      "crop_xyxy": [
+        712,
+        252,
+        887,
+        303
+      ],
+      "sha256": "e0dca09ee80ce81f58fe9ce705c6b2929aeaba33fc0715a62518e8e6b6e2a5af",
+      "language": "en"
+    },
+    "result_loot": {
+      "path": "result_loot.png",
+      "region": [
+        490,
+        365,
+        610,
+        215
+      ],
+      "threshold": 0.89,
+      "dimensions": [
+        168,
+        26
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd3/practice-result.png",
+      "parent_sha256": "50d713c57492e0cfe195333a80e2adb161780b866893c02835622aae4b598aba",
+      "crop_xyxy": [
+        718,
+        469,
+        886,
+        495
+      ],
+      "sha256": "2f04b1c05fa28b34f1670bdd77af2d9eea21e06c3de3c81ed4f2412db5afe706",
+      "language": "en"
+    },
+    "battle_end": {
+      "path": "battle_end.png",
+      "region": [
+        10,
+        520,
+        235,
+        200
+      ],
+      "threshold": 0.89,
+      "dimensions": [
+        150,
+        32
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd3/battle-zoom-out-after.png",
+      "parent_sha256": "4f20300b7fe7825379c3670f76ded39a1bf171310890891629f64d69f74d556a",
+      "crop_xyxy": [
+        40,
+        655,
+        190,
+        687
+      ],
+      "sha256": "245787fa967eac2095aa6631bf7d362a31aa692d054356eeeb2ce27c510ae3ef",
+      "language": "en"
+    },
+    "battle_damage": {
+      "path": "battle_damage.png",
+      "region": [
+        1270,
+        570,
+        330,
+        170
+      ],
+      "threshold": 0.89,
+      "dimensions": [
+        194,
+        27
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd3/battle-zoom-out-after.png",
+      "parent_sha256": "4f20300b7fe7825379c3670f76ded39a1bf171310890891629f64d69f74d556a",
+      "crop_xyxy": [
+        1360,
+        626,
+        1554,
+        653
+      ],
+      "sha256": "ec6277808dca72f0e22eda9042c0c25e7d141cad31c08a37fd327108ed2a5ac8",
+      "language": "en"
+    },
+    "battle_loot": {
+      "path": "battle_loot.png",
+      "region": [
+        20,
+        70,
+        280,
+        200
+      ],
+      "threshold": 0.89,
+      "dimensions": [
+        137,
+        22
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd3/battle-zoom-out-after.png",
+      "parent_sha256": "4f20300b7fe7825379c3670f76ded39a1bf171310890891629f64d69f74d556a",
+      "crop_xyxy": [
+        81,
+        97,
+        218,
+        119
+      ],
+      "sha256": "5cd07d12890a7c5536626dfd5c389fe949ff3f350a42f8b171c43cd8ff04542a",
+      "language": "en"
+    },
+    "connection_title": {
+      "path": "connection_title.png",
+      "region": [
+        300,
+        250,
+        1000,
+        350
+      ],
+      "threshold": 0.82,
+      "source_kind": "reused_asset",
+      "parent": "assets\\connection_lost_title.png",
+      "parent_sha256": "15873c2b55b9b0e08dd0587b75c95777f1e8e797ce5cf86b143d164d62f31025",
+      "dimensions": [
+        223,
+        35
+      ],
+      "sha256": "15873c2b55b9b0e08dd0587b75c95777f1e8e797ce5cf86b143d164d62f31025",
+      "language": "en"
+    },
+    "cart_variant_1": {
+      "path": "cart_variant_1.png",
+      "region": [
+        190,
+        115,
+        1210,
+        585
+      ],
+      "scales": [
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.35,
+        1.5,
+        1.7,
+        2.0
+      ],
+      "threshold": 0.88,
+      "source_kind": "reused_asset",
+      "parent": "assets\\claim_elixir_n1.png",
+      "parent_sha256": "8f438a466567b1bf28a6797a14aa715d494eb875afe17f5a5761ef96a383ae31",
+      "sha256": "f54a8bdb6e8f09ed691863de4b4967da5a46d5a9fb393f1d218dcdf73905cc0a",
+      "dimensions": [
+        71,
+        62
+      ],
+      "language": "independent_map_art"
+    },
+    "cart_variant_4": {
+      "path": "cart_variant_4.png",
+      "region": [
+        190,
+        115,
+        1210,
+        585
+      ],
+      "scales": [
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.35,
+        1.5,
+        1.7,
+        2.0
+      ],
+      "threshold": 0.88,
+      "source_kind": "reused_asset",
+      "parent": "assets\\claim_elixir_n4.png",
+      "parent_sha256": "7f8f0b464f7ba6ab62c8666b8d2ee25b9fbd14c9ad91b59bcc06e5a7423ab8c4",
+      "sha256": "97919154d7bcccfc8fb84ccf6cb875033d14001a599710da4b8d9c97aab02117",
+      "dimensions": [
+        82,
+        62
+      ],
+      "language": "independent_map_art"
+    },
+    "cart_variant_8": {
+      "path": "cart_variant_8.png",
+      "region": [
+        190,
+        115,
+        1210,
+        585
+      ],
+      "scales": [
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.35,
+        1.5,
+        1.7,
+        2.0
+      ],
+      "threshold": 0.88,
+      "source_kind": "reused_asset",
+      "parent": "assets\\claim_elixir_n8.png",
+      "parent_sha256": "f2fa0ff1cfa8cf532898aa9dbb721036488d23e2e27eb41fc96612d3b54da404",
+      "sha256": "706d32d3f5a30bd6f7ffe8cae2393093a5602ea2e0d6d8c0b0073b808c2ed51b",
+      "dimensions": [
+        41,
+        34
+      ],
+      "language": "independent_map_art"
+    },
+    "cart_collect": {
+      "path": "cart_collect.png",
+      "region": [
+        950,
+        680,
+        380,
+        155
+      ],
+      "threshold": 0.84,
+      "scales": [
+        0.95,
+        1.0,
+        1.05
+      ],
+      "source_kind": "reused_asset",
+      "parent": "assets\\collectnight.png",
+      "parent_sha256": "9c85d7d4493ae045407263a87f427107e577321877482c772158582052fc5d52",
+      "sha256": "9c85d7d4493ae045407263a87f427107e577321877482c772158582052fc5d52",
+      "dimensions": [
+        200,
+        76
+      ],
+      "language": "en"
+    },
+    "bonus_star": {
+      "path": "bonus_star.png",
+      "region": [
+        20,
+        690,
+        175,
+        70
+      ],
+      "threshold": 0.86,
+      "scales": [
+        0.85,
+        1.0,
+        1.15
+      ],
+      "source_kind": "transformed_video_crop",
+      "parent": "diagnostics\\dual_village_gd0\\frames\\train_176.00.png",
+      "parent_sha256": "3d714e5662fa7d1047526fa6cb251c2023fc2267d556aafe5e188d32fe005a86",
+      "crop_xyxy": [
+        81,
+        570,
+        118,
+        609
+      ],
+      "dimensions": [
+        40,
+        42
+      ],
+      "sha256": "9429b4f4bdd0b53308e2e340e0c9c5994258863f466edc338236f4479de471b2",
+      "language": "independent_star_art",
+      "live_verified": false
+    },
+    "reward_star": {
+      "path": "reward_star.png",
+      "region": [
+        580,
+        160,
+        430,
+        310
+      ],
+      "threshold": 0.86,
+      "scales": [
+        0.8,
+        1.0,
+        1.2
+      ],
+      "source_kind": "transformed_video_crop",
+      "parent": "diagnostics\\dual_village_gd0\\frames\\train_173.00.png",
+      "parent_sha256": "d320d7623e0a857f9ee57925301cbdc5aa7a4057d65e07f83197795d0cfe815e",
+      "crop_xyxy": [
+        700,
+        165,
+        862,
+        331
+      ],
+      "dimensions": [
+        195,
+        200
+      ],
+      "sha256": "24510f77ff63d7bf7cb18e41582cd5abe774ff9fad5df2622514b9ec7105aa6f",
+      "language": "independent_star_art",
+      "live_verified": false
+    },
+    "reward_title": {
+      "path": "reward_title.png",
+      "region": [
+        430,
+        100,
+        740,
+        160
+      ],
+      "threshold": 0.86,
+      "scales": [
+        0.85,
+        1.0,
+        1.15
+      ],
+      "source_kind": "generated_text",
+      "text": "Star Bonus!",
+      "font_sha256": "b7ae71046b99922eb2404f8710e6c76e13a8ba32c08736b853d2ee531bd2104d",
+      "sha256": "0f2fe09814a0140d3584dc895c567314b8eb3985620b96eee0d54bf5299c917a",
+      "dimensions": [
+        374,
+        56
+      ],
+      "language": "en",
+      "live_verified": false
+    },
+    "reward_button": {
+      "path": "reward_button.png",
+      "region": [
+        450,
+        560,
+        710,
+        215
+      ],
+      "threshold": 0.87,
+      "scales": [
+        0.85,
+        1.0,
+        1.15
+      ],
+      "source_kind": "reused_asset",
+      "parent": "assets\\okaystar.png",
+      "parent_sha256": "7c7d8462161dcfb181850b6bed51b7bc8ec4d173be90de16b910a6a90eff0738",
+      "sha256": "64c6b0fd4955822b486bc8db9df8f7684aba20cc0a67576347cd3dbbf63198fb",
+      "dimensions": [
+        228,
+        84
+      ],
+      "language": "en",
+      "live_verified": false
+    },
+    "cart_defending": {
+      "path": "cart_defending.png",
+      "region": [
+        430,
+        140,
+        770,
+        420
+      ],
+      "threshold": 0.86,
+      "scales": [
+        0.85,
+        1.0,
+        1.15
+      ],
+      "source_kind": "generated_text",
+      "text": "You are being attacked!",
+      "font_sha256": "b7ae71046b99922eb2404f8710e6c76e13a8ba32c08736b853d2ee531bd2104d",
+      "sha256": "a1d179d69e21f570de24815394597beb3184c97dc561dfedf0a6634b7548c3c7",
+      "dimensions": [
+        451,
+        41
+      ],
+      "language": "en",
+      "live_verified": false
+    },
+    "loading_cloud": {
+      "path": "loading_cloud.png",
+      "region": [
+        300,
+        100,
+        800,
+        540
+      ],
+      "threshold": 0.87,
+      "dimensions": [
+        590,
+        350
+      ],
+      "source_kind": "transformed_video_crop",
+      "parent": "diagnostics/dual_village_gd4/loading-transformed.png",
+      "parent_sha256": "896dcbe61e28b653c8800c3dea9ab8e62387d12f1ea9371fd0980eb13f1ae394",
+      "crop_xyxy": [
+        360,
+        160,
+        950,
+        510
+      ],
+      "sha256": "a181654321de79913fd5585cc6a5606a8dcf7c850a4313a56396a16bed00ff99",
+      "language": "en",
+      "scales": [
+        0.9,
+        1.0,
+        1.1
+      ]
+    },
+    "profile_border": {
+      "path": "profile_border.png",
+      "region": [
+        0,
+        0,
+        150,
+        110
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        86,
+        18
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd6/live-read.png",
+      "parent_sha256": "7615d59ff3a90fa6e895000c68a3ab904909e7ac659e8b25ac5f64b18cd06d46",
+      "crop_xyxy": [
+        22,
+        15,
+        108,
+        33
+      ],
+      "sha256": "b3dace7114da177ef98c24d21aa043de8cf05fc14e42936f842485734d584ca9",
+      "language": "en"
+    },
+    "main_attack_current": {
+      "path": "main_attack_current.png",
+      "region": [
+        15,
+        735,
+        180,
+        147
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        137,
+        115
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd6/live-read.png",
+      "parent_sha256": "7615d59ff3a90fa6e895000c68a3ab904909e7ac659e8b25ac5f64b18cd06d46",
+      "crop_xyxy": [
+        38,
+        751,
+        175,
+        866
+      ],
+      "sha256": "33d884b9a7c0885d20b17462590808050c37ec1d78c8283cbab46c251f9bbb8c",
+      "language": "en"
+    },
+    "main_battle_timer": {
+      "path": "main_battle_timer.png",
+      "region": [
+        650,
+        0,
+        320,
+        110
+      ],
+      "threshold": 0.9,
+      "dimensions": [
+        174,
+        29
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/dual_village_gd8/main-legacy/state-007.png",
+      "parent_sha256": "a949df6ba814ac33463480136646e934ef3b26f169d71c9a94181cf09a4a9ee8",
+      "crop_xyxy": [
+        711,
+        18,
+        885,
+        47
+      ],
+      "sha256": "ae6f01ab172e3273cad9ed0556f887583b4c4558c77020d7b3e9566c5cb40e19",
+      "language": "en"
+    },
+    "home_attack_label": {
+      "path": "home_attack_label.png",
+      "region": [
+        15,
+        735,
+        180,
+        147
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        118,
+        31
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/verification_20261011/initial.png",
+      "parent_sha256": "36d2158f5c1ebd9db593bc7836cb2171d305b37bece22e1ef06c37d25a5421b1",
+      "crop_xyxy": [
+        47,
+        836,
+        165,
+        867
+      ],
+      "sha256": "eef902b34ace4e420783615234eb5b4e084fae0a51602d540323c3d7f6df4c15",
+      "language": "en",
+      "purpose": "Stable Attack! label; village-specific worker and common Home HUD remain required."
+    },
+    "bonus_star_native": {
+      "path": "bonus_star_native.png",
+      "region": [
+        20,
+        690,
+        175,
+        70
+      ],
+      "threshold": 0.92,
+      "dimensions": [
+        39,
+        36
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/verification_20261011/live-current.png",
+      "parent_sha256": "e47c957b7208bb835935411cda95effabe776742715eb55800409d16f19aeaec",
+      "crop_xyxy": [
+        29,
+        723,
+        68,
+        759
+      ],
+      "sha256": "d05087102bd73036bfb5dfb138c512e6f89feef2c15cafb882608192b8982ba4",
+      "language": "independent_star_art",
+      "live_verified": true
+    }
+  },
+  "variants": {
+    "cart_object": [
+      "cart_variant_1",
+      "cart_variant_4",
+      "cart_variant_8"
+    ]
+  },
+  "limitations": [
+    "Generated English reward title/defending text and video artwork require native validation.",
+    "Other languages/resolutions fail closed; Vietnamese source video is evidence only."
+  ]
+}

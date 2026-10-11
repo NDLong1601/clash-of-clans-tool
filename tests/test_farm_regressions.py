@@ -33,6 +33,7 @@ from cocmagic.modules.farm_module import (
     T_USE,
 )
 from cocmagic.screen_reader import ScreenReader
+from cocmagic.run_coordinator import RunCoordinator
 from cocmagic.troop_vision import is_electro_card, is_siege_card, read_card_count
 
 
@@ -918,8 +919,13 @@ class AdbBatchTests(unittest.TestCase):
         engine = BotEngine({"upgrade_walls": False})
         engine._handle_popups = Mock(return_value=False)
         engine.farm_mod = Mock()
-        engine.farm_mod.tick.return_value = False
-        engine.farm_mod.halt_reason = "Quick Train Slot 1 unavailable"
+        engine.farm_mod.halt_reason = None
+        def failed_tick(**kwargs):
+            engine.farm_mod.halt_reason = "Quick Train Slot 1 unavailable"
+            return False
+        engine.farm_mod.tick.side_effect = failed_tick
+        engine.farm_mod.device_serial = "test"
+        engine.coordinator = RunCoordinator("test", {"main": engine.farm_mod}, "main")
         engine.running = True
 
         engine._main_loop()
@@ -945,15 +951,12 @@ class AdbBatchTests(unittest.TestCase):
     def test_wall_upgrade_does_not_interrupt_home_tap_retry(self, _sleep):
         engine = BotEngine({"upgrade_walls": True})
         engine._handle_popups = Mock(return_value=False)
-        engine.farm_mod = Mock()
-        engine.farm_mod.tick.side_effect = [True, False]
-        engine.farm_mod.state = FarmState.HOME
-        engine.farm_mod.recovering_home = True
         engine.wall_mod = Mock()
-        engine.running = True
-
-        engine._main_loop()
-
+        adb = Mock(device="test")
+        farm = FarmModule(adb, None, None, engine.settings, wall_mod=engine.wall_mod)
+        farm._home_attack_failures = 1
+        farm._handle_state = Mock()
+        farm.tick()
         engine.wall_mod.run.assert_not_called()
 
 

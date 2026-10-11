@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "phase": "GD4",
+  "serial": "127.0.0.1:16416",
+  "resolution": [
+    1600,
+    900
+  ],
+  "native_language": "en",
+  "fixtures": [
+    {
+      "id": "main-home",
+      "path": "main-home.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/initial.png",
+      "parent_sha256": "c85d26f01a2fc17c52cba0cfc76e6af8d18800ba9be5f40ed8be662d9d3802c1",
+      "sha256": "563e09a1c6be2a7b3572e2bb4bad1aa5133a5265d850c262c074dd410dcd297a",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "main_home",
+      "language": "en"
+    },
+    {
+      "id": "main-offset",
+      "path": "main-offset.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/main-restored.png",
+      "parent_sha256": "04f071fc99a188c280ef2545f1d4fa1b2cb6f4dbfccce52938669724747754f9",
+      "sha256": "af92f2756cfec16574c9fde67402a9749ba0a9c52c21b6618520e70d594fe582",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "main_home",
+      "language": "en"
+    },
+    {
+      "id": "main-pan",
+      "path": "main-pan.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/main-pan.png",
+      "parent_sha256": "e894030790d811eb66aca7b4857f8561a34681eb0841093b8379124d5d7b95e7",
+      "sha256": "378bbc079a52de80c8aad72dfdfe720a98e72e0e2ae8ee186279b785e48912e8",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "main_home",
+      "language": "en"
+    },
+    {
+      "id": "main-menu",
+      "path": "main-menu.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/main-menu.png",
+      "parent_sha256": "61deeea4876667a2ab3145941d9aa858c3578471f81cdc8609e013cb52b3facd",
+      "sha256": "c9a4b5280c109855026ff7667a1503ef5700a2d35f9b60349b4179997bea4c83",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "attack_menu",
+      "language": "en"
+    },
+    {
+      "id": "builder-home-a",
+      "path": "builder-home-a.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-3.png",
+      "parent_sha256": "a2325960ec9b4129c287e52f6273cc8ef94c33d1bd4a65049875934dc471a0d5",
+      "sha256": "ff1710baf5df399c6d87a3016140d933ddb9919cef37547b2469b07f54e2e603",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "builder_home",
+      "language": "en"
+    },
+    {
+      "id": "builder-home-b",
+      "path": "builder-home-b.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/builder-enter-4.png",
+      "parent_sha256": "edaeb3ec5b5a5977d9b5f57e4fdc6eec2f47972c7771dc87ca81cb39581b7855",
+      "sha256": "7166553d6f5e1e434f44dc41951ad1c8755586276be0bfde637e10b7b4a5befb",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "builder_home",
+      "language": "en"
+    },
+    {
+      "id": "builder-offset",
+      "path": "builder-offset.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/builder-clear.png",
+      "parent_sha256": "6a4f57f9718d3069175599198123ab125fb252811f9dae729104f0b59cb3ebfa",
+      "sha256": "f55913041587bf05b0239bbd034ce5e97378c8e8e18058628531925ba9745883",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "builder_home",
+      "language": "en"
+    },
+    {
+      "id": "builder-menu",
+      "path": "builder-menu.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/builder-menu.png",
+      "parent_sha256": "f1d7afa7d4b281c5a9c0c672d11b68da0f15c615349621954e76adba8492c64e",
+      "sha256": "80f41968bb34fc49b468f3b83a5d4c2215b201183f71fde8f60e588993e57288",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "attack_menu",
+      "language": "en"
+    },
+    {
+      "id": "cart-empty-a",
+      "path": "cart-empty-a.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/cart-empty-0.png",
+      "parent_sha256": "581c8012707579eb472e3a76409e6a7cd1e68bf0553f137001589d1776aa96a2",
+      "sha256": "dc3a0d1491a7233d29581e6584eaa691d42c4012de4f886b308694e0a131c4c0",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "modal/cart",
+      "language": "en"
+    },
+    {
+      "id": "cart-empty-b",
+      "path": "cart-empty-b.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/cart-empty-1.png",
+      "parent_sha256": "7ad8f8c18316618d336cf3a4a85f1676aa342c7d7fe382bdfaa7600f366baad8",
+      "sha256": "7f0fce24839c33474f69f504db6b849084b024fd08f4c2c98da185ad3e7d4bec",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "modal/cart",
+      "language": "en"
+    },
+    {
+      "id": "battle",
+      "path": "battle.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd3/battle-zoom-out-after.png",
+      "parent_sha256": "4f20300b7fe7825379c3670f76ded39a1bf171310890891629f64d69f74d556a",
+      "sha256": "aef208ac98125909d5df659b8519b61efe0cf6a2916a3d38eb25cd849c9fdb7e",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "battle",
+      "language": "en"
+    },
+    {
+      "id": "result",
+      "path": "result.jpg",
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd3/practice-result.png",
+      "parent_sha256": "50d713c57492e0cfe195333a80e2adb161780b866893c02835622aae4b598aba",
+      "sha256": "7608e4c9bd1a9355176f29440e0894128cd3db1737afd860231016b04441feee",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "result",
+      "language": "en"
+    },
+    {
+      "id": "loading",
+      "path": "loading.jpg",
+      "kind": "transformed_test",
+      "source_kind": "video_crop",
+      "transform": "JPEG quality 96; no resize",
+      "parent": "diagnostics/dual_village_gd4/loading-transformed.png",
+      "parent_sha256": "896dcbe61e28b653c8800c3dea9ab8e62387d12f1ea9371fd0980eb13f1ae394",
+      "sha256": "219af20cfd2e75f7a7898feb3629663a503076a3468c548294f594397d1457e6",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "loading",
+      "language": "vi"
+    },
+    {
+      "id": "bonus-available",
+      "path": "bonus-available.png",
+      "kind": "transformed_test",
+      "source_kind": "synthetic_composite",
+      "parents": [
+        "builder-home-b",
+        "bonus_star"
+      ],
+      "transform": "Composite video star badge onto native English Home",
+      "sha256": "a5aab34d46f73fda4e5134fd59b1ee27eac381f06fb5c5b11c3e01cfed63e550",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "available",
+      "language": "en",
+      "live_verified": false
+    },
+    {
+      "id": "reward",
+      "path": "reward.png",
+      "kind": "transformed_test",
+      "source_kind": "synthetic_composite",
+      "parents": [
+        "builder-home-b",
+        "reward_title",
+        "reward_star",
+        "reward_button"
+      ],
+      "transform": "Generated English reward layout, not a native claim",
+      "sha256": "505456c855358776179c08358339fb43707462a7035090b9a27fdade05490eaf",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "claimable",
+      "language": "en",
+      "live_verified": false
+    },
+    {
+      "id": "cart-collectable",
+      "path": "cart-collectable.png",
+      "kind": "transformed_test",
+      "source_kind": "synthetic_composite",
+      "parents": [
+        "cart-empty-b",
+        "cart_collect"
+      ],
+      "transform": "Synthetic green button and nonzero bar",
+      "sha256": "5fed4dcdffa82fa747e620bb0a549361073aa1a814509ce48550fa59fe1ee4d7",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "modal/cart",
+      "language": "en",
+      "live_verified": false
+    },
+    {
+      "id": "cart-defending",
+      "path": "cart-defending.png",
+      "kind": "transformed_test",
+      "source_kind": "synthetic_composite",
+      "parents": [
+        "cart-empty-b",
+        "cart_defending"
+      ],
+      "transform": "Generated English defense row; no native defense captured",
+      "sha256": "5127d227fa1e76ce1912ea91437dfa56be5c822890a76d7035e63de201d7f236",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "modal/cart",
+      "language": "en",
+      "live_verified": false
+    },
+    {
+      "id": "button-covered",
+      "path": "button-covered.png",
+      "kind": "transformed_test",
+      "source_kind": "synthetic_composite",
+      "parents": [
+        "builder-home-b"
+      ],
+      "transform": "Synthetic occlusion covering Attack and bonus",
+      "sha256": "1ef2959a56969959499c25c419648e4b8ea5f9d635d79b91ce3008092c0c975d",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "expected": "unknown",
+      "language": "en",
+      "live_verified": false
+    }
+  ],
+  "missing": [
+    "Native English AVAILABLE 0/y and other y",
+    "Native English reward and repeated rewards",
+    "Native English collectable/defending cart and storage-full receipt",
+    "Native builder battle/result/stage2",
+    "Other game languages/resolutions; full engine navigation integration in GD6/GD7"
+  ],
+  "live_evidence": {
+    "path": "live-receipt.json",
+    "sha256": "7414e0d02b2f25b7ae5a0f42848964fa0d86f02d86f7a18220daad73ec7615f6"
+  },
+  "fixture_bytes": 21157128
+}

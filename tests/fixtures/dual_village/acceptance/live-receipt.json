@@ -1,0 +1,420 @@
+{
+  "evidence": "Native ADB on one MuMu emulator; production CLI license check/watchdog; private settings/screens/inputs excluded",
+  "sessions": [
+    {
+      "session": "main-legacy",
+      "scope": "FAIL before fix: native Surrender was UNKNOWN",
+      "source_receipt": "diagnostics/dual_village_gd8/main-legacy/receipt.json",
+      "source_receipt_sha256": "17b03f1ecfe05a24d9fdcf23763463c5998ce7e4fab23a7897aad721fab24092",
+      "source_log": "diagnostics/dual_village_gd8/main-legacy.log",
+      "source_log_sha256": "b76f1f645b31a6e1883b4c6384f94f69941f5e3f66b81b26ea094116e34688f5",
+      "at": "2026-10-09T09:34:32.809240+07:00",
+      "elapsed": 211.31275549999555,
+      "goal_met": false,
+      "error": "SystemExit(1)",
+      "initial_trained": true,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "unknown",
+      "module_metrics": {
+        "main": {
+          "attack_count": 0,
+          "skip_count": 0,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 10
+    },
+    {
+      "session": "main-fixed",
+      "scope": "FAIL first fix: timer matching depended on map background",
+      "source_receipt": "diagnostics/dual_village_gd8/main-fixed/receipt.json",
+      "source_receipt_sha256": "d697fabbecbbd5a3546b0833e42f09711afc7fde4812fe2f05be8c9db3303d9b",
+      "source_log": "diagnostics/dual_village_gd8/main-fixed.log",
+      "source_log_sha256": "18f9e9ffec4d9d46591d75e1cd678f69d720620e15c91ba7036fbc60c084228b",
+      "at": "2026-10-09T09:39:14.273536+07:00",
+      "elapsed": 203.57641500000318,
+      "goal_met": false,
+      "error": "SystemExit(1)",
+      "initial_trained": true,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "unknown",
+      "module_metrics": {
+        "main": {
+          "attack_count": 1,
+          "skip_count": 0,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 14
+    },
+    {
+      "session": "main-fixed-2",
+      "scope": "PASS main legacy camera off; one inherited result + one fresh battle",
+      "source_receipt": "diagnostics/dual_village_gd8/main-fixed-2/receipt.json",
+      "source_receipt_sha256": "e40bda1e16e125ecb46a7aab4ecb9c3ac320f232a3d010e56e1361b19a3b6976",
+      "source_log": "diagnostics/dual_village_gd8/main-fixed-2.log",
+      "source_log_sha256": "f8caa362261d76b0c2ff810d9096aab15a2b1bfd805037b052870f6dcd138852",
+      "at": "2026-10-09T09:42:42.728245+07:00",
+      "elapsed": 145.87295649999578,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": true,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "main",
+      "module_metrics": {
+        "main": {
+          "attack_count": 2,
+          "skip_count": 0,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 26
+    },
+    {
+      "session": "main-camera",
+      "scope": "FAIL before camera fixes: accepted spell receipt dereferenced invalidated tactics",
+      "source_receipt": "diagnostics/dual_village_gd8/main-camera/receipt.json",
+      "source_receipt_sha256": "ebe36fe98cc1ea7b22e7a03b86b0208956ed8208819f0f5fa2167fa6c95c6e4a",
+      "source_log": "diagnostics/dual_village_gd8/main-camera.log",
+      "source_log_sha256": "1336a813f6bd4dfaf8dd2a9dc417e38d6540c01f1a86b99f039aa96d30dcd2e3",
+      "at": "2026-10-09T09:44:50.635630+07:00",
+      "elapsed": 83.95797329999914,
+      "goal_met": false,
+      "error": "SystemExit(1)",
+      "initial_trained": false,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "main",
+      "module_metrics": {
+        "main": {
+          "attack_count": 0,
+          "skip_count": 0,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 22
+    },
+    {
+      "session": "main-camera-fixed",
+      "scope": "FAIL before planner fix: final drop overlapped HUD; guard blocked it",
+      "source_receipt": "diagnostics/dual_village_gd8/main-camera-fixed/receipt.json",
+      "source_receipt_sha256": "b9ada0063b5dd369eac9f3a3a5db8f0e85b7e42893d1b920fb18d2691b997f35",
+      "source_log": "diagnostics/dual_village_gd8/main-camera-fixed.log",
+      "source_log_sha256": "3388088b44a0e5121e054e8cf6d6dbcbff5ad4b17aa0b12d02c03ba7158ce6f1",
+      "at": "2026-10-09T09:51:24.981473+07:00",
+      "elapsed": 156.63478599999507,
+      "goal_met": false,
+      "error": "SystemExit(1)",
+      "initial_trained": false,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "main",
+      "module_metrics": {
+        "main": {
+          "attack_count": 1,
+          "skip_count": 6,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 16
+    },
+    {
+      "session": "main-camera-final",
+      "scope": "PASS camera on; four unstable-view skips, then two confirmed pans and one fresh battle",
+      "source_receipt": "diagnostics/dual_village_gd8/main-camera-final/receipt.json",
+      "source_receipt_sha256": "a4c96d879dac64531ab3c4e5aad48ec4436a7527302e8fc91c6fd0506097fa2e",
+      "source_log": "diagnostics/dual_village_gd8/main-camera-final.log",
+      "source_log_sha256": "5c38cb1b320e761ab516d21f32bd86ccc6be44765d9483f11692cb8525ea575b",
+      "at": "2026-10-09T09:59:19.186032+07:00",
+      "elapsed": 187.60075169999618,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": false,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "main",
+      "module_metrics": {
+        "main": {
+          "attack_count": 2,
+          "skip_count": 4,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 31
+    },
+    {
+      "session": "hybrid-complete",
+      "scope": "PASS startup COMPLETE/cart unavailable/main handoff; no claim or builder battle",
+      "source_receipt": "diagnostics/dual_village_gd8/hybrid-complete/receipt.json",
+      "source_receipt_sha256": "3db2bfcfacd60f9c911e88856f2a1f54f00b333c40b1211a2b8114298c36e8f2",
+      "source_log": "diagnostics/dual_village_gd8/hybrid-complete.log",
+      "source_log_sha256": "32de5d48f5ed9ee89a0bc492bccad99101f9fdd4ff1adbe3123a6bca19923166",
+      "at": "2026-10-09T10:02:36.619023+07:00",
+      "elapsed": 151.66546430000744,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": false,
+      "bonus": {
+        "state": "complete",
+        "captured_at": 129049.332972,
+        "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+        "region": [
+          20,
+          690,
+          175,
+          70
+        ],
+        "progress": null,
+        "captures": [
+          32,
+          33
+        ]
+      },
+      "cart": {
+        "success": true,
+        "reason": "Xe trống/đang phòng thủ; kết thúc hữu hạn",
+        "collected": false,
+        "returned_home": true,
+        "defending": false,
+        "unavailable": true
+      },
+      "final_active": "main",
+      "final_village": "main",
+      "module_metrics": {
+        "main": {
+          "attack_count": 0,
+          "skip_count": 0,
+          "wall_count": 0
+        },
+        "builder": {
+          "attack_count": 0,
+          "battle_count": 0,
+          "stage_count": 0,
+          "deployed": 0,
+          "troop_abilities": 0,
+          "hero_abilities": 0,
+          "reward_claims": 0,
+          "cart_collections": 0,
+          "rejected_points": 0,
+          "unconfirmed_abilities": 0,
+          "recoveries": 0,
+          "wall_count": 0,
+          "stage": 0
+        }
+      },
+      "input_calls": 4
+    },
+    {
+      "session": "builder-around",
+      "scope": "PASS limited: COMPLETE still launches a match, one stage and Machine skill; FAIL complete army deployment under concurrent unittest load",
+      "source_receipt": "diagnostics/dual_village_gd8/builder-around/receipt.json",
+      "source_receipt_sha256": "cd20d0874b8d90dabb3e7c61446e11875e8613f2b27e43f00bbec8f411ab3e6e",
+      "source_log": "diagnostics/dual_village_gd8/builder-around.log",
+      "source_log_sha256": "d769e95d8f5370e8d12d93f2665e48f8847f2e1ba34dc28a4a28dd070dc49fa2",
+      "at": "2026-10-09T10:09:01.847601+07:00",
+      "elapsed": 358.1248603999993,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": null,
+      "bonus": {
+        "state": "complete",
+        "captured_at": 129429.0171218,
+        "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+        "region": [
+          20,
+          690,
+          175,
+          70
+        ],
+        "progress": null,
+        "captures": [
+          63,
+          64
+        ]
+      },
+      "cart": {
+        "success": true,
+        "reason": "Xe trống/đang phòng thủ; kết thúc hữu hạn",
+        "collected": false,
+        "returned_home": true,
+        "defending": true,
+        "unavailable": true
+      },
+      "final_active": "builder",
+      "final_village": "builder",
+      "module_metrics": {
+        "builder": {
+          "attack_count": 1,
+          "battle_count": 1,
+          "stage_count": 1,
+          "deployed": 4,
+          "troop_abilities": 1,
+          "hero_abilities": 1,
+          "reward_claims": 0,
+          "cart_collections": 0,
+          "rejected_points": 0,
+          "unconfirmed_abilities": 0,
+          "recoveries": 0,
+          "wall_count": 0,
+          "stage": 0
+        }
+      },
+      "input_calls": 20
+    },
+    {
+      "session": "builder-single",
+      "scope": "PASS five visible camps and five skills at one point, one stage, hero setting off; not proof of an absent hero",
+      "source_receipt": "diagnostics/dual_village_gd8/builder-single/receipt.json",
+      "source_receipt_sha256": "97c175a5c1cf2b9b203f81d2f4eccbdf993d98af91b41f10f4cd4490fec69e52",
+      "source_log": "diagnostics/dual_village_gd8/builder-single.log",
+      "source_log_sha256": "8e14bd9e40b9ae19db42c0014ab9ed9eb5a98dc67cb5a265a09f08b4fbe88e0b",
+      "at": "2026-10-09T10:14:49.150009+07:00",
+      "elapsed": 278.5378978999943,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": null,
+      "bonus": {
+        "state": "complete",
+        "captured_at": 129780.2851745,
+        "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+        "region": [
+          20,
+          690,
+          175,
+          70
+        ],
+        "progress": null,
+        "captures": [
+          73,
+          74
+        ]
+      },
+      "cart": {
+        "success": true,
+        "reason": "Xe trống/đang phòng thủ; kết thúc hữu hạn",
+        "collected": false,
+        "returned_home": true,
+        "defending": true,
+        "unavailable": true
+      },
+      "final_active": "builder",
+      "final_village": "builder",
+      "module_metrics": {
+        "builder": {
+          "attack_count": 1,
+          "battle_count": 1,
+          "stage_count": 1,
+          "deployed": 5,
+          "troop_abilities": 5,
+          "hero_abilities": 0,
+          "reward_claims": 0,
+          "cart_collections": 1,
+          "rejected_points": 0,
+          "unconfirmed_abilities": 0,
+          "recoveries": 0,
+          "wall_count": 0,
+          "stage": 0
+        }
+      },
+      "input_calls": 25
+    },
+    {
+      "session": "builder-resume",
+      "scope": "Finish inherited result and postprocess to Home after interrupted around; no fresh search or new battle",
+      "source_receipt": "diagnostics/dual_village_gd8/builder-resume/receipt.json",
+      "source_receipt_sha256": "1401a4c91315d7a158ca438141747ec2cf1598d6c1cb7ee56e70857be7d5a8a1",
+      "source_log": "diagnostics/dual_village_gd8/builder-resume.log",
+      "source_log_sha256": "7ed09f1c13c27feb0d02f0b12b85fa95b1111fe69e26e236d81002503572d5ac",
+      "at": "2026-10-09T10:23:15.106446+07:00",
+      "elapsed": 87.51763159999973,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": null,
+      "bonus": {
+        "state": "complete",
+        "captured_at": 130256.2317008,
+        "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+        "region": [
+          20,
+          690,
+          175,
+          70
+        ],
+        "progress": null,
+        "captures": [
+          3,
+          4
+        ]
+      },
+      "cart": {
+        "success": true,
+        "reason": "Đã đối soát counter/bar đổi và Collect disabled",
+        "collected": true,
+        "returned_home": true,
+        "defending": false,
+        "unavailable": false
+      },
+      "final_active": "builder",
+      "final_village": "builder",
+      "module_metrics": {
+        "builder": {
+          "attack_count": 0,
+          "battle_count": 1,
+          "stage_count": 0,
+          "deployed": 0,
+          "troop_abilities": 0,
+          "hero_abilities": 0,
+          "reward_claims": 0,
+          "cart_collections": 1,
+          "rejected_points": 0,
+          "unconfirmed_abilities": 0,
+          "recoveries": 0,
+          "wall_count": 0,
+          "stage": 0
+        }
+      },
+      "input_calls": 4
+    },
+    {
+      "session": "main-restore",
+      "scope": "Main-only startup from builder and safe main Home handoff; no new battle",
+      "source_receipt": "diagnostics/dual_village_gd8/main-restore/receipt.json",
+      "source_receipt_sha256": "8480e9fdca527ae9c4a9cb07bb50d0a4225f1708edc37c98c60db5d8a8ed70b7",
+      "source_log": "diagnostics/dual_village_gd8/main-restore.log",
+      "source_log_sha256": "1df5d1613857585e24bea4b190c2878a607b11f81e5549c35b6d6895f19b5c4b",
+      "at": "2026-10-09T10:24:28.253786+07:00",
+      "elapsed": 28.883658099992317,
+      "goal_met": true,
+      "error": null,
+      "initial_trained": false,
+      "bonus": null,
+      "cart": null,
+      "final_active": "main",
+      "final_village": "main",
+      "module_metrics": {
+        "main": {
+          "attack_count": 0,
+          "skip_count": 0,
+          "wall_count": 0
+        }
+      },
+      "input_calls": 1
+    },
+    {
+      "session": "builder-around-solo",
+      "scope": "UNVERIFIED full cycle: process interrupted before finally receipt; partial log cannot prove completion",
+      "source_log": "diagnostics/dual_village_gd8/builder-around-solo.log",
+      "source_log_sha256": "b3362270355aef78075fd55ae1221d3a2798919c1ad98cdb097ee7b4d6d694fc",
+      "completion_receipt_present": false
+    }
+  ]
+}

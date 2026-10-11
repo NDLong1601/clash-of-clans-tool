@@ -3,14 +3,16 @@
 import json
 import os
 import tempfile
+from copy import deepcopy
 
+from cocmagic.config import migrate_settings
 from cocmagic.device_manager import device_label, normalize_serial
 
 
 class InstanceStore:
     def __init__(self, path: str, default_settings: dict):
         self.path = path
-        self.default_settings = default_settings.copy()
+        self.default_settings = migrate_settings(default_settings)
         self.instances: dict[str, dict] = {}
 
     def load(self) -> dict[str, dict]:
@@ -27,9 +29,9 @@ class InstanceStore:
             serial = normalize_serial(item.get("serial", ""))
             if serial in loaded:
                 raise ValueError(f"Cổng {serial} bị lặp trong instances.json.")
-            settings = self.default_settings.copy()
-            settings.update(item["settings"])
+            settings = migrate_settings(item["settings"], self.default_settings)
             loaded[serial] = {
+                **deepcopy(item),
                 "serial": serial,
                 "name": str(item.get("name") or device_label(serial)),
                 "settings": settings,
@@ -43,7 +45,7 @@ class InstanceStore:
             profile = {
                 "serial": serial,
                 "name": name or device_label(serial),
-                "settings": self.default_settings.copy(),
+                "settings": deepcopy(self.default_settings),
             }
             self.instances[serial] = profile
             try:
@@ -58,7 +60,7 @@ class InstanceStore:
         if serial not in self.instances:
             raise KeyError(serial)
         previous = self.instances[serial]["settings"]
-        self.instances[serial]["settings"] = settings.copy()
+        self.instances[serial]["settings"] = migrate_settings({**previous, **deepcopy(settings)})
         try:
             self.save()
         except OSError:

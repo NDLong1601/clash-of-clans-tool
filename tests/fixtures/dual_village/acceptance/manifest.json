@@ -1,0 +1,237 @@
+{
+  "fixtures": [
+    {
+      "path": "main-surrender.png",
+      "sha256": "5f07a00937946635174a3a1a63597211e5ff8a12488aeac8975952e27ce25a4a",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source_kind": "adb_native",
+      "kind": "transformed_test",
+      "parent": "diagnostics/dual_village_gd8/main-legacy/state-007.png",
+      "parent_sha256": "a949df6ba814ac33463480136646e934ef3b26f169d71c9a94181cf09a4a9ee8",
+      "transform": "Black all pixels outside native timer and lower-left button ROIs; no resize; retain small local backgrounds inside ROIs; exclude names, resource balances and army",
+      "expected": "main battle with Surrender before first accepted troop"
+    },
+    {
+      "path": "main-surrender-map-variant.png",
+      "sha256": "91cbb2fb650328cb8452560d11651e3e139a4aa8462a5febd6704918073d85ed",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source_kind": "adb_native",
+      "kind": "transformed_test",
+      "parent": "diagnostics/dual_village_gd8/main-fixed/state-011.png",
+      "parent_sha256": "3aef94300eaac25d91637960c7fc2c46f3e4cde6f14b43143e1122785949755d",
+      "transform": "Black all pixels outside native timer and lower-left button ROIs; no resize; retain small local backgrounds inside ROIs; exclude names, resource balances and army",
+      "expected": "main battle Surrender on a different map background"
+    },
+    {
+      "path": "main-home-attack-stars.png",
+      "sha256": "4b4d868e2be7bf8f5e4060aa0424caa28d3266d9d4c5d476c92de3aa3b022658",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source_kind": "adb_native",
+      "kind": "transformed_test",
+      "parent": "diagnostics/verification_20261011/initial.png",
+      "parent_sha256": "36d2158f5c1ebd9db593bc7836cb2171d305b37bece22e1ef06c37d25a5421b1",
+      "transform": "Black all pixels except five Home HUD regions; remove level digits, name, balances and base; no resize.",
+      "preserved_xywh": [
+        [
+          22,
+          15,
+          86,
+          18
+        ],
+        [
+          660,
+          0,
+          230,
+          115
+        ],
+        [
+          0,
+          300,
+          140,
+          190
+        ],
+        [
+          1440,
+          585,
+          160,
+          150
+        ],
+        [
+          15,
+          710,
+          180,
+          172
+        ]
+      ],
+      "expected": "main_home with stars/chest Attack artwork"
+    },
+    {
+      "path": "builder-home-bonus-zero-native.png",
+      "sha256": "875259f26d8e882dfcc058681922e12e8a6514c495976cb70c261f7f174cd00d",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source_kind": "adb_native",
+      "kind": "transformed_test",
+      "parent": "diagnostics/verification_20261011/live-current.png",
+      "parent_sha256": "e47c957b7208bb835935411cda95effabe776742715eb55800409d16f19aeaec",
+      "transform": "Black outside six HUD/map regions; preserve small anonymous map patch for motion; no resize; exclude name, level digits and balances.",
+      "preserved_xywh": [
+        [
+          22,
+          15,
+          86,
+          18
+        ],
+        [
+          780,
+          0,
+          230,
+          115
+        ],
+        [
+          0,
+          300,
+          140,
+          190
+        ],
+        [
+          1440,
+          585,
+          160,
+          150
+        ],
+        [
+          15,
+          690,
+          180,
+          192
+        ],
+        [
+          500,
+          180,
+          270,
+          380
+        ]
+      ],
+      "expected": "builder_home with AVAILABLE 0/8 stars"
+    },
+    {
+      "path": "builder-hero-charging-short-border.png",
+      "sha256": "7ee0a080fa8183e00c1fa5870f98fc86983dcebe85362c79945a952f6e0b30bc",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source_kind": "adb_native",
+      "kind": "transformed_test",
+      "parent": "diagnostics/verification_20261011/live-battle-current.png",
+      "parent_sha256": "2c5f8310e8b4f2f2a30740078a3621756d840584e0486de8624c5a1a41ecf0e0",
+      "preserved_xywh": [
+        [
+          50,
+          5,
+          190,
+          40
+        ],
+        [
+          1340,
+          5,
+          230,
+          40
+        ],
+        [
+          650,
+          0,
+          350,
+          110
+        ],
+        [
+          0,
+          580,
+          250,
+          150
+        ],
+        [
+          1280,
+          600,
+          320,
+          120
+        ],
+        [
+          75,
+          680,
+          1440,
+          220
+        ]
+      ],
+      "transform": "Retain battle timer/buttons/army HUD only; remove players, base and resources; no resize.",
+      "expected": "deployed charging Battle Machine with partially obscured upper health border; five undeployed baby dragons"
+    },
+    {
+      "path": "builder-selected-camp5.png",
+      "sha256": "c48453315b0d43c343af899873b482c9949971b56654967d2b951e812a32bdea",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source_kind": "adb_native",
+      "kind": "transformed_test",
+      "parent": "diagnostics/verification_20261011/live-builder-final/frame-0077.png",
+      "parent_sha256": "460fa41b08b5e07b3418893ad54fe0a79717913d5e087aec46e97c8014fef993",
+      "preserved_xywh": [
+        [
+          50,
+          5,
+          190,
+          40
+        ],
+        [
+          1340,
+          5,
+          230,
+          40
+        ],
+        [
+          650,
+          0,
+          350,
+          110
+        ],
+        [
+          0,
+          580,
+          250,
+          150
+        ],
+        [
+          1280,
+          600,
+          320,
+          120
+        ],
+        [
+          75,
+          680,
+          1440,
+          220
+        ]
+      ],
+      "transform": "Retain battle HUD only; exclude names, map and resources; no resize.",
+      "expected": "camp5 selected but undeployed; different header color from camp1"
+    }
+  ],
+  "outputs": {
+    "live-receipt.json": "8993d46334f09858d5bdace92719735e6fb0259a427f87535835f554af9692b1"
+  }
+}

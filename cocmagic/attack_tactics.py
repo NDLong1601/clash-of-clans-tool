@@ -13,6 +13,7 @@ import cv2
 import numpy as np
 
 from cocmagic.battle_planner import BattlePlan
+from cocmagic.camera_controller import ScreenSpace
 
 
 Point = Tuple[int, int]
@@ -31,15 +32,19 @@ class AttackTactics:
     center: Point
     hotspots: List[Point]
     rage_entries: List[Point] = field(default_factory=list)
+    camera_revision: int = 0
+    camera_tracked: bool = False
 
     @classmethod
-    def from_battle(cls, plan: BattlePlan, image: np.ndarray) -> "AttackTactics":
+    def from_battle(cls, plan: BattlePlan, image: np.ndarray, *, camera_revision=None) -> "AttackTactics":
+        if camera_revision is not None and plan.camera_revision != camera_revision:
+            raise ValueError("BattlePlan thuộc camera_revision cũ")
         points = plan.troop_points
         # Pick a broad, usable side rather than trusting the hull's arbitrary
         # first vertex. Keep every main point on the same side of the base.
         seed = max(points, key=lambda p: (
             sum(math.dist(p, q) <= 230 for q in points),
-            -math.dist(p, (800, 450))))
+            -math.dist(p, plan.spell_center if plan.camera_tracked else (800, 450))))
         main = sorted((p for p in points if math.dist(p, seed) <= 230),
                       key=lambda p: math.dist(p, seed))
         if len(main) < 2:
@@ -48,7 +53,8 @@ class AttackTactics:
         entry = (round(sum(p[0] for p in main) / len(main)),
                  round(sum(p[1] for p in main) / len(main)))
         return cls(main, flank, entry, plan.spell_center,
-                   cls._structure_hotspots(image, plan, entry))
+                   cls._structure_hotspots(image, plan, entry), camera_revision=plan.camera_revision,
+                   camera_tracked=plan.camera_tracked)
 
     @staticmethod
     def _structure_hotspots(image: np.ndarray, plan: BattlePlan,
@@ -71,6 +77,8 @@ class AttackTactics:
         candidates = []
         for y in range(155, 655, 45):
             for x in range(290, 1350, 45):
+                if plan.camera_tracked and not ScreenSpace.map_point((x, y)):
+                    continue
                 if cv2.pointPolygonTest(hull, (float(x), float(y)), True) < 35:
                     continue
                 # Target the attack corridor; a dense group on the far side
@@ -111,9 +119,13 @@ class AttackTactics:
         return [points[i % len(points)] for i in range(count)]
 
     def spell_target(self, name: str, index: int) -> Point | None:
+        target = self._spell_target(name, index)
+        return target if not self.camera_tracked or (target is not None and ScreenSpace.map_point(target)) else None
+
+    def _spell_target(self, name: str, index: int) -> Point | None:
         name = name.lower()
         path = lambda fraction: _between(self.entry, self.center, fraction)
-        near, middle, deep = path(.38), path(.58), path(.78)
+        middle, deep = path(.58), path(.78)
         def hotspot(reference: Point, offset: int = 0) -> Point:
             if not self.hotspots:
                 return reference

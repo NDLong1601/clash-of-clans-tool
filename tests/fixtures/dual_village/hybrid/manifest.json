@@ -1,0 +1,44 @@
+{
+  "source_kind": "transformed_test",
+  "parent": "diagnostics/dual_village_gd6/live-read.png",
+  "parent_sha256": "7615d59ff3a90fa6e895000c68a3ab904909e7ac659e8b25ac5f64b18cd06d46",
+  "resolution": [
+    1600,
+    900
+  ],
+  "preserved_xywh": [
+    [
+      0,
+      0,
+      110,
+      110
+    ],
+    [
+      690,
+      0,
+      840,
+      115
+    ],
+    [
+      0,
+      300,
+      140,
+      190
+    ],
+    [
+      1440,
+      585,
+      160,
+      150
+    ],
+    [
+      15,
+      735,
+      180,
+      147
+    ]
+  ],
+  "transformation": "Black all pixels except the five HUD regions. No resize.",
+  "path": "main-home-level71.png",
+  "sha256": "664aa87fd8186a3c88ec1989517caf0e856828a291cb37e916f8ec895e7117c8"
+}

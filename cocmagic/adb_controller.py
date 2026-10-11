@@ -9,6 +9,8 @@ import time
 import os
 import random
 import struct
+import threading
+import uuid
 from typing import Optional, List, Tuple
 
 import numpy as np
@@ -16,6 +18,7 @@ import cv2
 
 from cocmagic import config
 from cocmagic.process_utils import run_hidden
+from cocmagic.recovery import RecoveryInterrupted, remote_job_cleanup
 class ADBController:
     """Điều khiển BlueStacks qua ADB."""
 
@@ -27,12 +30,18 @@ class ADBController:
         self.device  = serial or f"{host}:{port}"
         self.adb     = adb_path
         self.stop_event = stop_event
+        self.input_lock = threading.RLock()
+        self.camera_revision = 0
+        self._camera_listeners = []
         self._cached_screenshot: Optional[np.ndarray] = None
         self._screenshot_ts: float = 0.0
         self._template_cache: dict = {}
         self._match_positions: dict = {}
         self._frame_matches: dict = {}
         self._raw_screenshot_supported = True
+        self.frame_guard = None
+        self.input_failure_handler = None
+        self._failed_input_count = 0
         self.verbose = bool((settings if settings is not None else config.load_settings()).get("verbose"))
 
     # ─── Kết nối ───────────────────────────────────────────
@@ -67,7 +76,7 @@ class ADBController:
             print(f"  [tap] ({x},{y})")
         wait = config.DELAY_AFTER_TAP if delay is None else max(0.0, delay)
         if wait:
-            time.sleep(wait)
+            self._wait(wait)
         return True
 
     def tap_many(self, points: List[Tuple[int, int]], interval: float = 0.05) -> bool:
@@ -80,6 +89,10 @@ class ADBController:
             return False
         if not points:
             return True
+        if len(points) > 16 or not 0 <= interval <= .1:
+            raise ValueError("Nhóm input tối đa 16 tap, interval 0–0.1s; đọc lại ảnh giữa các nhóm")
+        token = uuid.uuid4().hex
+        pidfile = f"/data/local/tmp/cocmagic-taps-{token}.pid"
         commands = []
         for i, (x, y) in enumerate(points):
             x = max(0, min(config.ANDROID_W - 1, int(x)))
@@ -87,42 +100,97 @@ class ADBController:
             commands.append(f"input tap {x} {y}")
             if i + 1 < len(points) and interval > 0:
                 commands.append(f"sleep {max(0.01, interval):.3f}")
-        script = "\n".join(commands) + "\nexit\n"
+        script = (f"echo $$ > {pidfile}\ntrap 'rm -f {pidfile}' EXIT\n"
+                  "trap 'exit 1' HUP INT TERM\nset -e\n" + "\n".join(commands) + "\n")
         self.invalidate_cache()
+        if self._stopping():
+            return False
+        ok = False
+        cleanup_ok = True
         try:
             result = run_hidden(
-                [self.adb, "-s", self.device, "shell"],
+                [self.adb, "-s", self.device, "shell", "sh -s"],
                 input=script.encode("ascii"), capture_output=True,
-                timeout=max(config.ADB_COMMAND_TIMEOUT, len(points) * 0.7 + 2),
+                timeout=config.ADB_COMMAND_TIMEOUT,
             )
             if result.returncode != 0:
                 print(f"[ADB] tap_many error: {result.stderr.decode(errors='replace').strip()}")
-                return False
-            return True
+            ok = result.returncode == 0
         except Exception as exc:
             print(f"[ADB] tap_many error: {exc}")
-            return False
+        finally:
+            if not ok or self._stopping():
+                try:
+                    # Terminate this batch only, before recovery may accept input.
+                    result = run_hidden([self.adb, "-s", self.device, "shell",
+                        remote_job_cleanup(pidfile)+'; exit $cleanup_rc'],
+                        capture_output=True, timeout=3)
+                    if result.returncode:
+                        cleanup_ok = False
+                except Exception:
+                    cleanup_ok = False
+                cleanup_ok = self.release_touch() and cleanup_ok
+            self.invalidate_cache()
+        if not cleanup_ok:
+            self._input_failed('Không xác nhận kết thúc batch/release; dừng riêng instance', fatal=True)
+        elif not ok:
+            self._input_failed()
+        return ok and cleanup_ok and not self._stopping()
 
-    def swipe(self, x1: int, y1: int, x2: int, y2: int, duration_ms: int = 300):
+    def swipe(self, x1: int, y1: int, x2: int, y2: int, duration_ms: int = 300) -> bool:
         """Swipe từ (x1,y1) → (x2,y2) trong duration_ms ms."""
         if self._stopping():
-            return
-        dur = max(50, duration_ms)
-        self._shell(f"input swipe {x1} {y1} {x2} {y2} {dur}")
-        time.sleep(config.DELAY_AFTER_SWIPE)
+            return False
+        dur = max(50, min(1500, int(duration_ms)))
+        try:
+            ok = self._shell(f"input swipe {int(x1)} {int(y1)} {int(x2)} {int(y2)} {dur}")
+            if ok:
+                self._wait(config.DELAY_AFTER_SWIPE)
+            return ok and not self._stopping()
+        finally:
+            # Cleanup deliberately bypasses stop: Android's swipe normally
+            # sends UP, but a timeout/disconnect may interrupt its final event.
+            self.release_touch(x2, y2)
+            self.invalidate_cache()
+
+    def release_touch(self, x=0, y=0) -> bool:
+        try:
+            r = run_hidden([self.adb, "-s", self.device, "shell",
+                            f"input motionevent CANCEL {int(x)} {int(y)}"],
+                           capture_output=True, timeout=3)
+            return r.returncode == 0
+        except Exception:
+            return False
+        finally:
+            self.invalidate_cache()
+
+    def add_camera_listener(self, listener):
+        self._camera_listeners.append(listener)
+
+    def mark_camera_input(self):
+        # An attempted map gesture is a new epoch even if it fails or hits a
+        # limit: old coordinates cannot be trusted while input is unresolved.
+        self.camera_revision += 1
+        self.invalidate_cache()
+        self._match_positions.clear()
+        errors = []
+        for listener in tuple(self._camera_listeners):
+            try:
+                listener(self.camera_revision)
+            except Exception as error:
+                errors.append(str(error))
+        if errors:
+            raise RuntimeError('Camera cache callback thất bại: '+ '; '.join(errors))
 
     def long_press(self, x: int, y: int, duration_ms: int = 800):
-        if self._stopping():
-            return
-        self._shell(f"input swipe {x} {y} {x} {y} {duration_ms}")
-        time.sleep(duration_ms / 1000 + 0.3)
+        return self.swipe(x, y, x, y, duration_ms)
 
     def key_event(self, keycode: int):
         """Gửi key event Android (vd: 4 = BACK)."""
         if self._stopping():
             return
         self._shell(f"input keyevent {keycode}")
-        time.sleep(0.3)
+        self._wait(0.3)
 
     def back(self):
         self.key_event(4)
@@ -130,6 +198,13 @@ class ADBController:
     # ─── Screenshot ─────────────────────────────────────────
 
     def screenshot(self, use_cache: bool = True,
+                   cache_ttl: float = 0.35) -> Optional[np.ndarray]:
+        image = self._capture_screenshot(use_cache, cache_ttl)
+        if self.frame_guard is not None and not self._stopping():
+            self.frame_guard(image)
+        return image
+
+    def _capture_screenshot(self, use_cache: bool = True,
                    cache_ttl: float = 0.35) -> Optional[np.ndarray]:
         """
         Chụp màn hình → numpy array BGR.
@@ -154,6 +229,8 @@ class ADBController:
                 if img_bgr is None:
                     self._raw_screenshot_supported = False
             if img_bgr is None:
+                if self._stopping():
+                    return None
                 result = run_hidden(
                     [self.adb, "-s", self.device, "exec-out", "screencap", "-p"],
                     capture_output=True, timeout=config.SCREENSHOT_TIMEOUT,
@@ -162,12 +239,14 @@ class ADBController:
                     img_bgr = cv2.imdecode(np.frombuffer(result.stdout, np.uint8),
                                            cv2.IMREAD_COLOR)
             if img_bgr is None:
+                self.invalidate_cache()
                 return None
             self._cached_screenshot = img_bgr
             self._screenshot_ts = time.monotonic()
             self._frame_matches.clear()
             return img_bgr
         except Exception as e:
+            self.invalidate_cache()
             print(f"[ADB] screenshot error: {e}")
             return None
 
@@ -358,7 +437,9 @@ class ADBController:
             pos = self.find_template(template_path, threshold)
             if pos:
                 return pos
-            time.sleep(poll_interval)
+            if self._stopping():
+                return None
+            self._wait(poll_interval)
         return None
 
     def is_visible(
@@ -406,6 +487,7 @@ class ADBController:
         if self._stopping():
             return False
         self.invalidate_cache()
+        ok = False
         try:
             result = run_hidden(
                 [self.adb, "-s", self.device, "shell", cmd],
@@ -414,14 +496,34 @@ class ADBController:
             )
             if result.returncode != 0:
                 print(f"[ADB] shell error '{cmd}': {result.stderr.decode(errors='replace').strip()}")
-                return False
-            return True
+            ok = result.returncode == 0
         except Exception as e:
             print(f"[ADB] shell error '{cmd}': {e}")
-            return False
+        if not ok:
+            self._input_failed()
+        return ok and not self._stopping()
+
+    def _input_failed(self, reason=None, fatal=False):
+        self.invalidate_cache()
+        if self.input_failure_handler is not None and not self._stopping():
+            self._failed_input_count += 1
+            if self._failed_input_count >= 3:
+                reason = reason or 'Input ADB thất bại 3 lần trong phiên; dừng riêng instance'
+                fatal = True
+            if reason is None:
+                self.input_failure_handler()
+            else:
+                self.input_failure_handler(reason, fatal=fatal)
+            raise RecoveryInterrupted("Input thất bại; chuỗi thao tác đã hủy")
 
     def _stopping(self) -> bool:
         return self.stop_event is not None and self.stop_event.is_set()
+
+    def _wait(self, seconds):
+        if self.stop_event is None:
+            time.sleep(seconds)
+        else:
+            self.stop_event.wait(seconds)
 
 
 def find_adb_port(adb_path: str = config.ADB_PATH) -> Optional[int]:

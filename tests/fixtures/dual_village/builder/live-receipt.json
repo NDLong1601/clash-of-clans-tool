@@ -1,0 +1,504 @@
+{
+  "kind": "summary_of_native_live_receipts",
+  "recorded_date": "2026-10-08",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "profile": {
+    "serial": "127.0.0.1:16416",
+    "language": "en",
+    "dimensions": [
+      1600,
+      900
+    ],
+    "emulator": "MuMu Android 15"
+  },
+  "notes": [
+    "around-14: 2 fresh searches; total 3 results includes one inherited battle. Legacy receipt has no completed/cancelled fields.",
+    "single-6: 2 fresh two-stage battles; final disabled-cart error means the session is not a full-loop pass.",
+    "single-8-timer: completed one fresh two-stage battle; total 2 results includes restored result.",
+    "Stop sessions are cancelled checks, not completed battles.",
+    "Full source receipts and captures are ignored diagnostics; source hashes identify exact reviewed evidence."
+  ],
+  "sessions": [
+    {
+      "session": "live-around-14",
+      "source": "diagnostics/dual_village_gd5/live-around-14/receipt.json",
+      "source_sha256": "27226ea1fba1c30136115b31d5481b312ea00c4ee2a68b0751c8f7fc3a0468f9",
+      "serial": "127.0.0.1:16416",
+      "mode": "around",
+      "elapsed": 646.4035949999961,
+      "metrics": {
+        "attack_count": 2,
+        "battle_count": 3,
+        "stage_count": 3,
+        "deployed": 18,
+        "troop_abilities": 13,
+        "hero_abilities": 4,
+        "reward_claims": 0,
+        "cart_collections": 3,
+        "rejected_points": 0,
+        "recoveries": 0,
+        "wall_count": 0,
+        "stage": 0
+      },
+      "halt_reason": null,
+      "safe_home": true,
+      "cart": {
+        "success": true,
+        "reason": "Đã đối soát counter/bar đổi và Collect disabled",
+        "collected": true,
+        "returned_home": true,
+        "defending": false
+      },
+      "map_inputs_by_stage": {
+        "1": [
+          [
+            1333,
+            508
+          ],
+          [
+            497,
+            201
+          ],
+          [
+            473,
+            635
+          ],
+          [
+            264,
+            373
+          ],
+          [
+            1214,
+            647
+          ],
+          [
+            498,
+            223
+          ],
+          [
+            1085,
+            174
+          ],
+          [
+            484,
+            581
+          ],
+          [
+            1285,
+            426
+          ],
+          [
+            332,
+            457
+          ],
+          [
+            574,
+            162
+          ],
+          [
+            329,
+            400
+          ],
+          [
+            1271,
+            400
+          ],
+          [
+            1321,
+            470
+          ],
+          [
+            279,
+            330
+          ],
+          [
+            329,
+            400
+          ],
+          [
+            329,
+            400
+          ],
+          [
+            329,
+            400
+          ]
+        ],
+        "2": []
+      }
+    },
+    {
+      "session": "live-single-6",
+      "source": "diagnostics/dual_village_gd5/live-single-6/receipt.json",
+      "source_sha256": "5ad94a4abad38e3bbb23a9347c2a82cfa4968eb1d06442b53c2ac0f82573860e",
+      "serial": "127.0.0.1:16416",
+      "mode": "single_point",
+      "elapsed": 672.7052454999939,
+      "metrics": {
+        "attack_count": 2,
+        "battle_count": 3,
+        "stage_count": 4,
+        "deployed": 21,
+        "troop_abilities": 14,
+        "hero_abilities": 0,
+        "reward_claims": 0,
+        "cart_collections": 2,
+        "rejected_points": 1,
+        "unconfirmed_abilities": 0,
+        "recoveries": 0,
+        "wall_count": 0,
+        "stage": 2
+      },
+      "halt_reason": "Hậu xử lý xe: Trạng thái xe chưa rõ",
+      "safe_home": false,
+      "completed": false,
+      "cancelled": false,
+      "budget_exhausted": false,
+      "cart": {
+        "success": false,
+        "reason": "Trạng thái xe chưa rõ",
+        "collected": false,
+        "returned_home": true,
+        "defending": false
+      },
+      "map_inputs_by_stage": {
+        "1": [
+          [
+            1182,
+            630
+          ],
+          [
+            1182,
+            630
+          ],
+          [
+            1182,
+            630
+          ],
+          [
+            1182,
+            630
+          ],
+          [
+            1182,
+            630
+          ],
+          [
+            1182,
+            630
+          ],
+          [
+            1171,
+            533
+          ],
+          [
+            1171,
+            533
+          ],
+          [
+            1171,
+            533
+          ],
+          [
+            1171,
+            533
+          ],
+          [
+            1099,
+            592
+          ],
+          [
+            1099,
+            592
+          ]
+        ],
+        "2": [
+          [
+            1163,
+            497
+          ],
+          [
+            1163,
+            497
+          ],
+          [
+            1163,
+            497
+          ],
+          [
+            1163,
+            497
+          ],
+          [
+            1163,
+            497
+          ],
+          [
+            1163,
+            497
+          ],
+          [
+            447,
+            417
+          ],
+          [
+            447,
+            417
+          ],
+          [
+            447,
+            417
+          ],
+          [
+            447,
+            417
+          ]
+        ]
+      }
+    },
+    {
+      "session": "live-single-8-timer",
+      "source": "diagnostics/dual_village_gd5/live-single-8-timer/receipt.json",
+      "source_sha256": "f316f272d4dcab97de01706fe081390e91764197326461cb5fb7b9ba02d85232",
+      "serial": "127.0.0.1:16416",
+      "mode": "single_point",
+      "elapsed": 380.0948467999988,
+      "metrics": {
+        "attack_count": 1,
+        "battle_count": 2,
+        "stage_count": 2,
+        "deployed": 10,
+        "troop_abilities": 7,
+        "hero_abilities": 0,
+        "reward_claims": 0,
+        "cart_collections": 0,
+        "rejected_points": 0,
+        "unconfirmed_abilities": 0,
+        "recoveries": 0,
+        "wall_count": 0,
+        "stage": 0
+      },
+      "halt_reason": null,
+      "safe_home": true,
+      "completed": true,
+      "cancelled": false,
+      "budget_exhausted": false,
+      "new_battles_finished": 1,
+      "cart": {
+        "success": true,
+        "reason": "Collect bị khóa; chưa xác định nguyên nhân, giữ nguyên tiền trong xe",
+        "collected": false,
+        "returned_home": true,
+        "defending": false,
+        "unavailable": true
+      },
+      "map_inputs_by_stage": {
+        "1": [
+          [
+            1154,
+            620
+          ],
+          [
+            1154,
+            620
+          ],
+          [
+            1154,
+            620
+          ],
+          [
+            1154,
+            620
+          ],
+          [
+            1154,
+            620
+          ],
+          [
+            1154,
+            620
+          ]
+        ],
+        "2": [
+          [
+            1193,
+            408
+          ],
+          [
+            1193,
+            408
+          ],
+          [
+            1193,
+            408
+          ],
+          [
+            1193,
+            408
+          ]
+        ]
+      }
+    },
+    {
+      "session": "live-setup-stop",
+      "source": "diagnostics/dual_village_gd5/live-setup-stop/receipt.json",
+      "source_sha256": "8baacceb38c141597701a349454ad0025423f180347f35db06d7d98d9fb38aef",
+      "serial": "127.0.0.1:16416",
+      "mode": "single_point",
+      "elapsed": 19.678412799999933,
+      "metrics": {
+        "attack_count": 0,
+        "battle_count": 0,
+        "stage_count": 0,
+        "deployed": 0,
+        "troop_abilities": 0,
+        "hero_abilities": 0,
+        "reward_claims": 0,
+        "cart_collections": 0,
+        "rejected_points": 0,
+        "unconfirmed_abilities": 0,
+        "recoveries": 0,
+        "wall_count": 0,
+        "stage": 0
+      },
+      "halt_reason": null,
+      "safe_home": false,
+      "completed": false,
+      "cancelled": true,
+      "budget_exhausted": false,
+      "cart": null,
+      "map_inputs_by_stage": {
+        "1": [],
+        "2": []
+      }
+    },
+    {
+      "session": "live-stop-select",
+      "source": "diagnostics/dual_village_gd5/live-stop-select/receipt.json",
+      "source_sha256": "d54c7021027e2a64b3705885353c3477bac7eb0d2442047d29901949a8b0c2e1",
+      "serial": "127.0.0.1:16416",
+      "mode": "single_point",
+      "elapsed": 27.69575280000572,
+      "metrics": {
+        "attack_count": 1,
+        "battle_count": 0,
+        "stage_count": 1,
+        "deployed": 0,
+        "troop_abilities": 0,
+        "hero_abilities": 0,
+        "reward_claims": 0,
+        "cart_collections": 0,
+        "rejected_points": 0,
+        "unconfirmed_abilities": 0,
+        "recoveries": 0,
+        "wall_count": 0,
+        "stage": 1
+      },
+      "halt_reason": null,
+      "safe_home": false,
+      "completed": false,
+      "cancelled": true,
+      "budget_exhausted": false,
+      "new_battles_finished": 0,
+      "cart": null,
+      "map_inputs_by_stage": {
+        "1": [],
+        "2": []
+      },
+      "all_inputs": [
+        {
+          "at": 89684.495563,
+          "point": [
+            109,
+            805
+          ],
+          "phase": "home",
+          "stage": 0,
+          "success": true
+        },
+        {
+          "at": 89686.4706883,
+          "point": [
+            1189,
+            590
+          ],
+          "phase": "search",
+          "stage": 0,
+          "success": true
+        },
+        {
+          "at": 89694.6130217,
+          "point": [
+            304,
+            810
+          ],
+          "phase": "deploy",
+          "stage": 1,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "independent_verifications": [
+    {
+      "source": "diagnostics/dual_village_gd5/live-setup-stop/verification.json",
+      "source_sha256": "d6f7bcb240f631925e166b4177ab189ec9afec73aaaa9046e3367cd02144e5dc",
+      "success": true,
+      "complete": true,
+      "slots": [
+        {
+          "role": "hero",
+          "kind": "battle_machine",
+          "state": "undeployed"
+        },
+        {
+          "role": "primary",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        },
+        {
+          "role": "primary",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        },
+        {
+          "role": "primary",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        },
+        {
+          "role": "primary",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        },
+        {
+          "role": "primary",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        },
+        {
+          "role": "primary",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        },
+        {
+          "role": "reinforcement",
+          "kind": "baby_dragon",
+          "state": "undeployed"
+        }
+      ]
+    },
+    {
+      "source": "diagnostics/dual_village_gd5/live-stop-select/restart.json",
+      "source_sha256": "acd668d54dcbdf575c188868bb85d1bc1d98808d736d192199f2fccf0af94492",
+      "result": {
+        "package": "com.supercell.clashofclans",
+        "activity": "com.supercell.titan.GameApp",
+        "force_stop": true,
+        "launch": true,
+        "at": 89776.3200585,
+        "screen": "battle"
+      }
+    }
+  ]
+}

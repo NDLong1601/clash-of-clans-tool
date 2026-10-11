@@ -11,19 +11,27 @@ Vòng lặp chính của bot:
 
 import time
 import signal
-import sys
 import threading
+import os
+from copy import deepcopy
 from datetime import datetime
 from typing import Optional
 
 from cocmagic import config
 from cocmagic.adb_controller import ADBController, find_adb_port
 from cocmagic.screen_reader import ScreenReader
-from cocmagic.modules.farm_module import FarmModule, FarmState
+from cocmagic.modules.farm_module import FarmModule
 from cocmagic.modules.hero_module import HeroModule
 from cocmagic.modules.wall_module import WallModule
-from cocmagic.ui_dialogs import find_connection_retry
+from cocmagic.modules.builder_farm_module import BuilderFarmModule
+from cocmagic.ui_dialogs import find_connection_retry, find_inactivity_reload
 from cocmagic.event_rewards import find_reward_panel
+from cocmagic.run_coordinator import RunCoordinator
+from cocmagic.hybrid_coordinator import HybridCoordinator
+from cocmagic.hybrid_runtime import HybridRuntimeStore
+from cocmagic.device_manager import resolve_device_ownership
+from cocmagic.village_module import ModuleScreen
+from cocmagic.recovery import RecoveryInterrupted
 
 
 # ════════════════════════════════════════════════════════════
@@ -38,12 +46,6 @@ POPUP_TEMPLATES = {
     "open_link":         (config.asset("openlink.png"),           config.asset("no.png"),     "Mo link"),
 }
 
-# Toa do tap de dong popup "Anyone there? / RELOAD GAME"
-# Vi tri nut "RELOAD GAME" trong popup inactivity (1600x900)
-RELOAD_GAME_POS = (447, 479)   # tap vao chu "RELOAD GAME"
-
-
-
 # ════════════════════════════════════════════════════════════
 #  BOT ENGINE
 # ════════════════════════════════════════════════════════════
@@ -53,9 +55,10 @@ class BotEngine:
 
     def __init__(self, settings: dict, device_serial: str = None,
                  stop_event=None, status_callback=None):
-        self.settings    = settings
+        self.settings    = deepcopy(settings)
         self.device_serial = device_serial
         self.stop_event = stop_event
+        self.stop_event = self.stop_event or threading.Event()
         self.status_callback = status_callback
         self.running     = False
         self.start_time  = 0.0
@@ -68,13 +71,41 @@ class BotEngine:
         self.reader:    Optional[ScreenReader] = None
         self.hero_mod:  Optional[HeroModule]   = None
         self.farm_mod:  Optional[FarmModule]   = None
+        self.builder_mod: Optional[BuilderFarmModule] = None
         self.wall_mod:  Optional[WallModule]   = None
+        self.coordinator: Optional[RunCoordinator] = None
+        self.runtime_store = None
+        self._missing_frames = 0
+        self._blocked_frames = 0
+        self._callback_error = False
+        self._reload_attempts = 0
+        self._main_navigation = False
+        self.village_reader = None
+        self.navigator = None
+        self._owns_input = False
+
+    def _emit_status(self, value):
+        if self.status_callback is None:
+            return
+        try:
+            self.status_callback({**value, 'serial': self.device_serial or getattr(self.adb, 'device', None)})
+            self._callback_error = False
+        except Exception as error:
+            if not self._callback_error:
+                print(f'[Status] Callback lỗi trên {self.device_serial}: {error}')
+            self._callback_error = True
 
     # ─── Startup ────────────────────────────────────────────
 
     def start(self):
         """Khởi động bot."""
         if self._stopping():
+            return False
+        try:
+            self.settings = config.validate_settings(self.settings, require_available=True)
+        except ValueError as error:
+            print(f"[Engine] ERROR: {error}")
+            self._emit_status({"status": str(error), "wall_count": 0})
             return False
         self._print_banner()
 
@@ -97,27 +128,49 @@ class BotEngine:
         if self._stopping():
             return False
 
-        # Khởi tạo modules
-        self._init_modules()
-
-        # Chạy vòng lặp chính
-        if self._stopping():
-            return False
-        self.running    = True
-        self.start_time = time.time()
-        print("[Engine] 🚀 Bot bắt đầu chạy. Nhấn Ctrl+C để dừng.\n")
         try:
+            if not self._acquire_input_runtime():
+                return False
+            self._init_modules()
+            self.adb.frame_guard = self._guard_frame
+            self.adb.input_failure_handler = self._input_failed
+            if self._stopping():
+                return False
+            self.running = True
+            self.start_time = time.time()
+            print("[Engine] 🚀 Bot bắt đầu chạy. Nhấn Ctrl+C để dừng.\n")
             self._main_loop()
         finally:
             self.running = False
-        return not bool(self.farm_mod and self.farm_mod.halt_reason)
+            self.adb.frame_guard = None
+            self.adb.input_failure_handler = None
+            if self._owns_input:
+                released = self.adb.release_touch()
+                if not released:
+                    print(f'[Engine] {self.adb.device}: đã dừng, release chưa xác nhận (ADB/thiết bị).')
+                self._owns_input = False
+            if self.runtime_store is not None:
+                self.runtime_store.close()
+        return not bool(self.coordinator and self.coordinator.halt_reason)
+
+    def _acquire_input_runtime(self):
+        ownership = resolve_device_ownership(self.adb.adb, self.adb.device)
+        if self._stopping():
+            return False
+        self.runtime_store = HybridRuntimeStore(
+            os.path.join(config.DATA_DIR, 'runtime'), self.adb.device,
+            device_identity=ownership.identity, runtime_serial=ownership.runtime_serial,
+            legacy_serials=ownership.aliases)
+        self.runtime_store.acquire()
+        self._owns_input = True
+        return True
 
     def _connect_adb(self) -> bool:
         """Ket noi ADB -- tu dong scan port MuMu Player neu can."""
         import os
         if not os.path.exists(config.ADB_PATH):
             print(f"[Engine] ERROR: ADB not found: {config.ADB_PATH}")
-            print(f"[Engine]   -> Make sure MuMu Player is installed")
+            print("[Engine]   -> Make sure MuMu Player is installed")
             return False
 
         serial = self.device_serial
@@ -137,12 +190,37 @@ class BotEngine:
 
     def _init_modules(self):
         """Khởi tạo tất cả modules."""
+        if self.settings.get('run_mode') == 'builder':
+            self.builder_mod=BuilderFarmModule(self.adb,self.settings,
+                stop_event=self.stop_event,recovery_handler=self._handle_connection_lost)
+            self.coordinator=RunCoordinator(self.adb.device,{'builder':self.builder_mod},'builder',
+                                             stop_event=self.stop_event)
+            print('[Engine] ✅ Đã khởi tạo: BuilderFarmModule')
+            return
         self.reader   = ScreenReader(self.adb)
         self.hero_mod = HeroModule(self.adb, self.settings)
-        self.farm_mod = FarmModule(self.adb, self.reader, self.hero_mod, self.settings,
-                                   recovery_handler=self._handle_connection_lost)
         self.wall_mod = WallModule(self.adb, self.reader, self.settings,
                                    stop_event=self.stop_event)
+        self.farm_mod = FarmModule(self.adb, self.reader, self.hero_mod, self.settings,
+                                   recovery_handler=self._handle_connection_lost,
+                                   wall_mod=self.wall_mod, stop_event=self.stop_event)
+        self.coordinator = RunCoordinator(self.adb.device, {"main": self.farm_mod}, "main",
+                                          stop_event=self.stop_event)
+        if self.settings.get('run_mode', 'main') == 'main':
+            from cocmagic.builder_vision import BuilderBattleReader
+            from cocmagic.village_navigator import VillageNavigator
+            self.village_reader = BuilderBattleReader(self.adb)
+            self.navigator = VillageNavigator(self.adb, self.village_reader, self.farm_mod.camera,
+                                              stop_event=self.stop_event)
+        if self.settings.get('run_mode') == 'hybrid':
+            self.builder_mod = BuilderFarmModule(self.adb, self.settings,
+                stop_event=self.stop_event, recovery_handler=self._handle_connection_lost)
+            if self.runtime_store is None:
+                if not self._acquire_input_runtime():
+                    return
+            self.coordinator = HybridCoordinator(self.adb.device,
+                {'main': self.farm_mod, 'builder': self.builder_mod}, self.runtime_store,
+                self.settings, stop_event=self.stop_event)
         print("[Engine] ✅ Đã khởi tạo: ScreenReader, HeroModule, FarmModule, WallModule")
 
     # ─── Main Loop ──────────────────────────────────────────
@@ -158,68 +236,154 @@ class BotEngine:
 
             # Keep these intervals stable when the main loop is made faster.
             now = time.monotonic()
-            if now - last_popup_check >= 5.0:
-                handled = self._handle_popups()
-                last_popup_check = now
-                if handled:
+            try:
+                if now - last_popup_check >= 5.0:
+                    handled = self.coordinator.exclusive(self._handle_popups)
+                    last_popup_check = now
+                    if handled:
+                        continue
+                # Only the coordinator's active module can tick on this serial.
+                okay = self.coordinator.tick()
+            except RecoveryInterrupted:
+                if self.coordinator.halt_reason:
+                    okay = False
+                else:
+                    self._wait(.5)
                     continue
-
-            # 2. Farm tick
-            if not self.farm_mod.tick():
-                print(f"[Engine] Dừng bot: {self.farm_mod.halt_reason}")
+            except Exception as error:
+                self.coordinator._halt_reason = f'Lỗi worker {self.adb.device}: {error}'
+                okay = False
+            if not okay:
+                print(f"[Engine] Dừng bot: {self.coordinator.halt_reason}")
+                if self.status_callback:
+                    self._emit_status(self.coordinator.status())
                 self.running = False
                 break
             if self._stopping():
                 break
-
-            # 3. Sau khi về HOME → thử nâng tường
-            if (not self._stopping() and self.farm_mod.state == FarmState.HOME and
-                    not self.farm_mod.recovering_home and
-                    not self.settings.get("event_mode", False) and
-                    self.settings.get("upgrade_walls", True)):
-                self.wall_mod.run()
-                if self.wall_mod.last_interacted:
-                    self.farm_mod.invalidate_ui_cache()
 
             if now - last_status_print >= 10.0:
                 self._print_status()
                 last_status_print = now
 
             if self.status_callback and now - last_status_event >= 0.5:
-                self.status_callback({
-                    "status": self.farm_mod.status_line,
-                    "wall_count": self.wall_mod.walls_upgraded,
-                })
+                self._emit_status(self.coordinator.status())
                 last_status_event = now
 
-            if self.stop_event is None:
-                time.sleep(config.DELAY_MAIN_LOOP)
-            else:
-                self.stop_event.wait(config.DELAY_MAIN_LOOP)
+            self._wait(config.DELAY_MAIN_LOOP)
         self.running = False
 
     def _stopping(self) -> bool:
         return self.stop_event is not None and self.stop_event.is_set()
 
+    def _wait(self, seconds):
+        if self.stop_event is None:
+            time.sleep(seconds)
+        else:
+            self.stop_event.wait(seconds)
+
     # ─── Popup Handler ──────────────────────────────────────
+
+    def _input_failed(self, reason='Input ADB thất bại; chờ ảnh mới và phân loại lại', fatal=False):
+        try:
+            self.coordinator.reset_after_reload()
+        except Exception as error:
+            fatal = True
+            reason += f'; reset cache thất bại: {error}'
+        if fatal:
+            self.coordinator._halt_reason = reason
+        self._emit_status({**self.coordinator.status(), 'status': reason})
+
+    def _guard_frame(self, image):
+        """Runs for every capture, including rewards, cart and navigation."""
+        if self._stopping():
+            raise RecoveryInterrupted('Đang dừng')
+        if image is None or image.shape[:2] != (config.ANDROID_H, config.ANDROID_W):
+            if self._missing_frames == 0:
+                self._input_failed('Mất ảnh/ADB · hủy input, chờ game và phân loại lại')
+            self._missing_frames += 1
+            if self._missing_frames >= 6:
+                self.coordinator._halt_reason = 'Không lấy được ảnh ADB hợp lệ sau 6 lần; dừng riêng instance'
+            raise RecoveryInterrupted('Ảnh chưa dùng được')
+        self._missing_frames = 0
+        if self._handle_connection_lost(image):
+            raise RecoveryInterrupted('Connection lost; bỏ giao dịch cũ')
+        title = self.adb.find_template(config.asset('connection_lost_title.png'), .80, image,
+                                       region=(330, 280, 700, 200))
+        if isinstance(title, tuple):
+            if self._blocked_frames == 0:
+                self._input_failed('Connection lost · chưa thấy nút retry, không bấm mù')
+            self._blocked_frames += 1
+            if self._blocked_frames >= 6:
+                self.coordinator._halt_reason = 'Popup connection chưa đủ nút sau 6 ảnh; dừng riêng instance'
+            raise RecoveryInterrupted('Connection modal chưa có handler an toàn')
+        self._blocked_frames = 0
+        reload = find_inactivity_reload(image)
+        if reload:
+            self._reload_attempts += 1
+            if self._reload_attempts > 3:
+                self.coordinator._halt_reason = 'Reload inactivity không phục hồi sau 3 lần; dừng riêng instance'
+                raise RecoveryInterrupted(self.coordinator.halt_reason)
+            self.coordinator.reset_after_reload()
+            self._emit_status({**self.coordinator.status(), 'status': 'Inactivity · chờ reload và nhận diện lại'})
+            self.adb.tap(*reload, jitter=0, delay=0)
+            self._wait(4)
+            self.adb.invalidate_cache()
+            raise RecoveryInterrupted('Inactivity; bỏ giao dịch cũ')
+        for name in ('another_device', 'client_error'):
+            title, response, description = POPUP_TEMPLATES[name]
+            if self.adb.is_visible(title, .85, image) is True:
+                self._reload_attempts += 1
+                self.coordinator.reset_after_reload()
+                point = self.adb.find_template(response, .85, image)
+                if self._reload_attempts > 3 or not isinstance(point, tuple):
+                    self.coordinator._halt_reason = description+'; không xác nhận reload an toàn'
+                else:
+                    self.adb.tap(*point, jitter=0, delay=0)
+                    self._wait(4)
+                raise RecoveryInterrupted(description)
+        if self._reload_attempts:
+            reader = self.builder_mod.reader if self.builder_mod is not None else self.village_reader
+            if reader is not None:
+                from cocmagic.builder_screen_reader import ScreenKind
+                if reader.classify(image).kind in (ScreenKind.MAIN_HOME, ScreenKind.BUILDER_HOME,
+                        ScreenKind.BATTLE, ScreenKind.RESULT, ScreenKind.ATTACK_MENU):
+                    self._reload_attempts = 0
+        if (self.coordinator.active_id == 'main' and self.farm_mod is not None and
+                self.farm_mod.state.name in ('ATTACKING', 'BATTLE_WAIT') and
+                self.farm_mod._classify_screen(image) == ModuleScreen.UNKNOWN):
+            self._input_failed('Màn trận main mất nhận diện; hủy input và phân loại lại')
+            raise RecoveryInterrupted('Không tiếp tục input trên ảnh trận không rõ')
+        if (self.village_reader is not None and not self._main_navigation and
+                self.farm_mod.state.name in ('HOME', 'RECOVERING')):
+            from cocmagic.builder_screen_reader import ScreenKind, Village
+            screen = self.village_reader.classify(image)
+            if screen.kind == ScreenKind.BUILDER_HOME:
+                self._main_navigation = True
+                try:
+                    result = self.navigator.navigate(Village.MAIN, source=Village.BUILDER)
+                finally:
+                    self._main_navigation = False
+                self.coordinator.reset_after_reload()
+                if not result.success and not self._stopping():
+                    self.coordinator._halt_reason = 'Main chưa chuyển được từ builder Home: '+result.reason
+                raise RecoveryInterrupted('Đã đối soát lại làng cho chế độ main')
 
     def _handle_connection_lost(self, image) -> bool:
         retry = find_connection_retry(self.adb, image)
         if retry is None:
             return False
-        print(f"[Popup] Mất kết nối: bấm Try Again tại {retry}; chờ game reload 10 giây.")
-        if not self.adb.tap(*retry, jitter=0, delay=0):
-            # The dialog is still present; abandon the current deployment and
-            # retry from a fresh frame rather than sending more battle inputs.
+        if self._stopping():
             return True
-        self.farm_mod.reset_after_reload()
-        if self.status_callback:
-            self.status_callback({"status": "Mất kết nối · chờ reload 10 giây",
-                                  "wall_count": self.wall_mod.walls_upgraded})
-        if self.stop_event is None:
-            time.sleep(10)
-        else:
-            self.stop_event.wait(10)
+        self._reload_attempts += 1
+        if self._reload_attempts > 3:
+            self.coordinator._halt_reason = 'Connection lost chưa phục hồi sau 3 lần; dừng riêng instance'
+            return True
+        print(f"[Popup] Mất kết nối: bấm Try Again tại {retry}; chờ game reload 10 giây.")
+        self.coordinator.reset_after_reload()
+        self._emit_status({**self.coordinator.status(), "status": "Mất kết nối · chờ reload 10 giây"})
+        self.adb.tap(*retry, jitter=0, delay=0)
+        self._wait(10)
         self.adb.invalidate_cache()
         return True
 
@@ -229,70 +393,44 @@ class BotEngine:
         mat ket noi, loi client, dialog danh gia, inactivity, v.v.
         """
         img = self.adb.screenshot(use_cache=False)
-        if img is None:
+        if img is None or self._stopping():
             return False
 
         if self._handle_connection_lost(img):
             return True
-        if self.settings.get("event_mode", False) and find_reward_panel(img) is not None:
-            # Farm resolves rewards before resuming deployment. This dark panel
-            # must not be mistaken for the older inactivity popup below.
+        if find_reward_panel(img) is not None:
+            # The active module owns rewards. A dark reward panel must not be
+            # mistaken for the older inactivity popup below.
             return False
 
         # ── Kiem tra popup "Anyone there? / RELOAD GAME" ──────
-        # Popup nay co nen toi (dark overlay), pixel tai (383,344) se rat toi
-        # Va nut RELOAD GAME o vi tri co dinh (447, 479)
-        if self._detect_inactivity_popup(img):
+        # Require the native title and Reload button together.
+        reload = find_inactivity_reload(img)
+        if reload:
             print("[Popup] Phat hien: Inactivity popup (Anyone there?)")
-            self.adb.tap(RELOAD_GAME_POS[0], RELOAD_GAME_POS[1], jitter=5)
-            time.sleep(4)   # cho game reload
-            self.farm_mod.invalidate_ui_cache()
-            self.farm_mod.state = FarmState.HOME
+            self.coordinator.reset_after_reload()
+            if self.adb.tap(*reload, jitter=0):
+                self._wait(4)
+                self.adb.invalidate_cache()
             return True
 
         # ── Cac popup khac ────────────────────────────────────
         for name, (detect_tpl, response_tpl, desc) in POPUP_TEMPLATES.items():
+            if name in ('another_device', 'client_error'):
+                continue  # Recovery modals belong to the strict capture guard.
             if self.adb.is_visible(detect_tpl, config.LOOSE_THRESHOLD, img):
                 print("[Popup] Phat hien: " + desc)
-                if response_tpl:
-                    tapped = self.adb.find_and_tap(response_tpl, config.LOOSE_THRESHOLD, img)
-                    if not tapped:
-                        self.adb.tap(config.ANDROID_W // 2, config.ANDROID_H // 2)
-                else:
-                    self.adb.tap(config.ANDROID_W // 2, config.ANDROID_H // 2)
+                tapped = self.adb.find_and_tap(response_tpl, config.LOOSE_THRESHOLD, img)
 
-                time.sleep(2)
-                self.farm_mod.invalidate_ui_cache()
-                self.farm_mod.state = FarmState.HOME
+                if tapped:
+                    self.coordinator.invalidate_after_popup()
+                    self._wait(2)
+                    self.adb.invalidate_cache()
                 return True
         return False
 
     def _detect_inactivity_popup(self, img) -> bool:
-        """
-        Phat hien popup "Anyone there?" bang cach kiem tra:
-        1. Vung trung tam man hinh co mau xam toi (dark overlay)
-        2. Pixel tai vi tri text "Anyone there?" phai xam nhat
-        """
-        import numpy as np
-        try:
-            h, w = img.shape[:2]
-            # Kiem tra vung trung tam popup (383,300) -> (1100,520)
-            # Popup nay co nen xam toi #1a1a1a voi do trong ~85%
-            cx, cy = w // 2, h // 2
-            # Lay mau trung binh vung trung tam popup
-            roi = img[300:520, 330:1100]
-            mean_brightness = np.mean(roi)
-            # Popup toi: trung binh < 80 (0-255)
-            # Man hinh binh thuong: trung binh > 100
-            if mean_brightness < 75:
-                # Kiem tra them: pixel tai vi tri nen popup phai xam toi
-                # Va phai co gi do sang hon o vung text (text la trang)
-                text_roi = img[340:360, 380:600]
-                if np.mean(text_roi) > 100:  # text trang sang
-                    return True
-        except Exception:
-            pass
-        return False
+        return find_inactivity_reload(img) is not None
 
 
 
@@ -306,10 +444,10 @@ class BotEngine:
         now      = datetime.now().strftime("%H:%M:%S")
         print(f"\n[{now}] ── Status ──────────────────────────────────")
         print(f"  Uptime:  {uptime}  |  Loops: {self.loop_count}")
-        if self.farm_mod:
-            print(f"  {self.farm_mod.status_line}")
-        if self.wall_mod:
-            print(f"  [Wall] Upgraded={self.wall_mod.walls_upgraded}")
+        if self.coordinator:
+            status = self.coordinator.status()
+            print(f"  {status['active_module']}: {status['status']}")
+            print(f"  [Wall] Upgraded={status['wall_count']}")
         print("────────────────────────────────────────────────\n")
 
     def _print_banner(self):
@@ -325,6 +463,10 @@ class BotEngine:
         print(f"  Assets:     {config.ASSETS_DIR}")
         print()
         s = self.settings
+        if s.get('run_mode') == 'builder':
+            print(f"  Builder:    {s['builder_deploy_mode']} · Rồng con · tướng theo trạng thái")
+            print(f"  Cart:       {'ON' if s['builder_collect_cart'] else 'OFF'}")
+            return
         print(f"  Min Gold:   {s.get('min_gold',0):,}")
         print(f"  Min Elixir: {s.get('min_elixir',0):,}")
         print(f"  Min Dark:   {s.get('min_dark',0):,}")
@@ -340,8 +482,6 @@ class BotEngine:
     # ─── Graceful shutdown ──────────────────────────────────
 
     def _signal_handler(self, sig, frame):
-        print("\n\n[Engine] 🛑 Ctrl+C — Đang dừng bot...")
+        self.stop_event.set()
         self.running = False
-        self._print_status()
-        print("[Engine] Bot đã dừng. Tạm biệt!")
-        sys.exit(0)
+        print('[Engine] Đang dừng sau command hiện tại và giải phóng input…')

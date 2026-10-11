@@ -1,6 +1,7 @@
 """Recognition of the game's centered, two-button confirmation dialog."""
 
 from typing import Optional, Sequence, Tuple
+from functools import lru_cache
 
 import cv2
 import numpy as np
@@ -16,6 +17,33 @@ BUTTON_REGION = (760, 420, 420, 240)
 CONNECTION_TITLE = config.asset("connection_lost_title.png")
 TRY_AGAIN_TEMPLATE = config.asset("try_again.png")
 LEGACY_CONNECTION = config.asset("Connection_lostt.png")
+
+
+@lru_cache(maxsize=2)
+def _inactivity_template(name):
+    template = cv2.imread(config.asset("dual_village/builder/" + name + ".png"))
+    if template is not None:
+        template.setflags(write=False)
+    return template
+
+
+def find_inactivity_reload(image):
+    """Require both native title and reload text, never darkness alone."""
+    if image is None or image.shape != (900, 1600, 3):
+        return None
+    points = []
+    for name, (x, y, w, h) in (
+            ("inactivity_title", (330, 310, 480, 130)),
+            ("inactivity_reload", (330, 470, 450, 110))):
+        template = _inactivity_template(name)
+        if template is None:
+            return None
+        _, score, _, pos = cv2.minMaxLoc(cv2.matchTemplate(
+            image[y:y+h, x:x+w], template, cv2.TM_CCOEFF_NORMED))
+        if not np.isfinite(score) or score < .93:
+            return None
+        points.append((x+pos[0]+template.shape[1]//2, y+pos[1]+template.shape[0]//2))
+    return points[1]
 
 
 def find_connection_retry(adb, image: np.ndarray) -> Optional[Tuple[int, int]]:

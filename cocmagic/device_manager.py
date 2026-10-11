@@ -3,6 +3,7 @@
 import re
 import socket
 import subprocess
+import uuid
 from dataclasses import dataclass
 
 from cocmagic import config
@@ -16,6 +17,56 @@ class DeviceInfo:
     serial: str
     state: str
     identity: str | None = None
+
+
+@dataclass(frozen=True)
+class DeviceOwnership:
+    identity: str
+    runtime_serial: str
+    aliases: tuple[str, ...]
+
+
+def read_boot_identity(adb_path: str, serial: str) -> str:
+    """Read an OS identity shared by every ADB transport of one running VM."""
+    try:
+        result = run_hidden(
+            [adb_path, '-s', serial, 'shell', 'cat', '/proc/sys/kernel/random/boot_id'],
+            capture_output=True, text=True, timeout=3)
+        if result.returncode:
+            raise ValueError('ADB không đọc được boot_id')
+        boot = uuid.UUID(result.stdout.strip())
+        if not boot.int:
+            raise ValueError('boot_id rỗng')
+    except (OSError, subprocess.TimeoutExpired, ValueError, TypeError, AttributeError) as error:
+        raise RuntimeError(f'Không xác minh được danh tính giả lập {serial}; chưa cấp quyền input') from error
+    return f'boot:{boot}'
+
+
+def resolve_device_ownership(adb_path: str, serial: str) -> DeviceOwnership:
+    """Resolve the input lease and a canonical runtime transport without input."""
+    serial = normalize_serial(serial)
+    identity = read_boot_identity(adb_path, serial)
+    aliases = [DeviceInfo(serial, 'device', identity)]
+    try:
+        listing = run_hidden([adb_path, 'devices', '-l'],
+                             capture_output=True, text=True, timeout=3)
+        devices = parse_devices(listing.stdout) if listing.returncode == 0 else []
+    except (OSError, subprocess.TimeoutExpired):
+        devices = []
+    for device in devices:
+        if device.serial == serial:
+            continue
+        try:
+            other_identity = read_boot_identity(adb_path, device.serial)
+        except RuntimeError:
+            continue
+        if other_identity == identity:
+            aliases.append(DeviceInfo(device.serial, device.state, identity))
+    # Refuse a lease derived from a boot that changed during discovery.
+    if read_boot_identity(adb_path, serial) != identity:
+        raise RuntimeError(f'Giả lập {serial} đã đổi phiên boot; hãy khởi động lại bot')
+    canonical = deduplicate_devices(aliases)[0].serial
+    return DeviceOwnership(identity, canonical, tuple(sorted(d.serial for d in aliases)))
 
 
 def normalize_serial(value: str) -> str:

@@ -11,6 +11,7 @@ from cocmagic import config
 from cocmagic.adb_controller import ADBController
 from cocmagic.screen_reader import ScreenReader
 from cocmagic.ui_dialogs import CONFIRM_TEMPLATES, find_confirmation_button
+from cocmagic.recovery import RecoveryInterrupted, RuntimeWriteError
 
 if hasattr(sys.stdout, "reconfigure"):
     try:
@@ -73,6 +74,27 @@ class WallModule:
     def wall_type(self) -> str:
         return self.settings.get("wall_type", "gold")
 
+    def reset_after_reload(self):
+        """Invalidate UI positions, preserving the session's verified wall count."""
+        self._position_cache.clear()
+        self._builder_list_open = False
+        self.last_interacted = False
+        self.last_upgrade_verified = False
+
+    def blocks_handoff(self, image) -> bool:
+        """A visible purchase/list/group panel must never authorize navigation."""
+        return bool(self._builder_list_open or self._confirmation_button(image) is not None or
+                    self._is_gem_dialog(image) or
+                    self._find(T_UPMORE, image, UPMORE_REGION, .85) or
+                    self._add_wall_button(image) or
+                    self._find(T_WALL_LABEL, image, LIST_REGION, .85))
+
+    def _wait(self, seconds):
+        if self.stop_event is None:
+            time.sleep(seconds)
+        else:
+            self.stop_event.wait(seconds)
+
     def run(self) -> bool:
         """Keep upgrading affordable wall groups before farming resumes."""
         self.last_interacted = False
@@ -116,6 +138,7 @@ class WallModule:
                   "đang là thợ thuê hoặc giao diện chưa rõ, bỏ qua nâng tường.")
             return False
 
+        interrupted = False
         try:
             portrait = self._position_cache.get("builder")
             if portrait is None:
@@ -218,14 +241,20 @@ class WallModule:
                 print(f"[Wall] Đã xác nhận nâng {count} viên bằng {kind}; "
                       f"OCR chưa đối soát được số dư. Tổng phiên: {self.walls_upgraded} viên.")
             return True
+        except (RecoveryInterrupted, RuntimeWriteError):
+            interrupted = True
+            raise
         except Exception as exc:
             print(f"[Wall] Lỗi xử lý nâng tường: {exc}")
             return False
         finally:
-            try:
-                self._close_panels()
-            except Exception as exc:
-                print(f"[Wall] Không đóng được bảng nâng tường: {exc}")
+            if not interrupted:
+                try:
+                    self._close_panels()
+                except (RecoveryInterrupted, RuntimeWriteError):
+                    raise
+                except Exception as exc:
+                    print(f"[Wall] Không đóng được bảng nâng tường: {exc}")
 
     def _allowed_resources(self) -> Tuple[str, ...]:
         if self.wall_type == "both":
@@ -332,7 +361,7 @@ class WallModule:
 
     def _next_wall_frame(self) -> Optional[np.ndarray]:
         if self.stop_event is None:
-            time.sleep(.15)
+            self._wait(.15)
         elif self.stop_event.wait(.15):
             return None
         return self.adb.screenshot(use_cache=False)
@@ -433,6 +462,8 @@ class WallModule:
         """Accept Upgrade Walls, then verify the debit or visible Home return."""
         self.last_upgrade_verified = False
         for _ in range(4):
+            if self.stop_event is not None and self.stop_event.is_set():
+                return False
             okay = self._confirmation_button(image)
             if okay is not None:
                 if not self.adb.tap(*okay, jitter=0, delay=0.2):
@@ -442,7 +473,7 @@ class WallModule:
             if self._is_gem_dialog(image):
                 print("[Wall] Game yêu cầu Goblin Builder/Gems; hủy nâng tường.")
                 return False
-            time.sleep(0.4)
+            self._wait(0.4)
             image = self.adb.screenshot()
         else:
             print("[Wall] Không thấy hộp thoại xác nhận Upgrade Walls; không tính thành công.")
@@ -451,10 +482,12 @@ class WallModule:
         spent = 0
         home_frames = 0
         for _ in range(12):
+            if self.stop_event is not None and self.stop_event.is_set():
+                return False
             image = self.adb.screenshot()
             if image is not None:
                 if self._confirmation_button(image) is not None:
-                    time.sleep(0.4)
+                    self._wait(0.4)
                     continue
                 if self._is_gem_dialog(image):
                     print("[Wall] Xác nhận dẫn tới hộp thoại Gems; hủy.")
@@ -473,7 +506,7 @@ class WallModule:
                         self._find_cached("add_wall", T_ADD_WALL, image,
                                           ADD_REGION, .84, ADD_WALL_SIZE) is None):
                     home_frames += 1
-            time.sleep(0.4)
+            self._wait(0.4)
         if home_frames >= 2:
             print(f"[Wall] Hộp thoại đã đóng và đã về Home; "
                   f"OCR chưa xác nhận số dư ({spent:,} / {expected_price:,}).")
@@ -514,6 +547,8 @@ class WallModule:
                    for x1, y1 in buttons for x2, y2 in buttons if x1 < x2)
 
     def _close_panels(self):
+        if self.stop_event is not None and self.stop_event.is_set():
+            return
         # Only send Back for a gem prompt; Back on an idle home screen can open
         # the game's exit confirmation instead of cleaning up.
         image = self.adb.screenshot()
@@ -527,7 +562,8 @@ class WallModule:
             self.adb.back()
             return
         if self._builder_list_open:
-            self.adb.tap(1170, 700, jitter=0, delay=0.1)
+            if self.adb.tap(1170, 700, jitter=0, delay=0.1):
+                self._builder_list_open = False
             return
         if image is not None and (self._find(T_UPMORE, image, UPMORE_REGION, .85) or
                                   self._add_wall_button(image)):

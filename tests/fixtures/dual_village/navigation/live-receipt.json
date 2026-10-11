@@ -1,0 +1,235 @@
+{
+  "to_builder": {
+    "success": true,
+    "reason": "Hai ảnh mới xác nhận đúng làng đích",
+    "village": "builder",
+    "boat_taps": 1,
+    "camera_operations": 1
+  },
+  "bonus": {
+    "state": "complete",
+    "captured_at": 74565.0843521,
+    "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+    "region": [
+      20,
+      690,
+      175,
+      70
+    ],
+    "progress": null,
+    "captures": [
+      11,
+      12
+    ]
+  },
+  "cart": {
+    "success": true,
+    "reason": "Xe trống/đang phòng thủ; kết thúc hữu hạn",
+    "collected": false,
+    "returned_home": true,
+    "defending": false
+  },
+  "builder_offset": {
+    "status": "success",
+    "reason": "Đo được biến đổi map; HUD bị loại khỏi matcher"
+  },
+  "to_main": {
+    "success": true,
+    "reason": "Hai ảnh mới xác nhận đúng làng đích",
+    "village": "main",
+    "boat_taps": 1,
+    "camera_operations": 1
+  },
+  "serial": "127.0.0.1:16416",
+  "native_language": "en",
+  "date_local": "2026-10-08",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "resolution": [
+    1600,
+    900
+  ],
+  "captures": [
+    {
+      "path": "live-capture-001.jpg",
+      "capture_id": 1,
+      "captured_at_monotonic": 74540.9159401,
+      "revision": 0,
+      "screen": "main_home",
+      "panel": null,
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-001.png",
+      "parent_sha256": "4283e07c51f034f69bcfeab819120b6152d43331623d9c728acc466652736e91",
+      "sha256": "34362d27cd38b28cb6df0f9fa4dac63ac6951fc0d2b2d1a80cf8fe9b8aaac581"
+    },
+    {
+      "path": "live-capture-002.jpg",
+      "capture_id": 2,
+      "captured_at_monotonic": 74542.2498889,
+      "revision": 0,
+      "screen": "main_home",
+      "panel": null,
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-002.png",
+      "parent_sha256": "b6bd0e2e8372c22cd19546a38bf2faae8bc6f207a6607f970873a6727bbe81b8",
+      "sha256": "b1866166267e0c9c15ca7756f1e86f9dcfb514ca6012f3f7db2a29117ee49bf8"
+    },
+    {
+      "path": "live-capture-011.jpg",
+      "capture_id": 11,
+      "captured_at_monotonic": 74563.7663278,
+      "revision": 2,
+      "screen": "builder_home",
+      "panel": null,
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-011.png",
+      "parent_sha256": "c72fe11fb1943fd0ad4ec50155c1f2485a3f67ee95c9051cc628399919b59548",
+      "sha256": "6689008acdb641216d7af39a4b224a82fb5abd31394eee0f279adb4fa85cc415"
+    },
+    {
+      "path": "live-capture-012.jpg",
+      "capture_id": 12,
+      "captured_at_monotonic": 74565.0843521,
+      "revision": 2,
+      "screen": "builder_home",
+      "panel": null,
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-012.png",
+      "parent_sha256": "837362363713baad1b06b89baf0ab30d1437fdf953394bb242db5101d3fa3b60",
+      "sha256": "f2d9b3654c8901191404177c25c01d7c77bb846ba6179fbe6ab93bacd9c19c3b"
+    },
+    {
+      "path": "live-capture-020.jpg",
+      "capture_id": 20,
+      "captured_at_monotonic": 74584.8985663,
+      "revision": 3,
+      "screen": "modal",
+      "panel": "cart",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-020.png",
+      "parent_sha256": "786f75804cc788fadb52faac901e1e2e45cc537a37418dcf371524d95aeb5a34",
+      "sha256": "70a5fa330ba27c957833a17ba5dfa2a38085754b807779851e6fb52fd6b6368f"
+    },
+    {
+      "path": "live-capture-036.jpg",
+      "capture_id": 36,
+      "captured_at_monotonic": 74614.6410707,
+      "revision": 6,
+      "screen": "main_home",
+      "panel": null,
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-036.png",
+      "parent_sha256": "ba11280428d000297fd0e8fd52484154fe218aef1f09ec31c2cfc06ea030ec19",
+      "sha256": "7fdaa2ceab120a7ce150451694ca21e49856594f2de9194ff312a0b80e40cd65"
+    },
+    {
+      "path": "live-capture-037.jpg",
+      "capture_id": 37,
+      "captured_at_monotonic": 74616.0098339,
+      "revision": 6,
+      "screen": "main_home",
+      "panel": null,
+      "dimensions": [
+        1600,
+        900
+      ],
+      "kind": "transformed_test",
+      "source_kind": "adb_native",
+      "transform": "JPEG quality 94; no resize",
+      "language": "en",
+      "parent": "diagnostics/dual_village_gd4/185321-live-037.png",
+      "parent_sha256": "e5059cf83950e3f63702123a21d281c2f98942ffd814aa1fe21ad5c7a493ca3f",
+      "sha256": "7ef05f6638ed8a6e8a357a90cd096d99a25aa12ea64a66c73a63507d798e4b69"
+    }
+  ],
+  "input_events": [
+    {
+      "kind": "pan",
+      "status": "success",
+      "reason": "Đo được biến đổi map; HUD bị loại khỏi matcher"
+    },
+    {
+      "kind": "tap",
+      "x": 518,
+      "y": 567,
+      "at": 74558.9397808
+    },
+    {
+      "kind": "pan",
+      "status": "success",
+      "reason": "Đo được biến đổi map; HUD bị loại khỏi matcher"
+    },
+    {
+      "kind": "tap",
+      "x": 975,
+      "y": 346,
+      "at": 74584.3794209
+    },
+    {
+      "kind": "tap",
+      "x": 1341,
+      "y": 89,
+      "at": 74589.4190817
+    },
+    {
+      "kind": "pan",
+      "status": "success",
+      "reason": "Đo được biến đổi map; HUD bị loại khỏi matcher"
+    },
+    {
+      "kind": "pan",
+      "status": "success",
+      "reason": "Đo được biến đổi map; HUD bị loại khỏi matcher"
+    },
+    {
+      "kind": "tap",
+      "x": 1322,
+      "y": 488,
+      "at": 74612.9030465
+    }
+  ],
+  "raw_receipt": "diagnostics/dual_village_gd4/live-roundtrip.json",
+  "raw_receipt_sha256": "480f586b035c0f82e9eb68907d8d216ee2beb562d829b556a4b6b5423a33c38f",
+  "scope": "Real navigator/camera/empty-cart only. No native star reward claim or money collection."
+}

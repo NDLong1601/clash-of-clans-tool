@@ -1,4 +1,4 @@
-# CocMagic: chế độ farm
+# CocMagic: farm hai làng
 
 ## Cấu trúc dự án
 
@@ -24,11 +24,35 @@ Khi nâng cấp từ cấu trúc cũ, chuyển `settings.json` và `instances.js
 
 Trên Windows, cài thư viện một lần bằng `python -m pip install -r requirements.txt`, rồi nhấp đúp `CocMagic.lnk` để mở bảng điều khiển với logo riêng và không hiện terminal. Shortcut trỏ đến thư mục hiện tại; nếu chuyển thư mục dự án, cần tạo lại shortcut. Cũng có thể nhấp đúp `CHAY.vbs` để mở không có terminal. `CHAY.bat` mở giao diện bằng `pythonw` và tự đóng cửa sổ dòng lệnh ngay sau khi chạy; do là file batch nên có thể chớp terminal trong thoáng chốc. Có thể dùng `python gui.py` nếu cần xem lỗi khởi động trong terminal. Logo trong giao diện và biểu tượng cửa sổ được lấy từ `assets/logobot.png` và `assets/logobot.ico`. Muốn chính file `.exe` mang icon riêng thì cần build.
 
-Sau khi mở game trên màn hình Android 1600 × 900, bảng điều khiển cho phép lưu cấu hình, bắt đầu/dừng bot, xem log và số viên tường đã nâng trong phiên. Hai ô chế độ loại trừ nhau: **Nâng tường khi farm** hoặc **Đánh sự kiện** (vẫn farm, không nâng tường). Có thể nhập tài nguyên như `9tr`, `500k` hoặc `9.000.000`. Muốn chạy không có giao diện, dùng `python main.py --port 5555`.
+Sau khi mở game trên màn hình Android 1600 × 900, bảng điều khiển cho phép lưu cấu hình, bắt đầu/dừng bot, xem log và số viên tường đã nâng trong phiên. Trong tab Làng chính, hai lựa chọn loại trừ nhau: **Nâng tường khi farm** hoặc **Đánh sự kiện** (vẫn farm, không nâng tường). Chế độ chạy main/builder/hybrid được chọn riêng ở Run. Có thể nhập tài nguyên như `9tr`, `500k` hoặc `9.000.000`. Muốn chạy không có giao diện, dùng `python main.py --port 5555`.
 
 Ở chế độ **Đánh sự kiện**, chọn **Ưu tiên bonus tài nguyên**, bấm **Lưu cấu hình** rồi **Bắt đầu bot**. Bot vẫn luyện và triển khai combo như bình thường, đồng thời xử lý bảng **Pick a Reward!** mỗi khi bảng xuất hiện (kể cả mốc 33%, 67%, 100%). Bot ưu tiên tài nguyên đã chọn; nếu không có, lần lượt tìm dầu đen, dầu tím, vàng trong những thẻ nhận diện được. Bot không chọn bonus lính để giữ nguyên vị trí thanh quân. Sau khi chọn, bot chờ hai ảnh mới liên tiếp không còn bảng, rồi chọn lại ô quân/phép đang dùng trước khi tiếp tục. Nếu trận đã sang kết quả hoặc về làng, bot hủy chuỗi thả còn lại. Nếu không nhận diện được tài nguyên hoặc bảng không đóng, bot dừng và ghi lý do vào log để người dùng xử lý thủ công.
 
 Thiết lập này lưu riêng cho từng giả lập. Khi chạy bằng dòng lệnh, đặt `"event_mode": true`, `"upgrade_walls": false` và `"event_resource_priority": "dark"` (hoặc `"elixir"`, `"gold"`) trong `data/settings.json`. Chế độ mặc định có `event_mode=false`. Nhận diện bonus dựa trên giao diện tiếng Anh trong ảnh mẫu; bot xử lý khi thấy bảng, không cần đọc phần trăm phá hủy.
+
+## Hai làng: sử dụng và phạm vi đã kiểm chứng
+
+Mỗi giả lập có **Làng chính**, **Làng đêm**, **Run**. Cấu hình train/farm và nâng tường/sự kiện nằm trong Làng chính; cấu hình Rồng con, cách thả, tướng sẵn sàng, thu xe, lịch và camera nằm trong Làng đêm. Tab Run chọn chế độ, bắt đầu/dừng và hiển thị trạng thái, thống kê, log. Nút **Lưu cấu hình cả ba tab** lưu toàn bộ cấu hình của giả lập đang chọn. Khi chạy, cấu hình bị khóa nhưng vẫn chuyển tab để xem được.
+
+Có thể chạy **Làng chính (`main`)**, **Làng đêm (`builder`)** hoặc **Làng chính + Làng đêm (`hybrid`)**. Builder-only dùng Rồng con, hai chiến thuật, tướng theo trạng thái thật, kỹ năng từng ô, hai khu và hậu xử lý thưởng/xe; hết sao vẫn tiếp tục. Hybrid kiểm tra builder lúc startup, train đến khi hết chuỗi thưởng khả dụng, thu xe rồi ưu tiên main; kiểm tra lại từ **15:30 UTC+7** mỗi ngày tại điểm chuyển an toàn. Profile triển khai hiện tại là **English, ảnh ADB landscape 1600×900, MuMu Android 15**. Ba mode đã mở trong GUI/CLI, nhưng nghiệm thu đầy đủ còn thiếu nhánh live; xem [ma trận GĐ8](docs/dual-village-validation.md). Camera tự chỉnh vẫn mặc định tắt. Chạy tất cả xét mode riêng của từng giả lập.
+
+Settings dùng dictionary phẳng, schema 2; wrapper `data/instances.json` vẫn là `version=1`. File cũ thiếu `run_mode` được hiểu là main. Migration chỉ diễn ra trong bộ nhớ khi đọc, giữ giá trị và key chưa biết; dữ liệu mới được ghi khi lưu. Các trường của làng đang chạy được kiểm tra chung cho GUI/CLI/engine; hybrid cần hợp lệ cả hai làng. Trường nháp của làng không dùng được giữ lại và kiểm tra khi chọn lại làng đó. Quy tắc sự kiện/nâng tường chỉ thuộc cấu hình Làng chính; lưu builder không tự bật event rewards.
+
+| Key mới | Mặc định / giá trị hợp lệ |
+|---|---|
+| `settings_schema_version` | `2` |
+| `run_mode` | `main`; `main`, `builder`, `hybrid` |
+| `builder_deploy_mode` | `around`; `around`, `single_point` |
+| `builder_auto_setup_baby_dragons` | `true` |
+| `builder_use_available_hero` | `true` |
+| `builder_collect_cart` | `true` |
+| `hybrid_check_time` | `"15:30"`; HH:MM từ 00:00 đến 23:59 |
+| `hybrid_timezone` | `"Asia/Ho_Chi_Minh"` (UTC+7 cố định) |
+| `hybrid_builder_budget_seconds` | `1800`; 300–7200 giây mỗi chuyến builder |
+| `hybrid_max_battles` | `12`; 1–50 trận mỗi chuyến builder |
+| `camera_auto_adjust` | `false`; giữ lựa chọn đã lưu |
+
+GUI: Run → chọn chế độ → Bắt đầu; chọn cách thả và công tắc Rồng con/tướng/xe ở tab Làng đêm. CLI: `python main.py --run-mode hybrid --port 16416` (hoặc `builder`, `main`); vẫn giữ `--settings`, `--verbose`, `--activate` và license hiện có. Tham số CLI không ghi đè file cấu hình. Runtime hybrid lưu trong `data/runtime/` theo serial chuẩn của giả lập; các alias ADB đã xác minh cùng VM dùng chung runtime và khóa input. Startup luôn đọc lại màn hình, kể cả runtime từng ghi COMPLETE. Xem [lịch và xử lý lỗi hybrid](docs/dual-village-schedule.md) và [cấu hình, timeout và giới hạn builder](docs/dual-village-builder.md).
 
 ## Chạy nhiều giả lập
 
@@ -48,7 +72,7 @@ Thiết lập này lưu riêng cho từng giả lập. Khi chạy bằng dòng l
 - Ảnh ADB được lấy ở dạng thô trên giả lập hỗ trợ; định dạng không phù hợp tự chuyển về PNG. Một ảnh có thể được dùng lại trong tối đa 0,35 giây khi chưa có lệnh thao tác; mọi tap, nhóm tap và lệnh shell đều xóa cache ảnh. Kết quả nhận diện được dùng lại trên cùng ảnh, còn vị trí đã học luôn được kiểm tra lại và tìm lại nếu nút chuyển chỗ.
 - Với **mỗi đối thủ**, bot đọc tài nguyên và tìm đường viền đỏ để chọn điểm ngoài vùng cấm. Màu nền, cây, tượng và các trang trí không loại điểm thả. Nếu viền đỏ bị che, nằm ngoài camera hoặc cảnh nền lạ, bot dùng khung hình thoi cố định của vùng xây dựng để dò bốn cạnh ở nhiều khoảng cách; không bỏ qua base chỉ vì không thấy cỏ xanh. Bot thử từng điểm bằng một quân, kiểm tra số quân giảm trên tối đa ba ảnh mới rồi mới thả tiếp ở điểm đã xác nhận. Các vùng tên người chơi, tài nguyên, End Battle, Next/phần trăm phá hủy và thanh quân được loại khỏi điểm dò. Nếu game từ chối toàn bộ điểm thì bot rút khỏi trận; ảnh trắng, ảnh đang tải hoặc không thấy vùng base không tạo kế hoạch thả.
 - Quân tạo một hướng tấn công chính; khi `attack_around=true`, bot xác nhận thêm một hướng khác để chia quân. Electro được chia trên tối đa ba hướng cách nhau: xác nhận các hướng trước, rồi gửi phần quân còn lại trong một nhóm lệnh. Điểm đã xác nhận được dùng lại cho các ô khác trong cùng trận. Nếu có xe công thành, bot thả tại hướng quân đã xác nhận rồi thả các hero cùng hướng; bot không bấm xe như kỹ năng hero.
-- Điểm mới được thử riêng bằng một quân; sau khi có đủ điểm, bot gửi nhóm quân còn lại (tối đa 80 lệnh mỗi nhóm) rồi kiểm tra số lượng trên ảnh mới. Ở chế độ sự kiện, nhóm nhanh chỉ dùng tọa độ ngoài các thẻ bonus; nếu bonus ngắt giữa nhóm, bot chọn tài nguyên rồi đọc số quân còn lại để tiếp tục. Vị trí nằm trên vùng thẻ dùng luồng kiểm tra từng thao tác. Khi OCR chưa rõ, bot so hình chữ số tách khỏi khung và nền; đổi màu/khung chọn không được coi là quân đã thả.
+- Điểm mới được thử riêng bằng một quân; sau khi có đủ điểm, bot gửi nhóm quân còn lại (tối đa 16 tap mỗi command ADB) rồi kiểm tra số lượng trên ảnh mới. Ở chế độ sự kiện, nhóm nhanh chỉ dùng tọa độ ngoài các thẻ bonus; nếu bonus ngắt giữa nhóm, bot chọn tài nguyên rồi đọc số quân còn lại để tiếp tục. Vị trí nằm trên vùng thẻ dùng luồng kiểm tra từng thao tác. Khi OCR chưa rõ, bot so hình chữ số tách khỏi khung và nền; đổi màu/khung chọn không được coi là quân đã thả.
 - Các cặp chọn–thả hero được gửi trong một nhóm, bấm vào phần chân dung phía trên để tránh nút đổi chế độ Quản Giáo và mũi tên ở đáy ô. Bot kiểm tra thanh máu sau nhóm, chờ thêm ảnh nếu giao diện cập nhật chậm rồi chỉ thử lại tướng chưa được xác nhận. Khi bonus ngắt nhóm, tướng đã thả không bị chọn lại như một lần triển khai mới.
 - **Warden và cả đội bật sau** (`warden_ability_delay`, mặc định 10 giây) tính từ lúc xác nhận thả Warden. Khi đến hạn, hoặc Warden bị nhận diện máu thấp trong hai ảnh liên tiếp, bot gửi nhóm kỹ năng cho các hero đã thả. Danh sách đang làm được giữ tới khi nhóm hoàn tất; sau bonus bot gửi lại nhóm bị ngắt (kỹ năng đã dùng không thể kích hoạt lần hai). Khi không dùng Warden, thời gian tính từ hero đầu tiên được xác nhận.
 - Cache tọa độ thanh quân được dùng suốt phiên; bộ nhận diện hero dùng lại kết quả quét ô khi hiệu chuẩn. Số lượng và trạng thái ô chỉ được đọc một lần trên cùng ảnh. Cache điểm thả chỉ sống trong một trận, còn dữ liệu nhận dạng ảnh bị xóa khi ảnh thay đổi hoặc game reload.
@@ -80,7 +104,7 @@ Bản thử hiện **tắt theo mặc định**, nên bot vẫn chạy như trư
 
 1. Chạy `RUN_LOCAL_API.bat` trong thư mục admin và giữ cửa sổ đó mở. Lần đầu script tự cài Wrangler, áp dụng schema D1 cục bộ rồi mở API tại `http://127.0.0.1:8787`.
 2. Chạy `RUN_ADMIN.bat` để tạo key có hạn hoặc vĩnh viễn, xem máy đã kích hoạt, đặt lại máy hoặc thu hồi key. Key chỉ hiện một lần sau khi tạo.
-3. Đổi `"enabled": false` thành `"enabled": true` trong `data/license-config.json`, rồi chạy `CHAY.bat`. Máy này đã có sẵn một key demo 7 ngày lưu bằng Windows DPAPI; bạn cũng có thể bấm **Nhập key** trong giao diện để dùng key vừa tạo.
+3. Đổi `"enabled": false` thành `"enabled": true` trong `data/license-config.json`, rồi chạy `CHAY.bat`. Bấm **Nhập key** trong giao diện để dùng key vừa tạo; key lưu bằng Windows DPAPI.
 4. Với chế độ không giao diện, dùng `python main.py --activate` để nhập key qua prompt, sau đó chạy `python main.py --port ...` như thường lệ.
 
 Mỗi máy chỉ kiểm tra một key cho tất cả tab giả lập. Giao diện sẽ kiểm tra lại sau 10 phút; mất kết nối tạm thời được ân hạn 30 phút khi bot đang chạy. Key hết hạn hoặc bị thu hồi sẽ dừng các bot đang chạy sau khi hoàn tất thao tác hiện tại. File `data/license-config.json` là cấu hình riêng của máy; mẫu phát hành nằm trong `docs/license-config.example.json`.
@@ -88,3 +112,48 @@ Mỗi máy chỉ kiểm tra một key cho tất cả tab giả lập. Giao diệ
 **Quay về luồng cũ:** đặt `"enabled": false` trong `data/license-config.json`. Không cần thay đổi cấu hình farm hay từng giả lập. Đây là công tắc dành cho bản thử; trước khi phát hành bot có kiểm soát quyền cho người khác, cần bỏ khả năng tự tắt cấp phép khỏi bản phân phối.
 
 Các công cụ đọc màn hình để chẩn đoán nằm trong `tools/`: chạy `python tools/debug_check.py` hoặc `python tools/debug_extract_digits.py` từ thư mục dự án. Ảnh chúng tạo ra được lưu vào `diagnostics/`.
+
+## Sao, lịch và đội hình
+
+Sao trên nút Attack/Tìm trận của làng đêm nghĩa là còn thưởng; `0/y` vẫn là AVAILABLE. Mẫu số được đọc theo ảnh, không cố định 7 hoặc 8. Bot nhận bảng thưởng rồi đọc lại: còn lượt thưởng tiếp thì đánh tiếp, kể cả cần nhiều trận. COMPLETE cần hai ảnh Home builder mới, ổn định, nhìn rõ nút/vùng sao. Loading, nút bị che, ảnh lỗi hoặc sao bay là UNKNOWN; bot thử lại có giới hạn và báo chưa hoàn thành.
+
+Hybrid luôn kiểm tra lúc khởi động, kể cả trước 15:30. Kiểm tra hợp lệ từ **15:30 UTC+7** thỏa lịch ngày đó; kiểm tra sớm vẫn giữ lượt kiểm tra theo lịch. Mốc 13:00 không tự tạo kết luận thưởng. Đến hạn giữa trận thì giữ pending, hoàn tất trận và hậu xử lý rồi mới chuyển. Ngủ qua lịch kiểm tra bù ngày hiện tại một lượt; restart luôn đọc lại màn hình. Thu xe trước khi về main; không chờ vô hạn lượt phòng thủ chưa xong. UNKNOWN/watchdog không được ghi thành đã hoàn thành; fallback main chỉ sau xác nhận Home và có lỗi/retry hiển thị ở Run.
+
+Builder-only vẫn train khi COMPLETE. Bot xác nhận Rồng con ở nhóm Starting và Reinforcements, chỉ sửa ô sai khi bật tự thiết lập; nếu tắt, đội hình phải đúng sẵn. Around phân bố quanh các cạnh hợp lệ; single_point dùng một điểm đã được game nhận cho mỗi khu. Điểm bị từ chối phải đổi và có receipt trước khi tiếp tục. Có tướng sẵn sàng thì dùng, thiếu/khóa thì vẫn dùng quân; tướng không rõ phải đọc lại. Kỹ năng quân/tướng tự động theo trạng thái thanh quân; không dùng chính sách Warden của main. Khu hai quét lại quân sống, tiếp viện, tướng và kỹ năng, bỏ điểm bản đồ khu trước. 100% khu một chưa chứng minh trận kết thúc. Thiếu/nâng cấp tướng thật và kỹ năng Copter tự động còn thiếu bằng chứng live.
+
+## Camera và giới hạn hỗ trợ
+
+Camera mặc định **tắt**, giữ nguyên giá trị người dùng đã lưu. Công tắc tự chỉnh trận nằm ở Làng đêm và dùng cho cả main/builder; điều hướng tìm thuyền/xe vẫn có thể pan/zoom hữu hạn khi cần. Pan dùng ADB swipe theo serial. Pinch dùng protocol B hai slot chung SYN_REPORT, chỉ mở khi probe đúng Xiaomi Touchscreen raw axes 900×1600, rotation=1, ảnh 1600×900 và quyền sendevent trên MuMu Android 15. Hai swipe độc lập hoặc Ctrl+wheel không phải backend pinch được triển khai. Backend khác trả UNSUPPORTED; không âm thầm đổi mode.
+
+Ảnh mới phải xác nhận camera; plan/điểm thả/spell target cũ bị vô hiệu hóa, HUD không dịch theo bản đồ. Cạnh dưới có thể chỉ lộ một phần do giới hạn pan; chỉ dùng điểm nhìn thấy và được game nhận. Camera đã có bằng chứng Home/Practice/cạnh dưới, nhưng mọi tổ hợp multiplayer/hai serial/hero chưa được nghiệm thu đầy đủ. Không công bố hỗ trợ tiếng Việt hoặc resolution khác từ video tham khảo. Xem [camera](docs/dual-village-camera.md), [builder](docs/dual-village-builder.md), [điều hướng/thưởng/xe](docs/dual-village-navigation.md), [lịch hybrid](docs/dual-village-schedule.md).
+
+## Migration, chẩn đoán và chạy lại
+
+Cấu hình cũ thiếu key mới vẫn chạy main, schema settings lên 2 trong bộ nhớ, giữ key chưa biết và lựa chọn camera đã lưu; wrapper instances vẫn version 1. Chỉ lưu mới ghi file. Runtime lịch riêng từng giả lập trong `data/runtime/`, dùng chung cho alias đã xác minh; không copy runtime trận hay key vào cấu hình ví dụ. [Mẫu settings không có key/tài khoản](docs/dual-village-settings.example.json) dùng main, camera tắt và nâng tường tắt; auto_train cần Saved Recipes Slot 1 đã chuẩn bị.
+
+```powershell
+python main.py --settings docs/dual-village-settings.example.json --run-mode main --port 16416
+# Chọn builder hoặc hybrid bằng --run-mode; CLI override không sửa file đã tồn tại.
+python -m unittest discover -s tests -q
+python tools/check_assets.py
+python tools/check_dual_village_evidence.py
+```
+
+Dừng bot trước khi đổi mode. Để chẩn đoán, chọn Run → Làng chính, đặt `camera_auto_adjust=false`, lưu rồi Bắt đầu; CLI có thể dùng `--run-mode main` với file settings riêng đã tắt camera. Đây là lựa chọn chẩn đoán, không làm nhánh builder/hybrid lỗi thành đã đạt nghiệm thu.
+
+| Hiện tượng | Cách xử lý |
+|---|---|
+| UNKNOWN, không đọc được sao/đích | Kiểm tra English/1600×900, đóng modal đúng chức năng; xem reason/retry ở Run. Không tự sửa runtime thành COMPLETE. |
+| Save Army / không thấy Use Slot 1 | Lưu đội hình main vào Saved Recipes Slot 1 trước khi bật auto_train. |
+| Không xác nhận được thuyền/xe/geometry | Kiểm tra đúng làng, popup và backend; Stop, chụp ảnh mới để chẩn đoán. Không nhập tọa độ lấy từ video. |
+| Xe còn tiền nhưng Collect xám | Có thể không thu được ở trạng thái hiện tại; bot ghi unavailable, đóng Home, không báo đã thu hay xe trống. |
+| Runtime bị khóa | Kiểm tra phiên GUI/CLI/probe khác đang sở hữu cùng giả lập, kể cả qua alias ADB; dừng đúng phiên rồi chạy lại. Không xóa lock khi worker còn chạy. |
+| Mất ADB/connection/reload | Guard hủy input cũ và phân loại lại, retry hữu hạn; chỉ instance lỗi dừng. |
+| Dừng chưa tức thì | Chờ command ADB đang chạy/timeout và cleanup; batch tối đa 16 tap. Release mất ADB có thể chưa xác nhận. |
+| License lỗi/hết hạn | Xem thông báo cấp phép và dịch vụ đã cấu hình; expiry dừng các worker. CLI trả exit 1 khi engine thất bại, exit 2 khi config/license từ chối. |
+
+Kết quả từng ca, lệnh, ảnh/log và phần còn thiếu được ghi tại [dual-village-validation.md](docs/dual-village-validation.md); tiến độ lịch sử ở [dual-village-progress.md](docs/dual-village-progress.md).
+
+Kiểm tra source cho người phát triển: cài `python -m pip install -r requirements-dev.txt`, rồi chạy `python -m ruff check cocmagic tools tests`, `python -m unittest discover -s tests -q`, `python tools/check_assets.py` và `python tools/check_dual_village_evidence.py`. Ruff chỉ thuộc bộ công cụ phát triển. Các probe có gửi input dùng khóa VM chung với engine; runtime thử hybrid vẫn nằm riêng trong thư mục output. File ZIP phát hành, cấu hình máy và diagnostics được giữ ngoài Git.
+
+Bản kiểm thử 11/10/2026 qua **519 test**, các gate source và checkout từ Git index; kết quả live cùng phần nghiệm thu còn thiếu tại [báo cáo kiểm thử và dọn source](docs/dual-village-verification-20261011.md).

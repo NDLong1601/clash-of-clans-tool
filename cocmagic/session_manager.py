@@ -2,6 +2,7 @@
 
 import multiprocessing
 import queue
+from copy import deepcopy
 
 from cocmagic.bot_worker import run_instance
 
@@ -30,7 +31,7 @@ class BotSession:
         self._reported_exit = False
         self.process = self.context.Process(
             target=self.worker_target,
-            args=(self.serial, settings.copy(), self.events, self.stop_event),
+            args=(self.serial, deepcopy(settings), self.events, self.stop_event),
             name=f"CocMagic-{self.serial}",
         )
         try:
@@ -52,7 +53,9 @@ class BotSession:
         if self.events is not None:
             for _ in range(limit):
                 try:
-                    items.append(self.events.get_nowait())
+                    event = self.events.get_nowait()
+                    if isinstance(event, dict) and event.get('serial', self.serial) == self.serial:
+                        items.append(event)
                 except queue.Empty:
                     drained = True
                     break

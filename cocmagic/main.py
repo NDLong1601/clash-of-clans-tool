@@ -44,6 +44,9 @@ def parse_args():
         action="store_true",
         help="In log chi tiết hơn"
     )
+    parser.add_argument("--run-mode", choices=tuple(config.RUN_MODE_LABELS), default=None,
+                        help="Chế độ đang mở: "+', '.join(key for key in config.RUN_MODE_LABELS
+                             if key in config.AVAILABLE_RUN_MODES))
     parser.add_argument("--activate", action="store_true",
                         help="Nhập và kích hoạt key trên máy này")
     return parser.parse_args()
@@ -78,6 +81,13 @@ def main():
         config.ADB_PORT = args.port
     if args.verbose:
         settings["verbose"] = True
+    if args.run_mode is not None:
+        settings["run_mode"] = args.run_mode
+    try:
+        settings = config.validate_settings(settings, require_available=True)
+    except ValueError as error:
+        print(f"[Config] {error}")
+        sys.exit(2)
 
     # Tạo settings.json mặc định nếu chưa có
     if not os.path.exists(config.SETTINGS_FILE):
@@ -95,7 +105,8 @@ def main():
     # Khởi động bot
     if license_result is None:
         engine = BotEngine(settings)
-        engine.start()
+        if not engine.start():
+            sys.exit(1)
         return
 
     stop_event = threading.Event()
@@ -131,7 +142,8 @@ def main():
     watcher = threading.Thread(target=watch_license, name="CocMagic-license", daemon=True)
     watcher.start()
     try:
-        BotEngine(settings, stop_event=stop_event).start()
+        if not BotEngine(settings, stop_event=stop_event).start():
+            sys.exit(1)
     finally:
         watchdog_done.set()
         watcher.join(timeout=1)

@@ -2,6 +2,7 @@
 
 from contextlib import redirect_stderr, redirect_stdout
 import traceback
+from copy import deepcopy
 
 
 class EventWriter:
@@ -32,10 +33,10 @@ def run_instance(serial: str, settings: dict, events, stop_event):
                 except LicenseError as error:
                     print(f"[License] {error}; bot trên {serial} không được khởi động.")
                     return
-            engine = BotEngine(settings.copy(), device_serial=serial,
+            engine = BotEngine(deepcopy(settings), device_serial=serial,
                                stop_event=stop_event,
                                status_callback=lambda value: events.put(
-                                   {"kind": "status", **value}))
+                                   {**value, "kind": "status", "serial": serial}))
             result = engine.start()
     except BaseException:
         events.put({"kind": "log", "text": traceback.format_exc()})

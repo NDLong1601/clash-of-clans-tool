@@ -1,0 +1,302 @@
+{
+  "date": "2026-10-08 Asia/Saigon",
+  "backend": "serial adb swipe / evdev protocol B two slots on MuMu Android 15",
+  "fixtures": [
+    {
+      "path": "pan-before.jpg",
+      "parent": "diagnostics\\dual_village_gd3\\battle-pan-up-before.png",
+      "parent_sha256": "c63887cbc24c9632f0e23764c38af6356060c0273fa5028ff8885646b49121a8",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "opaque_rectangle_xyxy_exclusive": [
+          1300,
+          0,
+          1600,
+          195
+        ],
+        "bgr": [
+          0,
+          0,
+          0
+        ],
+        "resize": false,
+        "encoding": "JPEG quality 94"
+      },
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "96501934f7f45ab44b33bdb0894c9cea19918e1d2d5441e779842aba2cafa021"
+    },
+    {
+      "path": "pan-after.jpg",
+      "parent": "diagnostics\\dual_village_gd3\\battle-pan-up-after.png",
+      "parent_sha256": "5c7327deaab548c170828fedb719cc493556095ee94ef3b93b919e1baa30a336",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "opaque_rectangle_xyxy_exclusive": [
+          1300,
+          0,
+          1600,
+          195
+        ],
+        "bgr": [
+          0,
+          0,
+          0
+        ],
+        "resize": false,
+        "encoding": "JPEG quality 94"
+      },
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "fa377fb89ecfa9b7d196922cb769cf08ac2af9ef47676bf4cce9024fc0fc73cd"
+    },
+    {
+      "path": "zoom-before.jpg",
+      "parent": "diagnostics\\dual_village_gd3\\battle-zoom-out-before.png",
+      "parent_sha256": "0c7769239b7f77a81ae842c6a7de735a6f55700d4a2f53b545e1757b3534eaf1",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "opaque_rectangle_xyxy_exclusive": [
+          1300,
+          0,
+          1600,
+          195
+        ],
+        "bgr": [
+          0,
+          0,
+          0
+        ],
+        "resize": false,
+        "encoding": "JPEG quality 94"
+      },
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "6bd124db19c6d93dfb3357fe5b1aced1e3c8af6b6b52c0d223b3f5e07bc5feda"
+    },
+    {
+      "path": "zoom-after.jpg",
+      "parent": "diagnostics\\dual_village_gd3\\battle-zoom-out-after.png",
+      "parent_sha256": "4f20300b7fe7825379c3670f76ded39a1bf171310890891629f64d69f74d556a",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "opaque_rectangle_xyxy_exclusive": [
+          1300,
+          0,
+          1600,
+          195
+        ],
+        "bgr": [
+          0,
+          0,
+          0
+        ],
+        "resize": false,
+        "encoding": "JPEG quality 94"
+      },
+      "dimensions": [
+        1600,
+        900
+      ],
+      "sha256": "6d2355f1eb6758581d6eb7a9db31b635569b9a7657081d9c3e7c7f54459eedbe"
+    },
+    {
+      "path": "selected-before.png",
+      "parent": "diagnostics\\dual_village_gd3\\selected-before-drag.png",
+      "parent_sha256": "1e4348fd69d5953cd7bd6e650887abd84e2cc83fbee4ba466141a95a602ddf07",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "crop_xyxy_exclusive": [
+          0,
+          735,
+          1600,
+          900
+        ]
+      },
+      "dimensions": [
+        1600,
+        165
+      ],
+      "sha256": "1c7b558aa8e04e891192b419b0b18103ab1a59920707d1f3482ee4ebd952266c"
+    },
+    {
+      "path": "selected-after.png",
+      "parent": "diagnostics\\dual_village_gd3\\selected-after-drag.png",
+      "parent_sha256": "57d45807ddbb792431b7c2615b2b9f416fc9d85e18e00ceafe891eae96bfe8a0",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "crop_xyxy_exclusive": [
+          0,
+          735,
+          1600,
+          900
+        ]
+      },
+      "dimensions": [
+        1600,
+        165
+      ],
+      "sha256": "15d671621fb25be0fbcb6cc94054793d3e7fed13a701c42b3a65c550ab04fa6b"
+    },
+    {
+      "path": "drop-before.png",
+      "parent": "diagnostics\\dual_village_gd3\\bottom-probe-before.png",
+      "parent_sha256": "6f0d72b015d65934705bb2a2cd50cbf242938ad580b4a8647307952cee5418b0",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "crop_xyxy_exclusive": [
+          0,
+          735,
+          1600,
+          900
+        ]
+      },
+      "dimensions": [
+        1600,
+        165
+      ],
+      "sha256": "70b669aa8245bb7b23e9873b4daf849f050bd79e01034955d0c2d9b54a01e401"
+    },
+    {
+      "path": "drop-after.png",
+      "parent": "diagnostics\\dual_village_gd3\\bottom-probe-after.png",
+      "parent_sha256": "71caa35e8f64c83360f852924448108fe89e5f7eee5c9680a024e7c9b25b0839",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "crop_xyxy_exclusive": [
+          0,
+          735,
+          1600,
+          900
+        ]
+      },
+      "dimensions": [
+        1600,
+        165
+      ],
+      "sha256": "fa0e7b84a1ff1b5b43331dc946d7e7fc8a9ff88a6e3745cde27505d33b617892"
+    },
+    {
+      "path": "drop-bulk-after.png",
+      "parent": "diagnostics\\dual_village_gd3\\bottom-bulk-after.png",
+      "parent_sha256": "e3c494e48dc42031771ee4d73f7eeb25fec49628823c6736a10a65dcb280865e",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "native_resolution": [
+        1600,
+        900
+      ],
+      "transform": {
+        "crop_xyxy_exclusive": [
+          0,
+          735,
+          1600,
+          900
+        ]
+      },
+      "dimensions": [
+        1600,
+        165
+      ],
+      "sha256": "0f89fe442265a9635e3e02ad864e7f371d620e9338201ee5c945d8d7400d875e"
+    },
+    {
+      "path": "connection-modal-crop.png",
+      "kind": "transformed_test",
+      "native_source": "adb screencap",
+      "serial": "127.0.0.1:16416",
+      "parent": "diagnostics\\dual_village_gd3\\stop-before.png",
+      "parent_sha256": "26de01918d32f07f9a9343417efafc046cf75c8a1e8f56c0a44b1731f0b4a939",
+      "dimensions": [
+        900,
+        300
+      ],
+      "transform": {
+        "crop_xyxy_exclusive": [
+          330,
+          280,
+          1230,
+          580
+        ],
+        "resize": false
+      },
+      "sha256": "552ff9fa69cdcc0430dadb5cae56a7cbbef6a1c16aaf8577d68263277caff6ff"
+    }
+  ],
+  "live_drop": {
+    "serial": "127.0.0.1:16416",
+    "resolution": [
+      1600,
+      900
+    ],
+    "plan_source": "red_boundary",
+    "target": [
+      952,
+      644
+    ],
+    "count_before": 10,
+    "count_after": 9,
+    "bulk_sent": true,
+    "count_after_bulk": 7
+  },
+  "limitations": [
+    "Practice, not multiplayer end-to-end",
+    "HUD redacted or lossless cropped; transformed tests are not untouched native captures",
+    "Selected drag 5->5 in Bowling with Witches only; automatic selected gestures stay blocked"
+  ]
+}

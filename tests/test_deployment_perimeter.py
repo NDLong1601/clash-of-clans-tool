@@ -81,6 +81,17 @@ class PerimeterVisionTests(unittest.TestCase):
         cv2.putText(image, "Loading", (650, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
         self.assertIsNone(BattlePlanner().plan(image))
 
+    def test_hough_lines_2d_shape_unpacks_safely(self):
+        with patch("cv2.HoughLinesP") as mock_hough:
+            mock_hough.return_value = np.array([
+                [800, 110, 1360, 400],
+                [1360, 400, 800, 690],
+                [800, 690, 240, 400],
+                [240, 400, 800, 110]
+            ], dtype=np.int32)
+            plan = BattlePlanner().plan(self.image)
+            self.assertIsNotNone(plan)
+
 
 class PerimeterDeploymentTests(unittest.TestCase):
     @classmethod

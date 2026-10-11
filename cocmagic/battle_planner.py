@@ -1,11 +1,13 @@
 """Plan troop drops outside the red border or around the construction diamond."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 from typing import List, Optional, Tuple
 
 import cv2
 import numpy as np
+
+from cocmagic.camera_controller import ScreenSpace, measure_motion
 
 
 Point = Tuple[int, int]
@@ -18,6 +20,10 @@ class BattlePlan:
     confidence: float
     boundary: np.ndarray
     source: str = "red_boundary"
+    camera_revision: int = 0
+    lower_edge_occluded: bool = False
+    lower_edge_points: List[Point] = field(default_factory=list)
+    camera_tracked: bool = False
 
     @property
     def requires_probe(self) -> bool:
@@ -32,12 +38,21 @@ class BattlePlanner:
     CONSTRUCTION_DIAMOND = np.asarray(((800, 75), (1430, 440),
                                       (800, 805), (170, 440)), dtype=np.int32)
 
-    def plan(self, image: np.ndarray) -> Optional[BattlePlan]:
+    def plan(self, image: np.ndarray, *, camera_revision: int | None = None,
+             standard_view=None) -> Optional[BattlePlan]:
+        """Untracked calls retain the disabled-camera legacy path.
+
+        Tracked calls require new observed geometry. A fixed footprint needs a
+        same-revision reference previously confirmed against visible geometry;
+        resolution alone never authorizes the fixed-diamond fallback.
+        """
         if image is None or image.shape[:2] != (900, 1600):
             return None
 
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        red = (cv2.inRange(hsv, (0, 105, 90), (12, 255, 255)) |
+        # Native MuMu lines in the Practice evidence have H=13..18. Keep the
+        # old threshold on the disabled-camera path to preserve main behavior.
+        red = (cv2.inRange(hsv, (0, 105, 90), (18 if camera_revision is not None else 12, 255, 255)) |
                cv2.inRange(hsv, (170, 105, 90), (179, 255, 255)))
 
         # UI, loot text, and troop bar also contain red; exclude them first.
@@ -49,34 +64,65 @@ class BattlePlanner:
         red[:130, 620:980] = 0
         red[550:, :230] = 0
         red[540:, 1270:] = 0
+        if camera_revision is not None:
+            red[ScreenSpace.map_mask(image.shape) == 0] = 0
+
+        def fallback():
+            if camera_revision is None:
+                return self._perimeter_plan(image)
+            if standard_view is not None:
+                reference, revision = standard_view
+                motion = measure_motion(reference, image)
+                proof = self.confirm_standard_view(reference, revision)
+                if proof is not None and revision == camera_revision and motion.valid and not motion.changed:
+                    plan = self._perimeter_plan(image)
+                    if plan:
+                        plan.troop_points = [point for point in plan.troop_points
+                                             if ScreenSpace.map_point(point)]
+                        if len(plan.troop_points) < 4:
+                            return None
+                        plan.camera_revision = camera_revision
+                        plan.camera_tracked = True
+                    return plan
+            return None
 
         lines = cv2.HoughLinesP(red, 1, np.pi / 180, threshold=22,
                                 minLineLength=35, maxLineGap=12)
         if lines is None:
-            return self._perimeter_plan(image)
+            return fallback()
 
         endpoints = []
-        for x1, y1, x2, y2 in lines[:, 0]:
+        for x1, y1, x2, y2 in lines.reshape(-1, 4):
             if math.hypot(int(x2) - int(x1), int(y2) - int(y1)) > 45:
                 endpoints.extend(((int(x1), int(y1)), (int(x2), int(y2))))
         if len(endpoints) < 8:
-            return self._perimeter_plan(image)
+            return fallback()
 
         hull = cv2.convexHull(np.asarray(endpoints, dtype=np.int32)).reshape(-1, 2)
         area = cv2.contourArea(hull)
         if not 180_000 <= area <= 900_000 or not self._outline_supported(hull, red):
-            return self._perimeter_plan(image)
+            return fallback()
 
         moments = cv2.moments(hull)
         if not moments["m00"]:
-            return self._perimeter_plan(image)
+            return fallback()
         center = np.array((moments["m10"] / moments["m00"],
                            moments["m01"] / moments["m00"]), dtype=float)
 
         points: List[Point] = []
+        lower_points: List[Point] = []
+        nearby = cv2.dilate(red, np.ones((9, 9), np.uint8))
         for i, start in enumerate(hull):
             end = hull[(i + 1) % len(hull)]
             distance = float(np.linalg.norm(end - start))
+            if camera_revision is not None:
+                # A clipped convex hull closes through the HUD. Its artificial
+                # closing edges must never become deployment candidates.
+                count = max(2, int(distance / 4))
+                xs = np.linspace(start[0], end[0], count).astype(int)
+                ys = np.linspace(start[1], end[1], count).astype(int)
+                if float(np.mean(nearby[ys, xs] > 0)) < .35:
+                    continue
             steps = max(1, int(distance // 85))
             for step in range(steps):
                 edge = start + (end - start) * ((step + 0.5) / steps)
@@ -86,9 +132,13 @@ class BattlePlanner:
                     continue
                 x, y = np.rint(edge + outward / length * 35).astype(int)
                 x, y = int(x), int(y)
-                if not (220 < x < 1400 and 135 < y < 620):
+                if not (220 < x < 1400 and 135 < y < (650 if camera_revision is not None else 620)):
                     continue
                 if (x < 320 and y < 300) or (x > 1300 and y > 520):
+                    continue
+                # Offsetting a safe red-line sample can move it onto a HUD
+                # control. Validate the final drop, not only the source line.
+                if camera_revision is not None and not ScreenSpace.map_point((x, y)):
                     continue
                 if cv2.pointPolygonTest(hull.astype(np.float32), (float(x), float(y)), False) >= 0:
                     continue
@@ -96,15 +146,31 @@ class BattlePlanner:
                 # statue or different ground hue outside it is still usable.
                 if all(math.hypot(x - px, y - py) >= 55 for px, py in points):
                     points.append((x, y))
+                    if edge[1] > center[1] + 100:
+                        lower_points.append((x, y))
 
         if len(points) < 4:
-            return self._perimeter_plan(image)
+            return fallback()
         # Every selected point is outside the conservative hull and UI zones.
         confidence = min(1.0, len(endpoints) / 30) * min(1.0, len(points) / 8)
         if confidence < 0.45:
-            return self._perimeter_plan(image)
+            return fallback()
         spell_center = (int(round(center[0])), int(round(center[1])))
-        return BattlePlan(points, spell_center, confidence, hull)
+        occluded = int(hull[:, 1].max()) >= 610
+        return BattlePlan(points, spell_center, confidence, hull,
+                          camera_revision=camera_revision or 0, lower_edge_occluded=occluded,
+                          lower_edge_points=lower_points, camera_tracked=camera_revision is not None)
+
+    def confirm_standard_view(self, image, camera_revision):
+        """Only a measured, fully visible construction footprint can calibrate."""
+        plan = self.plan(image, camera_revision=camera_revision)
+        if plan is None or plan.source != "red_boundary" or len(plan.boundary) != 4:
+            return None
+        distances = [min(math.dist(point, p) for p in plan.boundary)
+                     for point in self.CONSTRUCTION_DIAMOND]
+        if max(distances) > 25:
+            return None
+        return image.copy(), camera_revision
 
     @staticmethod
     def _outline_supported(hull: np.ndarray, red: np.ndarray) -> bool:

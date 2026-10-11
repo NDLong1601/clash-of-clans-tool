@@ -1,0 +1,660 @@
+{
+  "resolution": [
+    1600,
+    900
+  ],
+  "language": "en",
+  "serial": "127.0.0.1:16416",
+  "assets": {
+    "army_title": {
+      "path": "army_title.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "crop_xyxy": [
+        635,
+        107,
+        978,
+        159
+      ],
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "sha256": "fb5b1bf9f2bcc14aeb7176bfd618272b7cb7fef268206220c1b58c4182995d85"
+    },
+    "army_close": {
+      "path": "army_close.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "crop_xyxy": [
+        1410,
+        101,
+        1471,
+        159
+      ],
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "sha256": "01a627932d1027e591a8fdc2438909e1801702e71f451b9b2f7a29c9b8262cb7"
+    },
+    "army_open": {
+      "path": "army_open.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\menu.png",
+      "crop_xyxy": [
+        28,
+        621,
+        94,
+        687
+      ],
+      "parent_sha256": "241c8e6ada0d771b638530b738c8949a3f4c70538dd8f4b84ca2043aea487585",
+      "sha256": "ba8873b3f40d453bcc273c937ce17a94428a8710ba65d9ad6fcf9e952335d387"
+    },
+    "starting": {
+      "path": "starting.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "crop_xyxy": [
+        185,
+        198,
+        337,
+        231
+      ],
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "sha256": "f71f9409570371f3f8bf0c047c1a45798e216da2a60b5f0ea890184e5e3f8021"
+    },
+    "starting_ready": {
+      "path": "starting_ready.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "crop_xyxy": [
+        152,
+        199,
+        181,
+        232
+      ],
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "sha256": "2e00699bcc0eea061e559aa11f8be564f8bc90e973621104a8c6435636cacad2"
+    },
+    "reinforcements": {
+      "path": "reinforcements.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "crop_xyxy": [
+        1139,
+        198,
+        1395,
+        231
+      ],
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "sha256": "4757014b82ee7b8bdb9e5ffa7a0fddd0f1f6ae6c70578355489ba985cbfd0fb2"
+    },
+    "baby_dragon": {
+      "path": "baby_dragon.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        268,
+        782,
+        347,
+        832
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "bfd8d5cb55a6339bdc6f47a4738f02ecaf6467b02d67bd89bac1d0e342953230"
+    },
+    "battle_machine": {
+      "path": "battle_machine.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        118,
+        754,
+        202,
+        833
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "54ef6326931c19cf9367c9bfdb513e38905034bb1433f3290708d7ed78610405"
+    },
+    "battle_machine_active": {
+      "path": "battle_machine_active.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\hero-deployed.png",
+      "crop_xyxy": [
+        120,
+        733,
+        197,
+        812
+      ],
+      "parent_sha256": "57ee11e6e5cf4de0448d4c986c4d1079c4c4d772a4c59f1f19e863b787e2c30d",
+      "sha256": "9753b04f240461035c64d0ba526900a97a51d3dd2b62622d0dac680818332ad9"
+    },
+    "battle_copter": {
+      "path": "battle_copter.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\current.png",
+      "crop_xyxy": [
+        114,
+        750,
+        205,
+        837
+      ],
+      "parent_sha256": "ee11720bcb1de9a09a95411ddc958bf3143d89e3529cf948ce0e0aec3a14bd62",
+      "sha256": "4e14b8ff955254662281994a68890500174caa4b3ec6e36778ad7020c32ce540"
+    },
+    "baby_choice": {
+      "path": "baby_choice.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        565,
+        706,
+        637,
+        758
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "1ab17dd68a199fb253b659368ff31192ba913908607e87d0efce781b48d5e0b4"
+    },
+    "raged_barbarian": {
+      "path": "raged_barbarian.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        312,
+        580,
+        384,
+        636
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "308db6cc398e2d0cc498e7f24a83faf5d3a70d64c9cd649673a4147937d7836a"
+    },
+    "boxer_giant": {
+      "path": "boxer_giant.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        438,
+        580,
+        510,
+        636
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "f0c216f7f89a81139d1eb6f41d4706f6d94538947f64408d15249451fd2932f2"
+    },
+    "bomber": {
+      "path": "bomber.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        564,
+        580,
+        636,
+        636
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "7968a96557230a58226ba7ec1b7e9284dc16bbb6fdaf3148a18a10a0d6f16b32"
+    },
+    "cannon_cart": {
+      "path": "cannon_cart.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        690,
+        580,
+        762,
+        636
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "8c46501ca21805b23330af782161e9d1ac9d8b6f5d0788a078e1c5c045a79cba"
+    },
+    "sneaky_archer": {
+      "path": "sneaky_archer.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        312,
+        706,
+        384,
+        762
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "c9b0398892d2d41f48e26786138e936e7e225bca5cdff44eda8f6af76e1da844"
+    },
+    "beta_minion": {
+      "path": "beta_minion.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        438,
+        706,
+        510,
+        762
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "54f09b2cfdd49315b639194f3eaf69bfabdeaad7bd45ea7142122852f60df42a"
+    },
+    "night_witch": {
+      "path": "night_witch.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army-empty.png",
+      "crop_xyxy": [
+        690,
+        706,
+        762,
+        762
+      ],
+      "parent_sha256": "a76c8db3b031e33a8706fcd5ec619576710687a4b9b1073bb625ac0cfa3db770",
+      "sha256": "b993b31aba96b496ab5169bc62c2447635d422fa023fc45be69b1ccb93879993"
+    },
+    "baby_remove": {
+      "path": "baby_remove.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\army.png",
+      "crop_xyxy": [
+        386,
+        371,
+        415,
+        394
+      ],
+      "parent_sha256": "caa80a472a52f98cdf46308e0119799c5fd1b2f3fc7e798f2168d4e1bcf54a97",
+      "sha256": "5f16a1ce121c97b8863601e970e478cc252df4fda9c99b7972d87be07fc1cc6b"
+    },
+    "battle_starts": {
+      "path": "battle_starts.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        710,
+        17,
+        892,
+        43
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "1a496eab304025e95c1265997bcc0d0cc79f8b56827cfb7b38a349ab4b2dd54a"
+    },
+    "battle_ends": {
+      "path": "battle_ends.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\hero-deployed.png",
+      "crop_xyxy": [
+        721,
+        17,
+        880,
+        43
+      ],
+      "parent_sha256": "57ee11e6e5cf4de0448d4c986c4d1079c4c4d772a4c59f1f19e863b787e2c30d",
+      "sha256": "de508b4c77c6ac3df9b307f3cdedf9c91f5d94100a5168edd8c3647c8c3d5ba3"
+    },
+    "defender": {
+      "path": "defender.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        84,
+        17,
+        182,
+        43
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "de5f8ba53493a0910e9525e454b3734b2292b42375a021e75f7c3f5e08417847"
+    },
+    "attacker": {
+      "path": "attacker.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        1413,
+        17,
+        1513,
+        43
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "38fe299861ff944de11896ed27aa60841c8b9a0f4f43bf48050150eac9f92973"
+    },
+    "surrender": {
+      "path": "surrender.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\hero-deployed.png",
+      "crop_xyxy": [
+        41,
+        611,
+        184,
+        644
+      ],
+      "parent_sha256": "57ee11e6e5cf4de0448d4c986c4d1079c4c4d772a4c59f1f19e863b787e2c30d",
+      "sha256": "a4a0777cf6b23c5ed8fe6f1378f83bb68c7c21173a757a5934015dff94546300"
+    },
+    "end_battle": {
+      "path": "end_battle.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\hero-ability.png",
+      "crop_xyxy": [
+        40,
+        611,
+        184,
+        644
+      ],
+      "parent_sha256": "a909a8def9536cf4e8abc76d225fc7315b6fd9aa21576a9ebd4513b9c815326b",
+      "sha256": "1936d6b8a579b54a6d089f246157b8d97a2adc95f0da6d35f2e072593979cbbd"
+    },
+    "damage": {
+      "path": "damage.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\hero-deployed.png",
+      "crop_xyxy": [
+        1360,
+        628,
+        1544,
+        655
+      ],
+      "parent_sha256": "57ee11e6e5cf4de0448d4c986c4d1079c4c4d772a4c59f1f19e863b787e2c30d",
+      "sha256": "a374b70913d683201c6b9b5280f07947121fba82e7d36a6c88f3c29685450ea6"
+    },
+    "menu_close": {
+      "path": "menu_close.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\menu.png",
+      "crop_xyxy": [
+        1330,
+        138,
+        1389,
+        188
+      ],
+      "parent_sha256": "241c8e6ada0d771b638530b738c8949a3f4c70538dd8f4b84ca2043aea487585",
+      "sha256": "c0123960c337ac4255622217623b250797701590676a3f7dfa67f16ff4acf822"
+    },
+    "inactivity_title": {
+      "path": "inactivity_title.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-4\\frame-0136.png",
+      "crop_xyxy": [
+        419,
+        367,
+        617,
+        398
+      ],
+      "parent_sha256": "2de088d631346460f9aa68f2a451fcf12e7e73d504e28948aeda9e170a83b73f",
+      "sha256": "b92a3d85097eb5727086abdd7c6246ad942251e4b74b3f3e737408600faabb82"
+    },
+    "inactivity_reload": {
+      "path": "inactivity_reload.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-4\\frame-0136.png",
+      "crop_xyxy": [
+        418,
+        515,
+        564,
+        539
+      ],
+      "parent_sha256": "2de088d631346460f9aa68f2a451fcf12e7e73d504e28948aeda9e170a83b73f",
+      "sha256": "3eb71d7694f4f5720654b55151547b0117e020ae63051e73b02bb999e0b3038f"
+    },
+    "builder_result_title": {
+      "path": "builder_result_title.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-6\\frame-0022.png",
+      "crop_xyxy": [
+        696,
+        324,
+        910,
+        357
+      ],
+      "parent_sha256": "ff5b01872a071b5d0b76b5c7afa99c0157a0fde7562dd0cfd935ecf6e6608068",
+      "sha256": "974f70350232f4ffcece29a5195fb227e843310b2a4ac2e7585638164c96ef83"
+    },
+    "builder_result_return": {
+      "path": "builder_result_return.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-6\\frame-0022.png",
+      "crop_xyxy": [
+        699,
+        720,
+        902,
+        802
+      ],
+      "parent_sha256": "ff5b01872a071b5d0b76b5c7afa99c0157a0fde7562dd0cfd935ecf6e6608068",
+      "sha256": "fb42568d9bb95109e3f56fbb86f0fc0f9dd74118fd833bdc7146e60e318d6d35"
+    },
+    "cart_native_gd5": {
+      "path": "cart_native_gd5.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-3\\frame-0011.png",
+      "crop_xyxy": [
+        962,
+        441,
+        1010,
+        482
+      ],
+      "parent_sha256": "48522d9142857cc0ece22d4238cf5ce192fd94ea454960a62ba28f2494e483a7",
+      "sha256": "493d9985b4eff958d6971bfe635497726ab6aa19135d1a9b692b9a673c1a9a9e"
+    },
+    "battle_machine_charged": {
+      "path": "battle_machine_charged.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-4\\frame-0045.png",
+      "crop_xyxy": [
+        118,
+        741,
+        202,
+        822
+      ],
+      "parent_sha256": "b68254c8cb67569684a1e47d8358853233258494cfeb8f94c74dd45c731b6764",
+      "sha256": "44dc08daed360138312a898dec182ba07bc85d4d0cc05ca00621888a8e851412"
+    },
+    "battle_machine_charging": {
+      "path": "battle_machine_charging.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-4\\frame-0038.png",
+      "crop_xyxy": [
+        118,
+        741,
+        202,
+        822
+      ],
+      "parent_sha256": "1e201767262373c669ae508c088956c9ed9e133699f4465f36e19643020d3193",
+      "sha256": "347f5f02fdd4455a09c83eadd1a26b69a08f3ee47655a909b9a1fce62607fae7"
+    },
+    "battle_machine_cooldown": {
+      "path": "battle_machine_cooldown.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-4\\frame-0060.png",
+      "crop_xyxy": [
+        118,
+        741,
+        202,
+        822
+      ],
+      "parent_sha256": "0eae7319a3e1a4bc0198e7d99c3a04c0b698b45f4213580b246eff79463ec6cf",
+      "sha256": "4104d20289a88a468671395b5c9dbac8023644e30dcefd5e6de04fd5b80a7bd5"
+    },
+    "battle_machine_low_health": {
+      "path": "battle_machine_low_health.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-4\\frame-0070.png",
+      "crop_xyxy": [
+        118,
+        741,
+        202,
+        822
+      ],
+      "parent_sha256": "5f76e15edc04d264635dbd8ab9a010336b953c64f1250c8e9844af64372c19e0",
+      "sha256": "cff7764f7943bf9be505262e81df247eda68fb1ad5534ed1e7a93f59c11fa37e"
+    },
+    "battle_copter_charged": {
+      "path": "battle_copter_charged.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-4\\frame-0130.png",
+      "crop_xyxy": [
+        118,
+        742,
+        202,
+        824
+      ],
+      "parent_sha256": "1a11e1af64035fb8a5afbc7b67b3baadcb091efa44650ca5f07769455b62bdf2",
+      "sha256": "5f23c0b9f5dc72d71f1f75902e1224fc06e8a076ca4a31f1b30c5f714ab1c88d"
+    },
+    "battle_copter_charging": {
+      "path": "battle_copter_charging.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-4\\frame-0110.png",
+      "crop_xyxy": [
+        118,
+        742,
+        202,
+        824
+      ],
+      "parent_sha256": "0027cea6feef233263a9fbe2770cadc87b62c4034110db742bf7103bd18a281f",
+      "sha256": "747ca667e3ae29d4bf6d4a308a88bced4272aa76068d689ddbef54cdae15412f"
+    },
+    "battle_machine_sweep": {
+      "path": "battle_machine_sweep.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-8\\frame-0036.png",
+      "crop_xyxy": [
+        118,
+        741,
+        202,
+        822
+      ],
+      "parent_sha256": "c6bd50f2eeef658869d3d8e1db08ce57ec3d03199ee55a2a263d9665cab8e6e0",
+      "sha256": "889099044fd7eb67a9d6b2cea79340171513491095bf9820d258a11972c3ff6a"
+    },
+    "cart_defending_native": {
+      "path": "cart_defending_native.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-around-12\\frame-0034.png",
+      "crop_xyxy": [
+        676,
+        182,
+        925,
+        210
+      ],
+      "parent_sha256": "7299db24d85a7b1836a464419019e5927926fc77f2ba4fcb815805a8ab96109b",
+      "sha256": "db326110f60d36cc06f16814c27ae3a9fc17af0addb254021a670f442a972cc0"
+    },
+    "menu_count_one": {
+      "path": "menu_count_one.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\menu.png",
+      "crop_xyxy": [
+        367,
+        346,
+        392,
+        368
+      ],
+      "parent_sha256": "241c8e6ada0d771b638530b738c8949a3f4c70538dd8f4b84ca2043aea487585",
+      "sha256": "a46eece18ea9b6e343c771cd0d6ed9d66643696f23a25420fb84b58aaab109cc"
+    },
+    "battle_machine_menu": {
+      "path": "battle_machine_menu.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\menu.png",
+      "crop_xyxy": [
+        277,
+        349,
+        349,
+        414
+      ],
+      "parent_sha256": "241c8e6ada0d771b638530b738c8949a3f4c70538dd8f4b84ca2043aea487585",
+      "sha256": "b2f384daecc0779e42cfe51312813e04728bce8c65e89c28ad490aa767394b3a"
+    },
+    "baby_dragon_survivor": {
+      "path": "baby_dragon_survivor.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\live-single-5\\frame-0113.png",
+      "crop_xyxy": [
+        768,
+        802,
+        844,
+        850
+      ],
+      "parent_sha256": "87cc5f724670d22aa6a6a263485fb7064e0c303f440e3ce76cb03a9ddf9afeaa",
+      "sha256": "38569c3f4e3fb6497d199fbf1a5373eb47bddaf4a025be435f5371b337adc9ca"
+    },
+    "camp_1": {
+      "path": "camp_1.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        258,
+        738,
+        283,
+        767
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "cb050e38334560d3d2daeb801420f9bc5279e787bfd0d06179423e43f127a38a"
+    },
+    "camp_2": {
+      "path": "camp_2.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        385,
+        738,
+        410,
+        767
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "9c7e8b9afec3d589432da83cf2848b5c2e88f5a9ecfb8460fa2ffa28ea328611"
+    },
+    "camp_3": {
+      "path": "camp_3.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        512,
+        738,
+        537,
+        767
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "34bdc3ebe2edb6c7fdbf923bd7307afdc8afc0a30fb087387b80eafd0a1de413"
+    },
+    "camp_4": {
+      "path": "camp_4.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        638,
+        738,
+        663,
+        767
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "55c3d970591dbf730b53390bed93a6f034ed76051c540902690eae45b19f5807"
+    },
+    "camp_5": {
+      "path": "camp_5.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        765,
+        738,
+        790,
+        767
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "02f57e9e82f9e44ba7eabed829ae01045a84545085a5fbb62f8080b6af06a5a4"
+    },
+    "camp_6": {
+      "path": "camp_6.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\scout.png",
+      "crop_xyxy": [
+        891,
+        738,
+        916,
+        767
+      ],
+      "parent_sha256": "fe4b36c6eb31bee9da7536095101a5d2c9cedcc3fe124c78e4a8369db1911526",
+      "sha256": "cb9aef21e35b6055034c1067fc2920a6fcd483b9980a04f6b11d66d714ad7add"
+    },
+    "camp_7": {
+      "path": "camp_7.png",
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics\\dual_village_gd5\\current.png",
+      "crop_xyxy": [
+        1017,
+        738,
+        1042,
+        767
+      ],
+      "parent_sha256": "ee11720bcb1de9a09a95411ddc958bf3143d89e3529cf948ce0e0aec3a14bd62",
+      "sha256": "f9ff9dcaa370df99432864bd16dd97b497c227008e9ed794b933dab56affc9f9"
+    }
+  }
+}

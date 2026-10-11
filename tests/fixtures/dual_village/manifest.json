@@ -1,0 +1,1855 @@
+{
+  "schema_version": 1,
+  "phase": "GD0",
+  "recorded_date": "2026-10-08",
+  "timezone": "Asia/Ho_Chi_Minh",
+  "repository_commit": "3757485e4bb9e705ac8313fa86c738811430b42f",
+  "scope": "Evidence inventory only; no runtime feature implementation. Future reader targets are manual annotations, not detector outputs.",
+  "path_rules": {
+    "fixture_paths": "relative to this manifest directory",
+    "observation_paths": "relative to repository root; ignored diagnostics, local only",
+    "missing_path": null,
+    "crop_coordinates": "[left,top,right,bottom], exclusive, in parent VIDEO pixels",
+    "adb_coordinates": "No video-to-ADB mapping validated; never tap video coordinates."
+  },
+  "baseline_checks": [
+    {
+      "command": "python -m unittest discover -s tests -q",
+      "exit_code": 0,
+      "tests": 213,
+      "reported_seconds": 71.026,
+      "result": "OK; no failures/errors/skips reported",
+      "log": "diagnostics/dual_village_gd0/unittest.log"
+    },
+    {
+      "command": "python tools/check_assets.py",
+      "exit_code": 0,
+      "result": "ALL CHECKS PASSED; 9 imports and 10 existence checks, not exhaustive validation",
+      "log": "diagnostics/dual_village_gd0/assets.log"
+    }
+  ],
+  "device_observation": {
+    "adb_version": "1.0.41 / 36.0.0-13206524",
+    "command": "\"C:\\Program Files\\Netease\\MuMuPlayer\\nx_main\\adb.exe\" devices -l",
+    "ready_serials": [],
+    "native_screenshots": [],
+    "limits": "No device listed; no port scan/connect or game input. ADB auto-started its host daemon on port 5037."
+  },
+  "sources": [
+    {
+      "id": "train",
+      "kind": "external_video",
+      "path": "C:\\Users\\PC\\Downloads\\1791438698091_2054695061538342203_7446498411049790191.mp4",
+      "in_git": false,
+      "bytes": 51327698,
+      "sha256": "c9453f98f49cb7316f9820d8e9a784b3b49cc80c858c0d2de02026ed71eae204",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "duration_seconds": 191.433333,
+      "nominal_frame_rate": "30/1",
+      "average_frame_rate": "42315/1436",
+      "time_base": "1/600",
+      "declared_frames": 5642,
+      "language": "vi",
+      "window_chrome": {
+        "top_px": 0,
+        "notes": "No desktop border observed; iOS home indicator at bottom, control-center overlay at end."
+      },
+      "full_decode_audit": {
+        "source": "train",
+        "decoded_frames": 5642,
+        "first_pts_seconds": 0.0,
+        "last_pts_seconds": 191.4,
+        "max_pts_gap_seconds": 0.5333333333333314
+      }
+    },
+    {
+      "id": "camera",
+      "kind": "external_video",
+      "path": "C:\\Users\\PC\\Documents\\Bandicam\\bandicam 2026-10-08 15-43-48-146.mp4",
+      "in_git": false,
+      "bytes": 31507070,
+      "sha256": "fffcac0249a2de8f7bd02a8193c1d06b1c76c07040133148c8f60b76737d95d4",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "duration_seconds": 21.233,
+      "nominal_frame_rate": "30/1",
+      "average_frame_rate": "6350000/212333",
+      "time_base": "1/30000",
+      "declared_frames": 635,
+      "language": "en",
+      "window_chrome": {
+        "approx_game_bbox_xyxy_exclusive": [
+          1,
+          40,
+          1057,
+          634
+        ],
+        "approx_game_dimensions": [
+          1056,
+          594
+        ],
+        "top_px": 40,
+        "right_px_approx": 7,
+        "bottom_px_approx": 6,
+        "notes": "Visual estimate; title Android Device-1 and Bandicam watermark. Not proof of MuMu or native Android resolution."
+      },
+      "full_decode_audit": {
+        "source": "camera",
+        "decoded_frames": 635,
+        "first_pts_seconds": 0.0,
+        "last_pts_seconds": 21.2,
+        "max_pts_gap_seconds": 0.06666666666666643
+      }
+    }
+  ],
+  "extraction": {
+    "method": "PyAV 19.0.1 sequential decode from beginning, no seek. First decoded frame with frame.pts * frame.time_base >= requested_seconds. PNG lossless originals in ignored diagnostics. FFmpeg ffprobe metadata cross-check.",
+    "timestamp_rule": "Use native PTS, not frame_index/30; videos are variable-frame-rate.",
+    "local_index": "diagnostics/dual_village_gd0/frame-index.json",
+    "decoded_selected_frames": 122
+  },
+  "observations": [
+    {
+      "id": "train_000.00",
+      "source": "train",
+      "requested_seconds": 0,
+      "frame_index_zero_based": 0,
+      "pts": 0,
+      "time_base": "1/600",
+      "timestamp_seconds": 0.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_000.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "779065966128956de11e0e7dccbbefbd26eb69aad1cda8202835f8982e25d5d4",
+      "screen": "builder_home",
+      "bonus_reader_target": "AVAILABLE",
+      "note": "Star bonus 0/7; zero numerator is still available.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_004.00",
+      "source": "train",
+      "requested_seconds": 4,
+      "frame_index_zero_based": 107,
+      "pts": 2400,
+      "time_base": "1/600",
+      "timestamp_seconds": 4.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_004.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "9a7e817c354e1f550938d7e333e4c91671b41ac6d81202eb4464267422155904",
+      "screen": "main_home",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Main village; its Attack/star graphics are not builder bonus.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_016.00",
+      "source": "train",
+      "requested_seconds": 16,
+      "frame_index_zero_based": 463,
+      "pts": 9600,
+      "time_base": "1/600",
+      "timestamp_seconds": 16.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_016.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "63391a6b68a6867a91718163120c18580b1f12501184091efc64ae1376c1e38f",
+      "screen": "builder_attack_menu",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Five Baby Dragon army cards; hero row is not ready/clear enough to infer availability.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_017.00",
+      "source": "train",
+      "requested_seconds": 17,
+      "frame_index_zero_based": 492,
+      "pts": 10200,
+      "time_base": "1/600",
+      "timestamp_seconds": 17.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_017.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "3a69fb7911d6723d52cc74d87c69ca7d978ddbf1b886d140c16ed83400a377ef",
+      "screen": "loading",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Searching/cloud screen; no visible star region is not COMPLETE.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_020.00",
+      "source": "train",
+      "requested_seconds": 20,
+      "frame_index_zero_based": 579,
+      "pts": 12000,
+      "time_base": "1/600",
+      "timestamp_seconds": 20.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_020.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "d867da1ad482d50e3338f7d734a6dc5563c96a4f9bc9007e86b8f42362e4aa44",
+      "screen": "builder_pre_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Five undeployed Baby Dragon cards, empty slots to the right; no deployed hero portrait.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_025.00",
+      "source": "train",
+      "requested_seconds": 25,
+      "frame_index_zero_based": 727,
+      "pts": 15000,
+      "time_base": "1/600",
+      "timestamp_seconds": 25.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_025.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "3396f58b3e9d92930e01b9c9262d141d499cca4c884529460bf2a08d8e4c95c9",
+      "screen": "builder_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Cards 1 and 2 have health strips; remaining cards differ from deployed cards.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_027.00",
+      "source": "train",
+      "requested_seconds": 27,
+      "frame_index_zero_based": 787,
+      "pts": 16200,
+      "time_base": "1/600",
+      "timestamp_seconds": 27.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_027.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "b31022e12eacf453b1f967d889cf11e5119c9d99ebe2e01e90ec7eecba7c0cdb",
+      "screen": "builder_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Five deployed cards with purple ability bars; game also shows red rejected-action text.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_035.00",
+      "source": "train",
+      "requested_seconds": 35,
+      "frame_index_zero_based": 1027,
+      "pts": 21000,
+      "time_base": "1/600",
+      "timestamp_seconds": 35.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_035.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "cf2f4a1f566d550e0df6fed85c6f946e0717fa3cd6bef64c77b7ffb0fb7966a7",
+      "screen": "builder_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Card 1 gray; cards 2/3 lost purple bar; 4/5 retain purple. Skill/death attribution needs input trace.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_062.00",
+      "source": "train",
+      "requested_seconds": 62,
+      "frame_index_zero_based": 1837,
+      "pts": 37200,
+      "time_base": "1/600",
+      "timestamp_seconds": 62.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_062.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "33dc23a4118402cee0edfa7bba39ef9790cdea00d2a6c87f64a8ebd2cfd1fe5c",
+      "screen": "builder_result",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "One-stage result 100%, Return village button; result stars are not home bonus.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_065.00",
+      "source": "train",
+      "requested_seconds": 65,
+      "frame_index_zero_based": 1918,
+      "pts": 39000,
+      "time_base": "1/600",
+      "timestamp_seconds": 65.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_065.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "1b0a74ec328d28c5c38c05a89ada418985d8487f7d422347e37d04fa7df411bd",
+      "screen": "builder_home",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Star flight animation overlaps progress 2/7; wait for stable frames.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_108.00",
+      "source": "train",
+      "requested_seconds": 108,
+      "frame_index_zero_based": 3179,
+      "pts": 64800,
+      "time_base": "1/600",
+      "timestamp_seconds": 108.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_108.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "008d0a0f924d487572478a46f50cf0310e270fc446949ec29691be0ab3c9d27c",
+      "screen": "builder_home",
+      "bonus_reader_target": "AVAILABLE",
+      "note": "Visible progress 6/8; denominator differs from opening 0/7.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_113.00",
+      "source": "train",
+      "requested_seconds": 113,
+      "frame_index_zero_based": 3317,
+      "pts": 67800,
+      "time_base": "1/600",
+      "timestamp_seconds": 113.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_113.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "b2d684e6ce15c9f95cad77191e670688b73f55838e249c99e6e1a7761350a463",
+      "screen": "builder_pre_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Third match stage 1; five slots.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_116.00",
+      "source": "train",
+      "requested_seconds": 116,
+      "frame_index_zero_based": 3407,
+      "pts": 69600,
+      "time_base": "1/600",
+      "timestamp_seconds": 116.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_116.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "da41e111530140c405facd6b268f5727e1d0ee99015729a082f9e062939d5a34",
+      "screen": "builder_pre_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Before deployment in third match.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_117.00",
+      "source": "train",
+      "requested_seconds": 117,
+      "frame_index_zero_based": 3433,
+      "pts": 70200,
+      "time_base": "1/600",
+      "timestamp_seconds": 117.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_117.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "d56e1e83c1ac55a3e561605356627f95361e0d79c8a949aeedb0e87b03681a81",
+      "screen": "builder_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "After deployment, battle timer and health strips.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_143.00",
+      "source": "train",
+      "requested_seconds": 143,
+      "frame_index_zero_based": 4213,
+      "pts": 85800,
+      "time_base": "1/600",
+      "timestamp_seconds": 143.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_143.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "6fa8a9ea157ce12e14638c524eeec9305bec9de266f6be931815db50c2199a11",
+      "screen": "builder_battle_stage1_100",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "100% is still battle, not result; transition follows later.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_147.20",
+      "source": "train",
+      "requested_seconds": 147.2,
+      "frame_index_zero_based": 4339,
+      "pts": 88320,
+      "time_base": "1/600",
+      "timestamp_seconds": 147.2,
+      "path": "diagnostics/dual_village_gd0/frames/train_147.20.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "b87416d64324ff34de2902cc35588b72af78395789a543d1152370a5167c3ce3",
+      "screen": "builder_battle_stage1_100",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Last sampled old stage before transition.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_147.50",
+      "source": "train",
+      "requested_seconds": 147.5,
+      "frame_index_zero_based": 4346,
+      "pts": 88500,
+      "time_base": "1/600",
+      "timestamp_seconds": 147.5,
+      "path": "diagnostics/dual_village_gd0/frames/train_147.50.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "3ebee4818c42992aa1d69826c83012d085a25beb408a393eb89d953d4ac296a2",
+      "screen": "builder_stage_transition",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Camera travels between areas; old map coordinates expire.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_147.80",
+      "source": "train",
+      "requested_seconds": 147.8,
+      "frame_index_zero_based": 4355,
+      "pts": 88680,
+      "time_base": "1/600",
+      "timestamp_seconds": 147.8,
+      "path": "diagnostics/dual_village_gd0/frames/train_147.80.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "6d04de1a8b1d3f6e2332bc15011a7af319d4e3577c6e286f86d18caec9c7f962",
+      "screen": "builder_stage_transition",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "New dark area entering view.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_148.20",
+      "source": "train",
+      "requested_seconds": 148.2,
+      "frame_index_zero_based": 4367,
+      "pts": 88920,
+      "time_base": "1/600",
+      "timestamp_seconds": 148.2,
+      "path": "diagnostics/dual_village_gd0/frames/train_148.20.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "82f4d9fcd93a8683c016ddd31fe2b18c21231c0b8167a270cb8d10ed46de9095",
+      "screen": "builder_stage2_pre_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Six cards: five surviving cards with health and sixth reinforcement; no hero portrait.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_149.00",
+      "source": "train",
+      "requested_seconds": 149,
+      "frame_index_zero_based": 4391,
+      "pts": 89400,
+      "time_base": "1/600",
+      "timestamp_seconds": 149.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_149.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "98423c4353a36221ee368ea58364f95f04ceabc40306b4afc5a8795e4a8cf44a",
+      "screen": "builder_stage2_pre_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Fresh stage 2 army observation, timer 59 seconds.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_150.50",
+      "source": "train",
+      "requested_seconds": 150.5,
+      "frame_index_zero_based": 4435,
+      "pts": 90300,
+      "time_base": "1/600",
+      "timestamp_seconds": 150.5,
+      "path": "diagnostics/dual_village_gd0/frames/train_150.50.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "b507444063e3dc83c26137f3cf76caf79bce9331a2e074a31540d5166953f528",
+      "screen": "builder_stage2_battle",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Stage 2 deployment, battle timer 2 minutes and cumulative 100%.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_169.00",
+      "source": "train",
+      "requested_seconds": 169,
+      "frame_index_zero_based": 4989,
+      "pts": 101400,
+      "time_base": "1/600",
+      "timestamp_seconds": 169.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_169.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "c8ef0efbf409c9a6d78f06fe53b9fe9bda193728b98ad3765159b15da25ca06c",
+      "screen": "builder_result",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Two-stage result 200%; negative for home star-bonus reader.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_170.50",
+      "source": "train",
+      "requested_seconds": 170.5,
+      "frame_index_zero_based": 5029,
+      "pts": 102400,
+      "time_base": "1/600",
+      "timestamp_seconds": 170.66666666666666,
+      "path": "diagnostics/dual_village_gd0/frames/train_170.50.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "8292da8573c83a4649fa5e98d199c85d1efac1f6705b6d41852a01026dd2e634",
+      "screen": "loading",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Requested 170.5s resolves to PTS 170.666667s; VFR gap.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_172.00",
+      "source": "train",
+      "requested_seconds": 172,
+      "frame_index_zero_based": 5069,
+      "pts": 103200,
+      "time_base": "1/600",
+      "timestamp_seconds": 172.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_172.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "99aa5453a4230c61d28506dfe5074f7406bc0dc926b37500d90108eb05835b09",
+      "screen": "builder_home_animation",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Flying result stars, wait for bonus panel/stable home.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_173.00",
+      "source": "train",
+      "requested_seconds": 173,
+      "frame_index_zero_based": 5099,
+      "pts": 103800,
+      "time_base": "1/600",
+      "timestamp_seconds": 173.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_173.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "d320d7623e0a857f9ee57925301cbdc5aa7a4057d65e07f83197795d0cfe815e",
+      "screen": "star_reward_modal",
+      "bonus_reader_target": "CLAIMABLE",
+      "note": "Star Bonus panel 155000 gold and 155000 elixir; underlying counter is animating.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_174.00",
+      "source": "train",
+      "requested_seconds": 174,
+      "frame_index_zero_based": 5129,
+      "pts": 104400,
+      "time_base": "1/600",
+      "timestamp_seconds": 174.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_174.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "cb961dfc55955891018c708c6057213b5fea031d3021c0ddb4ce09ba3bda32d1",
+      "screen": "star_reward_modal",
+      "bonus_reader_target": "CLAIMABLE",
+      "note": "Panel remains open; underlying 4/8 must not bypass modal handling.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_176.00",
+      "source": "train",
+      "requested_seconds": 176,
+      "frame_index_zero_based": 5189,
+      "pts": 105600,
+      "time_base": "1/600",
+      "timestamp_seconds": 176.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_176.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "3d714e5662fa7d1047526fa6cb251c2023fc2267d556aafe5e188d32fe005a86",
+      "screen": "builder_home",
+      "bonus_reader_target": "AVAILABLE",
+      "note": "After reward panel closes, 4/8 still visible (resource-flight animation elsewhere).",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_177.00",
+      "source": "train",
+      "requested_seconds": 177,
+      "frame_index_zero_based": 5219,
+      "pts": 106200,
+      "time_base": "1/600",
+      "timestamp_seconds": 177.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_177.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "602e9c64ff7c07d93cce606ee81f4344ec97e9efd60058fcb9924bc76599e134",
+      "screen": "builder_home",
+      "bonus_reader_target": "AVAILABLE",
+      "note": "Next frame still 4/8; reward did not exhaust available chain.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_179.00",
+      "source": "train",
+      "requested_seconds": 179,
+      "frame_index_zero_based": 5279,
+      "pts": 107400,
+      "time_base": "1/600",
+      "timestamp_seconds": 179.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_179.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "afeb040965aa461b36e04ba8f5c4b59952b0d31c4acbdb9dbc798e688fcb8c94",
+      "screen": "builder_home_cart_location",
+      "bonus_reader_target": "AVAILABLE",
+      "note": "Camera panned toward cart; home Attack still 4/8.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_180.00",
+      "source": "train",
+      "requested_seconds": 180,
+      "frame_index_zero_based": 5307,
+      "pts": 108000,
+      "time_base": "1/600",
+      "timestamp_seconds": 180.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_180.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "2da342336c53dd9df5d0cfbe5071a9a1a9729de48599e8b914b5e0e5d761f06f",
+      "screen": "cart_modal",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Two completed defense rows with collect controls plus active defense row.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_183.00",
+      "source": "train",
+      "requested_seconds": 183,
+      "frame_index_zero_based": 5397,
+      "pts": 109800,
+      "time_base": "1/600",
+      "timestamp_seconds": 183.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_183.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "f5dfd3cab6998380242b1a5485a172e881da4044d24f147f2953e2bebf68c61f",
+      "screen": "cart_modal_defense_running",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Only active defense row remains; bottom Collect gray, amount animating, not stable empty.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_184.00",
+      "source": "train",
+      "requested_seconds": 184,
+      "frame_index_zero_based": 5427,
+      "pts": 110400,
+      "time_base": "1/600",
+      "timestamp_seconds": 184.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_184.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "5488721e5676b876e9c0d778726b58f872abe5ecceb31ad2e9ccbf2f1ce39d70",
+      "screen": "cart_modal_defense_running",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Collection particles continue; need stable native empty-cart sample.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_186.00",
+      "source": "train",
+      "requested_seconds": 186,
+      "frame_index_zero_based": 5487,
+      "pts": 111600,
+      "time_base": "1/600",
+      "timestamp_seconds": 186.0,
+      "path": "diagnostics/dual_village_gd0/frames/train_186.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "7096f67c42f0272452f642099f9e6ca79aed2af9ad520274e2ddfcd8220628dd",
+      "screen": "builder_home_boat",
+      "bonus_reader_target": "AVAILABLE",
+      "note": "Boat large after camera adjustment, 4/8 visible.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "train_187.00",
+      "source": "train",
+      "requested_seconds": 187,
+      "frame_index_zero_based": 5511,
+      "pts": 112220,
+      "time_base": "1/600",
+      "timestamp_seconds": 187.03333333333333,
+      "path": "diagnostics/dual_village_gd0/frames/train_187.00.png",
+      "dimensions": [
+        1556,
+        720
+      ],
+      "sha256": "2a69aa1d8a0d67e8c2ef626daf65464880a6c5d556f0369c5e1fafb283d58b76",
+      "screen": "main_home_boat",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Back in main, PTS 187.033333s; video switch is not bot navigation proof.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "camera_000.00",
+      "source": "camera",
+      "requested_seconds": 0,
+      "frame_index_zero_based": 0,
+      "pts": 0,
+      "time_base": "1/30000",
+      "timestamp_seconds": 0.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_000.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "2295f0eb59c92de51f3c45840ee42114a055fca397841108138438d20541434a",
+      "screen": "main_home",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "English main Attack with star row; negative for builder identification.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "camera_004.00",
+      "source": "camera",
+      "requested_seconds": 4,
+      "frame_index_zero_based": 120,
+      "pts": 120000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 4.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_004.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "1ba9702bf8dbede04a1c69fbb0c422f59f4db8d2914180ee9929ccedb66343f5",
+      "screen": "main_home_zoomed",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Map scale increases while HUD stays in place.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "camera_006.00",
+      "source": "camera",
+      "requested_seconds": 6,
+      "frame_index_zero_based": 180,
+      "pts": 180000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 6.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_006.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "019e24e808429d4483ec3e5edbee5b79089dccbd33cb9c0bfa2fb09198b537b0",
+      "screen": "main_home_panned",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Map moved and boat/shore enters view.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "camera_010.00",
+      "source": "camera",
+      "requested_seconds": 10,
+      "frame_index_zero_based": 300,
+      "pts": 300000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 10.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_010.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "076e809c6206f1b588ec4ac12ac96fb82bc0b3ba2dc143ebee550d2c70e74775",
+      "screen": "main_home_boat_zoomed",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Large boat near shore.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "camera_012.00",
+      "source": "camera",
+      "requested_seconds": 12,
+      "frame_index_zero_based": 360,
+      "pts": 360000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 12.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_012.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "b8677bfdbb30da08c6126e9e456df58a7b48f294d42222a96ba12489d74ec872",
+      "screen": "builder_home_zoomed",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Builder Attack has no star row; candidate only, not stable ADB confirmation.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null,
+      "visual_hint": "no_stars_complete_candidate_requires_full_stable_context"
+    },
+    {
+      "id": "camera_013.00",
+      "source": "camera",
+      "requested_seconds": 13,
+      "frame_index_zero_based": 390,
+      "pts": 390000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 13.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_013.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "7172c4fe9dff75fa2739349acfa0d109addcf9c8b24da88c1a70733e28bc3601",
+      "screen": "builder_home_dark",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Clear crossed-axes Attack without stars; dark home must not be inactivity popup.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null,
+      "visual_hint": "no_stars_complete_candidate_requires_full_stable_context"
+    },
+    {
+      "id": "camera_014.00",
+      "source": "camera",
+      "requested_seconds": 14,
+      "frame_index_zero_based": 420,
+      "pts": 420000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 14.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_014.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "469f37048e47a7578d3ccd0a38ad2f339c1e450bd03feafe35fb320e8e2084ac",
+      "screen": "builder_home_zoomed_out",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Camera differs from previous frame, cannot treat as stable native pair.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null,
+      "visual_hint": "no_stars_complete_candidate_requires_full_stable_context"
+    },
+    {
+      "id": "camera_016.00",
+      "source": "camera",
+      "requested_seconds": 16,
+      "frame_index_zero_based": 479,
+      "pts": 480000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 16.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_016.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "4a26d20f7cb44ad15112b9ce558fd89cf5d444be64bdc62e0d6cad0c85f889d9",
+      "screen": "builder_home_boat_zoomed",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Boat near center after pan/zoom.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null,
+      "visual_hint": "no_stars_complete_candidate_requires_full_stable_context"
+    },
+    {
+      "id": "camera_017.00",
+      "source": "camera",
+      "requested_seconds": 17,
+      "frame_index_zero_based": 508,
+      "pts": 510000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 17.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_017.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "8eade384e50dab09a6bd97734e2a525924f06272f4fbc93dcd12c9def60253b8",
+      "screen": "main_home_zoomed",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Main after return switch.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    },
+    {
+      "id": "camera_020.00",
+      "source": "camera",
+      "requested_seconds": 20,
+      "frame_index_zero_based": 598,
+      "pts": 600000,
+      "time_base": "1/30000",
+      "timestamp_seconds": 20.0,
+      "path": "diagnostics/dual_village_gd0/frames/camera_020.00.png",
+      "dimensions": [
+        1064,
+        640
+      ],
+      "sha256": "130b1ed48398936d700276e3a15562e97e366912940b394fb1d4fd767438f265",
+      "screen": "main_home_zoomed_out",
+      "bonus_reader_target": "UNKNOWN",
+      "note": "Map returns to wider view; no gesture key events recorded.",
+      "provenance": "sequentially_decoded_video",
+      "serial": null,
+      "adb_coordinate_mapping": null
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "bonus_0_of_7",
+      "path": "bonus_0_of_7.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_000.00",
+      "dimensions": [
+        140,
+        140
+      ],
+      "crop_xyxy_exclusive": [
+        65,
+        550,
+        205,
+        690
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "9f59ed7043fedfcf5a896c345c71638250afa8a4f227bc2fe17636a6fa1e6ee4",
+      "labels": [
+        "positive",
+        "bonus_available"
+      ],
+      "expected_roi_observation": "AVAILABLE; progress 0/7",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "bonus_4_of_8_after_reward",
+      "path": "bonus_4_of_8_after_reward.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_177.00",
+      "dimensions": [
+        140,
+        140
+      ],
+      "crop_xyxy_exclusive": [
+        65,
+        550,
+        205,
+        690
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "ece30974abfeec4e673576d650f8065dafb5df34511c29fb63cfeb26e9ac9fa1",
+      "labels": [
+        "positive",
+        "bonus_available",
+        "reward_recheck"
+      ],
+      "expected_roi_observation": "AVAILABLE; progress 4/8",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "builder_attack_no_stars_video",
+      "path": "builder_attack_no_stars_video.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "camera_013.00",
+      "dimensions": [
+        122,
+        128
+      ],
+      "crop_xyxy_exclusive": [
+        10,
+        500,
+        132,
+        628
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "2123a1e2faab5c3cdecc7ec6aa99bf34ed6e55576bbd91e521e9f10aa1a60691",
+      "labels": [
+        "candidate",
+        "no_stars"
+      ],
+      "expected_roi_observation": "No star row observed; COMPLETE requires full home context and two fresh stable captures.",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "main_attack_negative",
+      "path": "main_attack_negative.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "camera_000.00",
+      "dimensions": [
+        122,
+        128
+      ],
+      "crop_xyxy_exclusive": [
+        10,
+        500,
+        132,
+        628
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "85863c2a7c26ad01d13cbc1af78fe442b55a55ad8813f52932afe50236483c21",
+      "labels": [
+        "negative",
+        "main_attack",
+        "stars_on_main"
+      ],
+      "expected_roi_observation": "UNKNOWN for builder bonus",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "army_before_deployment",
+      "path": "army_before_deployment.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_020.00",
+      "dimensions": [
+        510,
+        150
+      ],
+      "crop_xyxy_exclusive": [
+        315,
+        545,
+        825,
+        695
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "4d1d510bfdfbb2a22b7ba3341b8e8c7f06f56c1d50c96b1e652a68b50674dd89",
+      "labels": [
+        "army",
+        "undeployed",
+        "no_hero"
+      ],
+      "expected_roi_observation": "Five Baby Dragon cards before deployment",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "army_partial_deployment",
+      "path": "army_partial_deployment.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_025.00",
+      "dimensions": [
+        510,
+        150
+      ],
+      "crop_xyxy_exclusive": [
+        315,
+        545,
+        825,
+        695
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "b828ce4a946f728480f27bf8853c0c6160e2f95c7e9abc88fc53e2cc62d44c24",
+      "labels": [
+        "army",
+        "partial_deployment"
+      ],
+      "expected_roi_observation": "First two cards have health strips",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "army_ability_bars",
+      "path": "army_ability_bars.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_027.00",
+      "dimensions": [
+        510,
+        150
+      ],
+      "crop_xyxy_exclusive": [
+        315,
+        545,
+        825,
+        695
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "2656f49b8cb907cb4ab08ae86ddb8c7433a03483d8f43491bcc31591aaaa04b2",
+      "labels": [
+        "army",
+        "ability_before"
+      ],
+      "expected_roi_observation": "Purple bars present on deployed slots",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "army_ability_gray_mixed",
+      "path": "army_ability_gray_mixed.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_035.00",
+      "dimensions": [
+        510,
+        150
+      ],
+      "crop_xyxy_exclusive": [
+        315,
+        545,
+        825,
+        695
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "b80c5178d8f75606c780f28c0ebd338c136415ab3b92bfcfe9959734b821e9b2",
+      "labels": [
+        "army",
+        "ability_after",
+        "gray_slot"
+      ],
+      "expected_roi_observation": "Gray card and lost purple bars; do not equate all gray/dark states with x0",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "army_stage2_reinforcement",
+      "path": "army_stage2_reinforcement.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_148.20",
+      "dimensions": [
+        510,
+        150
+      ],
+      "crop_xyxy_exclusive": [
+        315,
+        545,
+        825,
+        695
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "945a28e017a0d9f4816f692d363775c47a89c0e3a2afe161a3c3513381ead8b1",
+      "labels": [
+        "army",
+        "stage2",
+        "reinforcement"
+      ],
+      "expected_roi_observation": "Five survivors and sixth card; reread all roles and abilities",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "result_stars_negative",
+      "path": "result_stars_negative.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_169.00",
+      "dimensions": [
+        550,
+        180
+      ],
+      "crop_xyxy_exclusive": [
+        500,
+        130,
+        1050,
+        310
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "6a3d27508031910ae701075e3a7ce8a80866b2a679d981e2d8b79c5f54e974aa",
+      "labels": [
+        "negative",
+        "result_stars"
+      ],
+      "expected_roi_observation": "UNKNOWN for home bonus; result 200%",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "loading_without_stars_negative",
+      "path": "loading_without_stars_negative.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_017.00",
+      "dimensions": [
+        540,
+        195
+      ],
+      "crop_xyxy_exclusive": [
+        510,
+        245,
+        1050,
+        440
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "101a710bf7360ef4d80c225617d3fd0bc89e33f8831268f888858510b3ec5052",
+      "labels": [
+        "negative",
+        "loading_no_stars"
+      ],
+      "expected_roi_observation": "UNKNOWN, never COMPLETE",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "star_reward_title_and_button",
+      "path": "star_reward_title_and_button.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_173.00",
+      "dimensions": [
+        295,
+        475
+      ],
+      "crop_xyxy_exclusive": [
+        640,
+        105,
+        935,
+        580
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "40b79611bbc086df2d1cc49c9ff63969b38a561041d4949a930b61d837e548b2",
+      "labels": [
+        "modal",
+        "star_reward"
+      ],
+      "expected_roi_observation": "CLAIMABLE with full panel context",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "cart_active_defense_row",
+      "path": "cart_active_defense_row.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_183.00",
+      "dimensions": [
+        830,
+        105
+      ],
+      "crop_xyxy_exclusive": [
+        360,
+        110,
+        1190,
+        215
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "7db80e1c0d7a0797778f5001ccde50a2054dc8ada308dd0943fd8721a7272eab",
+      "labels": [
+        "cart",
+        "active_defense"
+      ],
+      "expected_roi_observation": "Defense running; must not wait indefinitely",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "cart_gray_collect",
+      "path": "cart_gray_collect.png",
+      "kind": "video_crop",
+      "status": "present",
+      "parent_observation_id": "train_183.00",
+      "dimensions": [
+        165,
+        80
+      ],
+      "crop_xyxy_exclusive": [
+        985,
+        545,
+        1150,
+        625
+      ],
+      "transform": "lossless crop only; no resize",
+      "sha256": "e61bfc9c148cb20089162a496fa39535dd0cb73d70952d97b0aa82736f526562",
+      "labels": [
+        "cart",
+        "collect_gray",
+        "animation"
+      ],
+      "expected_roi_observation": "Gray Collect observed while amount/particles animate; not proof of stable empty",
+      "limitations": "ROI sample only; full parent context must establish village/screen/modal. Video coordinates are not ADB coordinates.",
+      "live_adb_verified": false
+    },
+    {
+      "id": "synthetic_bonus_occluded",
+      "path": "synthetic_bonus_occluded.png",
+      "kind": "transformed_test",
+      "status": "present",
+      "parent_fixture_id": "bonus_0_of_7",
+      "dimensions": [
+        140,
+        140
+      ],
+      "transform": {
+        "operation": "opaque_rectangle",
+        "box_xyxy_exclusive": [
+          0,
+          0,
+          140,
+          81
+        ],
+        "rgb": [
+          30,
+          30,
+          30
+        ],
+        "seed": null
+      },
+      "sha256": "92b25b313457d574317a21aff51047a08a0202ffbf0d9521de6f2d5bb2a0330f",
+      "labels": [
+        "negative",
+        "synthetic",
+        "occluded_button"
+      ],
+      "expected_roi_observation": "UNKNOWN; absence in an occluded area cannot mean COMPLETE",
+      "limitations": "Artificial occlusion; not a real game modal or ADB capture. Must supplement with real obstructed-button samples.",
+      "live_adb_verified": false
+    }
+  ],
+  "inspection_sheets": [
+    {
+      "path": "train_evidence.jpg",
+      "kind": "contact_sheet",
+      "test_input": false,
+      "dimensions": [
+        1440,
+        1182
+      ],
+      "source_observation_ids": [
+        "train_000.00",
+        "train_016.00",
+        "train_017.00",
+        "train_020.00",
+        "train_025.00",
+        "train_027.00",
+        "train_035.00",
+        "train_062.00",
+        "train_108.00",
+        "train_113.00",
+        "train_117.00",
+        "train_143.00",
+        "train_147.20",
+        "train_147.50",
+        "train_148.20",
+        "train_150.50",
+        "train_169.00",
+        "train_173.00",
+        "train_174.00",
+        "train_177.00",
+        "train_179.00",
+        "train_180.00",
+        "train_183.00",
+        "train_187.00"
+      ],
+      "transform": "thumbnails, labels and JPEG compression; inspection only",
+      "sha256": "c674c5429d42c38751a2dc5ecf1849bb112b86b361630899ec24d43d4b88eeaa"
+    },
+    {
+      "path": "camera_evidence.jpg",
+      "kind": "contact_sheet",
+      "test_input": false,
+      "dimensions": [
+        1440,
+        735
+      ],
+      "source_observation_ids": [
+        "camera_000.00",
+        "camera_004.00",
+        "camera_006.00",
+        "camera_010.00",
+        "camera_012.00",
+        "camera_013.00",
+        "camera_014.00",
+        "camera_016.00",
+        "camera_017.00",
+        "camera_020.00"
+      ],
+      "transform": "thumbnails, labels and JPEG compression; inspection only",
+      "sha256": "1a3a7432abb610cf969c5bde931d2b9b1f3afbf57ce448658b13b8d6a7d2b5a2"
+    }
+  ],
+  "missing": [
+    {
+      "id": "adb_main_home",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Native 1600x900 main home, English and actual device language",
+      "expected": "Classify MAIN_HOME; builder bonus UNKNOWN",
+      "reason": "Only compressed/windowed videos and existing template crops"
+    },
+    {
+      "id": "adb_builder_bonus_available",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Native builder home with 0/y and x/y, variable denominators",
+      "expected": "AVAILABLE; 0/y is not complete",
+      "reason": "Video 0/7 and 4/8 do not validate native scale"
+    },
+    {
+      "id": "adb_builder_bonus_complete_pair",
+      "priority": "P0",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "At least two independent stable captures, clear Attack, builder home confirmed, no modal",
+      "expected": "COMPLETE only after both valid observations",
+      "reason": "Camera video no-star frames change viewpoint; no native stable pair"
+    },
+    {
+      "id": "adb_loading_no_stars",
+      "priority": "P0",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Loading/search/clouds with star region absent",
+      "expected": "UNKNOWN",
+      "reason": "Video negative present, native examples missing"
+    },
+    {
+      "id": "adb_attack_obscured",
+      "priority": "P0",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Real popup, tooltip or overlay hides/dims Attack/star region",
+      "expected": "UNKNOWN",
+      "reason": "Synthetic occlusion and video modal do not cover native real obstruction"
+    },
+    {
+      "id": "adb_main_attack_stars",
+      "priority": "P0",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Main Attack with main star row, native dimensions",
+      "expected": "Builder bonus UNKNOWN",
+      "reason": "Video negative only"
+    },
+    {
+      "id": "adb_result_stars",
+      "priority": "P0",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Main and builder result stars, one/two-stage",
+      "expected": "Not builder home progress",
+      "reason": "Video builder result only"
+    },
+    {
+      "id": "adb_dark_builder_and_inactivity",
+      "priority": "P0",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Dark builder home and real Anyone there popup, matched device conditions",
+      "expected": "Different classifications; no reload on dark home",
+      "reason": "Current engine uses brightness heuristics"
+    },
+    {
+      "id": "adb_reward_chain",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Before claim, modal, after close still stars, final truly no stars pair",
+      "expected": "CLAIMABLE then AVAILABLE or COMPLETE from new observations",
+      "reason": "Video confirms next bonus, not chain exhausted"
+    },
+    {
+      "id": "adb_cart_states",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Collectable, stable empty, defense running, failed close, before/after values",
+      "expected": "Bounded collection, no duplicate claim, return home verified",
+      "reason": "Video gray button is still animating, not true zero"
+    },
+    {
+      "id": "adb_builder_army_heroes",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "With ready hero, upgrading/absent hero, unknown portrait, different unlocked/locked slots",
+      "expected": "Optional hero, no slot index shift or invented deployment",
+      "reason": "Train video has no deployed hero; ready-hero branch absent"
+    },
+    {
+      "id": "adb_builder_abilities",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Per-slot before/after tap, used/dead/unavailable, stage 2 survival/reinforcement",
+      "expected": "Do not reuse main x0/gray rule or restore spent ability",
+      "reason": "Video bars visible but tap attribution/timing incomplete"
+    },
+    {
+      "id": "adb_one_two_stage",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Native pre/post deployment, one-stage result and 100% stage1 then stage2",
+      "expected": "Do not exit at stage1 100%; reread army/map",
+      "reason": "Video reference only"
+    },
+    {
+      "id": "adb_camera_pairs",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Per-serial before/after pan and true multi-touch pinch; min/max zoom, lower edge behind army bar",
+      "expected": "New image confirms motion; map revision invalidated; HUD fixed",
+      "reason": "No connected serial and no verified pinch backend"
+    },
+    {
+      "id": "adb_drag_selected_troop",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Controlled selected/unselected card drag with before/after army and map",
+      "expected": "No accidental deployment, release all contacts on stop/error",
+      "reason": "Neither video proves selected-troop drag safety"
+    },
+    {
+      "id": "adb_two_serials",
+      "priority": "P1",
+      "kind": "adb_native",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Two local project serials, different views/settings, focus change and disconnect",
+      "expected": "Only intended serial receives input",
+      "reason": "No serial available"
+    },
+    {
+      "id": "synthetic_none_frame",
+      "priority": "P1",
+      "kind": "transformed_test",
+      "status": "missing",
+      "path": null,
+      "required_capture": "None input without image file",
+      "expected": "UNKNOWN, no input",
+      "reason": "Planned; not generated in GD0"
+    },
+    {
+      "id": "synthetic_scaled_video",
+      "priority": "P1",
+      "kind": "transformed_test",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Recorded crop/resize/padding with parent ID, output dimensions and interpolation",
+      "expected": "Offline robustness only; not native evidence",
+      "reason": "Planned; not generated in GD0"
+    },
+    {
+      "id": "synthetic_camera_affine",
+      "priority": "P1",
+      "kind": "transformed_test",
+      "status": "missing",
+      "path": null,
+      "required_capture": "Known shift/scale plus unchanged HUD layer and revision change",
+      "expected": "Invalidate map points, retain HUD coordinates; not live gesture proof",
+      "reason": "Planned; not generated in GD0"
+    }
+  ],
+  "existing_asset_audit": [
+    {
+      "path": "assets/mainvill.png",
+      "dimensions": [
+        4320,
+        6000
+      ],
+      "bytes": 17666302
+    },
+    {
+      "path": "assets/night.png",
+      "dimensions": [
+        134,
+        70
+      ],
+      "bytes": 16805
+    },
+    {
+      "path": "assets/thuyennight.png",
+      "dimensions": [
+        33,
+        30
+      ],
+      "bytes": 2324
+    },
+    {
+      "path": "assets/thuyensun.png",
+      "dimensions": [
+        33,
+        26
+      ],
+      "bytes": 2187
+    },
+    {
+      "path": "assets/nighthero1.png",
+      "dimensions": [
+        101,
+        81
+      ],
+      "bytes": 20765
+    },
+    {
+      "path": "assets/nighthero2.png",
+      "dimensions": [
+        100,
+        93
+      ],
+      "bytes": 21827
+    },
+    {
+      "path": "assets/okaystar.png",
+      "dimensions": [
+        228,
+        84
+      ],
+      "bytes": 6549
+    },
+    {
+      "path": "assets/base.png",
+      "dimensions": [
+        127,
+        131
+      ],
+      "bytes": 21276
+    },
+    {
+      "path": "assets/home_attack.png",
+      "dimensions": [
+        105,
+        130
+      ],
+      "bytes": 16522
+    },
+    {
+      "path": "tests/fixtures/builder_available_region.png",
+      "dimensions": [
+        110,
+        110
+      ],
+      "bytes": 28743
+    },
+    {
+      "path": "tests/fixtures/builder_unavailable_region.png",
+      "dimensions": [
+        110,
+        110
+      ],
+      "bytes": 27753
+    }
+  ],
+  "coverage_limits": [
+    "No recognizer implemented or tested against these samples in GD0.",
+    "Crops cannot establish full-screen context independently.",
+    "No actual ADB fixture captured; do not relabel video crops or synthetic images as native.",
+    "No confirmed empty cart, exhausted reward chain, ready builder hero, or selected-troop drag proof."
+  ],
+  "additional_evidence_modules": {
+    "GD4": {
+      "manifest": "navigation/manifest.json",
+      "live_receipt": "navigation/live-receipt.json",
+      "asset_manifest": "assets/dual_village/manifest.json",
+      "native_language": "en",
+      "resolution": [
+        1600,
+        900
+      ],
+      "live_verified": [
+        "main_builder_roundtrip_with_camera_offset",
+        "builder_complete_two_fresh_captures",
+        "cart_empty_close_home"
+      ],
+      "unverified": [
+        "native_available_and_repeated_reward",
+        "collectable_defending_cart",
+        "builder_battle_result",
+        "other_languages"
+      ]
+    },
+    "GD5": {
+      "manifest": "builder/manifest.json",
+      "live_receipt": "builder/live-receipt.json",
+      "asset_manifest": "assets/dual_village/builder/manifest.json",
+      "native_language": "en",
+      "resolution": [
+        1600,
+        900
+      ],
+      "live_verified": [
+        "around_two_fresh_battles_home",
+        "single_point_two_stages_no_hero_home",
+        "repair_wrong_reinforcement_to_baby_dragon",
+        "stop_after_card_selection_before_map_input",
+        "builder_inactivity_reload",
+        "cart_collection_defending_and_disabled_balance_home"
+      ],
+      "unverified": [
+        "native_absent_upgrading_hero",
+        "automated_copter_ability",
+        "camp_8",
+        "native_available_claimable_reward_chain",
+        "partial_cart_collect_still_enabled",
+        "inprocess_reload_between_select_and_map_live",
+        "main_multiplayer_regression_live",
+        "two_independent_devices",
+        "builder_battle_auto_zoom_live"
+      ]
+    }
+  }
+}

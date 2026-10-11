@@ -1,0 +1,175 @@
+{
+  "evidence": "Native ADB, one independent emulator; no attacks or reward claims",
+  "inactivity_attempt": {
+    "at": "2026-10-09T09:09:46.420883+07:00",
+    "serial": "emulator-5556",
+    "recovery": "Inactivity; bỏ giao dịch cũ",
+    "after_reload": {
+      "kind": "main_home",
+      "reason": "HUD chung + Attack riêng + chân dung thợ đúng làng",
+      "village": "main",
+      "panel": null,
+      "points": {
+        "attack": [
+          106,
+          808
+        ]
+      },
+      "language": "en"
+    },
+    "bonus_after_reload": "unknown",
+    "builder_incomplete": true,
+    "actual_village_after_reset": "unknown",
+    "to_builder": {
+      "success": false,
+      "reason": "Không có Home ổn định; không thao tác thuyền",
+      "village": null,
+      "boat_taps": 0,
+      "camera_operations": 0
+    },
+    "completed": false,
+    "error": "RuntimeError('Không có Home ổn định; không thao tác thuyền')",
+    "release_confirmed": true,
+    "elapsed": 38.13207780000812
+  },
+  "successful_probe": {
+    "serial": "emulator-5556",
+    "at": "2026-10-09T09:13:22.072275+07:00",
+    "scope": "one native device; no attacks; actual modal/navigation/rewards/camera",
+    "events": [],
+    "inputs": [
+      {
+        "point": [
+          460,
+          605
+        ],
+        "ok": true,
+        "at": 126193.0435664
+      },
+      {
+        "point": [
+          961,
+          334
+        ],
+        "ok": true,
+        "at": 126228.5586517
+      },
+      {
+        "point": [
+          1341,
+          89
+        ],
+        "ok": true,
+        "at": 126238.5635083
+      },
+      {
+        "point": [
+          1318,
+          469
+        ],
+        "ok": true,
+        "at": 126265.2361465
+      }
+    ],
+    "gestures": [
+      {
+        "kind": "pan",
+        "status": "stopped",
+        "reason": "Đã dừng; release xác nhận",
+        "timing": {
+          "command_started": 126155.0134039,
+          "stop_at": 126155.1701443,
+          "command_returned": 126155.5750276,
+          "returned": 126155.8683755
+        },
+        "response_after_stop": 0.6982311999890953,
+        "stop_before_command_return": true
+      },
+      {
+        "kind": "zoom",
+        "status": "stopped",
+        "reason": "Đã dừng; release xác nhận",
+        "timing": {
+          "command_started": 126164.3221286,
+          "stop_at": 126164.4731489,
+          "command_returned": 126167.7681269,
+          "returned": 126168.1875773
+        },
+        "response_after_stop": 3.7144284000096377,
+        "stop_before_command_return": true
+      }
+    ],
+    "after_reload": {
+      "kind": "main_home",
+      "reason": "HUD chung + Attack riêng + chân dung thợ đúng làng",
+      "village": "main",
+      "panel": null,
+      "points": {
+        "attack": [
+          106,
+          808
+        ]
+      },
+      "language": "en"
+    },
+    "to_builder": {
+      "success": true,
+      "reason": "Hai ảnh mới xác nhận đúng làng đích",
+      "village": "builder",
+      "boat_taps": 1,
+      "camera_operations": 1
+    },
+    "bonus": {
+      "success": true,
+      "reason": "Đã đọc lại thưởng trên Home",
+      "bonus": {
+        "state": "complete",
+        "captured_at": 126200.2282382,
+        "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+        "region": [
+          20,
+          690,
+          175,
+          70
+        ],
+        "progress": null,
+        "captures": [
+          17,
+          18
+        ]
+      },
+      "claims": 0
+    },
+    "cart": {
+      "success": true,
+      "reason": "Xe trống/đang phòng thủ; kết thúc hữu hạn",
+      "collected": false,
+      "returned_home": true,
+      "defending": false,
+      "unavailable": true
+    },
+    "to_main": {
+      "success": true,
+      "reason": "Hai ảnh mới xác nhận đúng làng đích",
+      "village": "main",
+      "boat_taps": 1,
+      "camera_operations": 0
+    },
+    "final_screen": {
+      "kind": "main_home",
+      "reason": "HUD chung + Attack riêng + chân dung thợ đúng làng",
+      "village": "main",
+      "panel": null,
+      "points": {
+        "attack": [
+          106,
+          808
+        ]
+      },
+      "language": "en"
+    },
+    "completed": true,
+    "release_confirmed": true,
+    "elapsed": 141.3222395000048
+  }
+}

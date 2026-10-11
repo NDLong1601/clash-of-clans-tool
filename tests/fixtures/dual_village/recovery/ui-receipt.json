@@ -1,0 +1,55 @@
+{
+  "evidence": "offline Tk, simulated sessions; no gameplay",
+  "capture": "Pillow window handle; independent of desktop foreground",
+  "rows": [
+    {
+      "size": "980x840",
+      "page": "main",
+      "image": "980x840-main.png",
+      "canvas_width": 925,
+      "content_width": 925,
+      "locked": true
+    },
+    {
+      "size": "980x840",
+      "page": "builder",
+      "image": "980x840-builder.png",
+      "canvas_width": 925,
+      "content_width": 925,
+      "locked": true
+    },
+    {
+      "size": "980x840",
+      "page": "run",
+      "image": "980x840-run.png",
+      "canvas_width": 925,
+      "content_width": 925,
+      "locked": true
+    },
+    {
+      "size": "880x680",
+      "page": "main",
+      "image": "880x680-main.png",
+      "canvas_width": 825,
+      "content_width": 825,
+      "locked": true
+    },
+    {
+      "size": "880x680",
+      "page": "builder",
+      "image": "880x680-builder.png",
+      "canvas_width": 825,
+      "content_width": 825,
+      "locked": true
+    },
+    {
+      "size": "880x680",
+      "page": "run",
+      "image": "880x680-run.png",
+      "canvas_width": 825,
+      "content_width": 825,
+      "locked": true
+    }
+  ],
+  "second_editable": "normal"
+}

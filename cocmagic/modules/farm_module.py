@@ -9,7 +9,6 @@ State machine farm Main Village:
 
 import sys
 import time
-import random
 import math
 import glob
 import os
@@ -30,14 +29,18 @@ import cv2
 from cocmagic import config
 from cocmagic.adb_controller import ADBController
 from cocmagic.battle_planner import BattlePlan, BattlePlanner
+from cocmagic.camera_controller import CameraController, CameraStatus, ScreenSpace, measure_motion
 from cocmagic.attack_tactics import AttackTactics
 from cocmagic.troop_vision import (
     count_badge_changed, detect_bar_cards, is_electro_card, is_siege_card, read_card_count,
 )
 from cocmagic.screen_reader import ScreenReader
 from cocmagic.modules.hero_module import HeroModule
-from cocmagic.ui_dialogs import find_confirmation_button
+from cocmagic.ui_dialogs import find_confirmation_button, find_inactivity_reload, find_connection_retry
+from cocmagic.recovery import RecoveryInterrupted, RuntimeWriteError
 from cocmagic.event_rewards import find_reward_panel
+from cocmagic.village_module import ModuleScreen
+from cocmagic.builder_screen_reader import BuilderScreenReader, ScreenKind
 
 
 # ════════════════════════════════════════════════════════════
@@ -46,6 +49,7 @@ from cocmagic.event_rewards import find_reward_panel
 
 T_HOME_ATTACK       = config.asset("home_attack.png")     # Nút Attack tại màn chính (không sao)
 T_BASE_ATTACK       = config.asset("base.png")            # Nút Attack gốc tại màn chính
+T_HOME_ATTACK_LABEL = config.asset("dual_village/home_attack_label.png")
 T_FIND_MATCH        = config.asset("find.png")            # Nút Next trên màn do thám đối thủ
 T_FIND_MATCH2       = config.asset("findmatch.png")       # Nút "Find a Match" trên thẻ Battle
 T_FIND_MATCH_BACKUP = config.asset("backupfindmatch.png") # Tab "Multiplayer"
@@ -111,6 +115,7 @@ class SpellProgress:
 # ════════════════════════════════════════════════════════════
 
 class FarmState(Enum):
+    RECOVERING  = auto()   # Chưa xác nhận màn hình sau reload/chuyển làng
     HOME        = auto()   # Đang ở màn hình chính làng
     FIND_MATCH  = auto()   # Đang tìm trận (Attack menu, My Army, mây trắng)
     LOOT_CHECK  = auto()   # Đang xem loot đối thủ, quyết định đánh hay bỏ
@@ -133,6 +138,10 @@ class _BattleFinished(Exception):
     """Discard pending deployment inputs once the result or village appears."""
 
 
+class _StopRequested(Exception):
+    """Unwind a wait without issuing the next input group."""
+
+
 # ════════════════════════════════════════════════════════════
 #  FARM MODULE
 # ════════════════════════════════════════════════════════════
@@ -141,12 +150,23 @@ class FarmModule:
     """Main Village farming state machine."""
 
     def __init__(self, adb: ADBController, reader: ScreenReader,
-                 hero_mod: HeroModule, settings: dict, recovery_handler=None):
+                 hero_mod: HeroModule, settings: dict, recovery_handler=None,
+                 wall_mod=None, stop_event=None):
         self.adb      = adb
         self.reader   = reader
         self.hero_mod = hero_mod
         self.settings = settings
         self.recovery_handler = recovery_handler
+        self.wall_mod = wall_mod
+        self.stop_event = stop_event
+        self.device_serial = adb.device
+        self._confirmed_screen = ModuleScreen.UNKNOWN
+        self._handoff_ready = False
+        self._in_tick = False
+        self._suspended = False
+        self._yield_requested = None
+        self._recovery_previous_state = None
+        self._recovery_attempts = 0
 
         self.state            = FarmState.HOME
         self.battle_start_ts  = 0.0
@@ -173,6 +193,7 @@ class FarmModule:
         self._button_templates: dict = {}
         self._find_phase = "menu"
         self._home_verified = False
+        self._home_screen_reader = None
         self._home_attack_failures = 0
         self._spell_templates = None
         self._selected_battle_card = None
@@ -185,26 +206,181 @@ class FarmModule:
         self._count_cache = {}
         self._depleted_cache = {}
         self._guarded_frame = None
+        self.camera = CameraController(adb, stop_event=stop_event)
+        self._map_targets_invalid = False
+        self._camera_prepared = False
+        self._standard_view = None
+        self._map_reference_frame = None
+        self._allow_legacy_probe = True
+        self.adb.add_camera_listener(self._camera_changed)
+
+    def _camera_changed(self, revision):
+        """Discard map geometry only. Card/hero portraits and HUD stay fixed."""
+        if self._map_reference_frame is not None or self._battle_plan is not None:
+            # Home/navigation revisions do not describe a main battle camera.
+            # Once a battle view has moved, fixed probes need a new Home cycle.
+            self._allow_legacy_probe = False
+        self._battle_plan = None
+        self._attack_tactics = None
+        self._confirmed_main_points.clear()
+        self._electro_drop_points.clear()
+        self._hero_entry = None
+        self._verified_battle_points.clear()
+        self._standard_view = None
+        self._map_reference_frame = None
+        self._map_targets_invalid = True
+        self._vision_frame = self._guarded_frame = None
+        self._count_cache.clear()
+        self._depleted_cache.clear()
+        self._spell_check_frames.clear()
+        # Consumption/ability state belongs to the battle, not the camera.
+        # Unresolved casts cannot be replayed after their reference image moves.
+        if any(p.unconfirmed_before is not None for p in self._pending_spells.values()):
+            self.halt_reason = "Camera đổi khi còn spell chưa đối soát; dừng để tránh cast lặp."
+        self.adb.invalidate_cache()
+
+    def _make_battle_plan(self, image):
+        if not self.settings.get("camera_auto_adjust", False) and self._allow_legacy_probe:
+            # Keep the disabled-camera strategy across village handoffs, but
+            # build from this frame and tag it with the current input revision.
+            plan = self.planner.plan(image)
+            if plan is not None:
+                plan.camera_revision = self.camera.revision
+        else:
+            plan = self.planner.plan(image, camera_revision=self.camera.revision,
+                                     standard_view=self._standard_view)
+        if plan is not None:
+            self._map_targets_invalid = False
+            self._map_reference_frame = image
+        return plan
+
+    def _confirm_home_view(self):
+        """A verified main Home ends the previous battle's geometry scope."""
+        self._camera_changed(self.camera.revision)
+        self._allow_legacy_probe = True
+
+    def _observe_camera_frame(self, image):
+        reference = self._map_reference_frame
+        if reference is None or image is None or image is reference:
+            return
+        motion = measure_motion(reference, image)
+        if not motion.valid or motion.changed:
+            # Detect a manual/external camera move as well as controller input.
+            # Rebuilding is allowed before deployment; an in-flight deployment
+            # fails closed at the next input guard instead of translating points.
+            self.adb.mark_camera_input()
+
+    def _prepare_camera(self, image):
+        """Only after loot acceptance, before ANY army selection or drop."""
+        if not self.settings.get("camera_auto_adjust", False) or self._camera_prepared:
+            return image
+        self._camera_prepared = True  # bounded even when backend fails
+        deadline = time.monotonic() + 22
+        if (self._selected_battle_card is not None or self._pending_spells or
+                not self._is_scout_screen(image)):
+            print("[Camera] Không chỉnh khi selection/màn scout chưa an toàn.")
+            return image
+        plan = self._make_battle_plan(image)
+        # No fixed fallback in camera mode. Widen the view a finite number of
+        # times, rescanning actual geometry after each verified gesture.
+        for _ in range(3):
+            if time.monotonic() >= deadline or self._stopping():
+                return None
+            if plan is not None:
+                break
+            result = self.camera.zoom(.6, context="scout", troop_selected=False)
+            print(f"[Camera] Zoom: {result.status.value}, rev={result.revision}: {result.reason}")
+            if result.status not in (CameraStatus.SUCCESS, CameraStatus.UNCHANGED):
+                return None
+            image = result.after if result.after is not None else self._screenshot(use_cache=False)
+            if image is None or not self._is_scout_screen(image):
+                return None
+            plan = self._make_battle_plan(image)
+            if result.status == CameraStatus.UNCHANGED:
+                break
+        # Lower restriction line/drop margin overlaps the army/popover region.
+        # Pan from a central map path; HUD is never shifted with map targets.
+        for _ in range(2):
+            if time.monotonic() >= deadline or self._stopping():
+                return None
+            if plan is None or not plan.lower_edge_occluded:
+                break
+            result = self.camera.pan((800, 510), (800, 365), context="scout", troop_selected=False)
+            print(f"[Camera] Pan: {result.status.value}, rev={result.revision}: {result.reason}")
+            if result.status not in (CameraStatus.SUCCESS, CameraStatus.UNCHANGED):
+                return None
+            image = result.after
+            if image is None or not self._is_scout_screen(image):
+                return None
+            plan = self._make_battle_plan(image)
+            if result.status == CameraStatus.UNCHANGED:
+                break  # pan limit; do not send the same drag forever
+        if plan is None or (plan.lower_edge_occluded and not plan.lower_edge_points):
+            return None
+        self._battle_plan = plan
+        return image
+
+    def _assert_camera_targets(self, targets):
+        has_map = any(point is not None and point[1] < 720 for point in targets)
+        if not has_map:
+            return
+        def old(value):
+            revision = getattr(value, "camera_revision", self.camera.revision)
+            return isinstance(revision, int) and revision != self.camera.revision
+        stale = self._map_targets_invalid or old(self._battle_plan) or old(self._attack_tactics)
+        if stale:
+            self._camera_changed(self.camera.revision)
+            self.halt_reason = "Điểm bản đồ thuộc camera_revision cũ; không gửi input."
+            raise _BattleInputStopped()
+        if self.settings.get("camera_auto_adjust", False) and any(
+                p is not None and p[1] < 720 and not ScreenSpace.map_point(p) for p in targets):
+            self.halt_reason = "Điểm bản đồ chạm HUD; không gửi input."
+            raise _BattleInputStopped()
 
     # ─── Main tick ──────────────────────────────────────────
 
-    def tick(self) -> bool:
+    def tick(self, *, yield_requested=None) -> bool:
         """
         Gọi 1 lần mỗi vòng lặp bot chính.
         Trả về True nếu cần tiếp tục, False nếu cần dừng.
         """
+        if self._stopping() or self._suspended:
+            return self.halt_reason is None
+        self._in_tick = True
+        self._handoff_ready = False
+        self._yield_requested = yield_requested
         try:
             self._handle_state()
-        except (_GameReloaded, _BattleInputStopped, _BattleFinished):
+            # Former engine post-processing belongs to main. Keep COLLECT ->
+            # wall -> next HOME tick ordering, under the same input ownership.
+            if self.state == FarmState.HOME and (not self.recovering_home or self._switch_requested()):
+                self._finish_home_work()
+        except RuntimeWriteError:
+            raise
+        except (RecoveryInterrupted, _GameReloaded, _BattleInputStopped, _BattleFinished, _StopRequested):
             pass
         except Exception as e:
             print(f"[Farm] ERROR trong state {self.state.name}: {e}")
             import traceback; traceback.print_exc()
-            try:
-                self._go_home_safe()
-            except (_GameReloaded, _BattleFinished, _BattleInputStopped):
-                pass
+            # An unknown exception is not permission to back/tap an unknown UI.
+            self.reset_after_reload()
+            self.halt_reason = f'Lỗi main chưa đối soát: {e}; dừng riêng instance'
+        finally:
+            self._in_tick = False
+            self._yield_requested = None
         return self.halt_reason is None
+
+    def _stopping(self):
+        return self.stop_event is not None and self.stop_event.is_set()
+
+    def _wait(self, seconds):
+        if self.stop_event is None:
+            time.sleep(seconds)
+        elif self.stop_event.wait(seconds):
+            raise _StopRequested()
+
+    def _switch_requested(self):
+        return self._yield_requested is not None and self._yield_requested()
 
     def _screenshot(self, **kwargs):
         image = self._capture(**kwargs)
@@ -230,6 +406,8 @@ class FarmModule:
 
     def _capture(self, **kwargs):
         """Capture a frame while keeping connection recovery ahead of rewards."""
+        if self._stopping():
+            raise _StopRequested()
         image = self.adb.screenshot(**kwargs)
         if image is not None and self.recovery_handler and self.recovery_handler(image):
             raise _GameReloaded()
@@ -253,7 +431,7 @@ class FarmModule:
             if choice is not None:
                 break
             if attempt < 2:
-                time.sleep(.2)
+                self._wait(.2)
                 image = self._capture(use_cache=False)
                 if image is None:
                     self._stop_reward_input("Mất ảnh khi đọc bảng bonus sự kiện.")
@@ -276,7 +454,7 @@ class FarmModule:
                 self._guard_battle_frame(image)
                 clear_frames += 1
                 if clear_frames < 2:
-                    time.sleep(.1)
+                    self._wait(.1)
                     continue
                 # A reward click can clear the selected troop/spell card.
                 if self.state == FarmState.ATTACKING and self._selected_battle_card is not None:
@@ -290,15 +468,24 @@ class FarmModule:
                 return image
             clear_frames = 0
             if attempt < 7:
-                time.sleep(.2)
+                self._wait(.2)
         self._stop_reward_input("Bảng bonus chưa đóng sau khi chọn tài nguyên; dừng thao tác.")
 
-    def _battle_tap(self, x, y, *, select=False, **kwargs):
+    def _battle_tap(self, x, y, *, select=False, hud=False, **kwargs):
+        if self._stopping():
+            raise _StopRequested()
+        if not select and not hud:
+            if self.settings.get("camera_auto_adjust", False):
+                self._observe_camera_frame(self._screenshot(use_cache=False))
+            self._assert_camera_targets([(x, y)])
         if self.settings.get("event_mode", False):
             image = self._screenshot(use_cache=False)
             if image is None:
                 self._stop_reward_input("Mất ảnh trước thao tác trong trận sự kiện.")
             self._guard_battle_frame(image, before_input=True)
+            if not select and not hud:
+                self._observe_camera_frame(image)
+                self._assert_camera_targets([(x, y)])
         success = self.adb.tap(x, y, **kwargs)
         if success and select:
             self._selected_battle_card = (x, y)
@@ -314,16 +501,31 @@ class FarmModule:
 
     def _battle_tap_many(self, targets, *, interval, select_first=False,
                          fast=False, screenshot=None):
+        if self._stopping():
+            raise _StopRequested()
         if not targets:
             return True
+        map_targets = targets[1:] if select_first else targets
+        has_map = any(point is not None and point[1] < 720 for point in map_targets)
+        # Hero abilities and selections are HUD input. Battle animation must
+        # not invalidate map geometry while acknowledging an accepted spell.
+        if has_map:
+            self._observe_camera_frame(screenshot)
+        self._assert_camera_targets(map_targets)
         if not self.settings.get("event_mode", False):
-            return self.adb.tap_many(targets, interval=interval)
+            success = self.adb.tap_many(targets, interval=interval)
+            if success and select_first:
+                self._selected_battle_card = targets[0]
+            return success
         if fast and all(self._reward_safe_point(p) for p in targets):
             image = (self._handle_event_rewards(screenshot) if screenshot is not None
                      else self._screenshot(use_cache=False))
             if image is None:
                 self._stop_reward_input("Mất ảnh trước nhóm thao tác trong trận sự kiện.")
             self._guard_battle_frame(image, before_input=True)
+            if has_map:
+                self._observe_camera_frame(image)
+            self._assert_camera_targets(map_targets)
             success = self.adb.tap_many(targets, interval=interval)
             if success and select_first:
                 self._selected_battle_card = targets[0]
@@ -332,14 +534,20 @@ class FarmModule:
         # and deployment; a queued batch could otherwise hit a reward card.
         for index, (x, y) in enumerate(targets):
             if not self._battle_tap(x, y, select=select_first and index == 0,
-                                    jitter=0, delay=0):
+                                    hud=y >= 720, jitter=0, delay=0):
                 return False
             if index < len(targets) - 1:
-                time.sleep(interval)
+                self._wait(interval)
         return True
 
     def reset_after_reload(self):
-        """Discard battle-specific state before rechecking Home after a reload."""
+        """Discard stale battle inputs; the next tick must classify a new frame."""
+        previous = (self._recovery_previous_state if self.state == FarmState.RECOVERING else self.state)
+        if self.settings.get("camera_auto_adjust", False) or self.camera.revision:
+            self.camera.reset_view()
+        else:
+            self.camera.zoom_limits.clear()
+        self._camera_prepared = False
         self.invalidate_ui_cache()
         self._combo_profile = None
         self._attack_tactics = None
@@ -362,13 +570,137 @@ class FarmModule:
         self._count_cache.clear()
         self._depleted_cache.clear()
         self.battle_start_ts = 0.0
-        self.state = FarmState.HOME
+        self.halt_reason = None
+        self._begin_recovery(previous)
+        if self.wall_mod is not None:
+            self.wall_mod.reset_after_reload()
         self.adb.invalidate_cache()
+
+    def _begin_recovery(self, previous):
+        self._recovery_previous_state = previous
+        self._recovery_attempts = 0
+        self._confirmed_screen = ModuleScreen.UNKNOWN
+        self._handoff_ready = False
+        self.state = FarmState.RECOVERING
+
+    def invalidate_after_popup(self):
+        previous = (self._recovery_previous_state if self.state == FarmState.RECOVERING else self.state)
+        self.invalidate_ui_cache()
+        self._begin_recovery(previous)
+
+    def suspend(self):
+        if not self.can_yield:
+            raise RuntimeError("Main chưa ở điểm nhường đã xác nhận.")
+        self._suspended = True
+
+    def resume(self):
+        # Only called after navigation has confirmed the target village. Keep
+        # startup setup/statistics; all screen and map positions need rechecking.
+        if self._pending_spells or self._pending_ability_names or self._selected_battle_card is not None:
+            raise RuntimeError("Không thể resume main với thao tác chưa đối soát.")
+        self.reset_after_reload()
+        self._begin_recovery(FarmState.HOME)
+        self._suspended = False
+
+    @property
+    def confirmed_screen(self):
+        return self._confirmed_screen
+
+    @property
+    def can_yield(self):
+        return (self._handoff_ready and not self._in_tick and not self._suspended and
+                not self._stopping() and self.halt_reason is None and
+                self.state == FarmState.HOME and self.confirmed_screen == ModuleScreen.HOME and
+                not self._pending_spells and not self._pending_ability_names and
+                self._selected_battle_card is None)
+
+    @property
+    def metrics(self):
+        return {"attack_count": self.attack_count, "skip_count": self.skip_count,
+                "wall_count": self.wall_mod.walls_upgraded if self.wall_mod is not None else 0}
+
+    def _classify_screen(self, image):
+        if image is None or image.shape[:2] != (config.ANDROID_H, config.ANDROID_W):
+            return ModuleScreen.UNKNOWN
+        if (find_inactivity_reload(image) is not None or find_connection_retry(self.adb, image) is not None or
+                find_reward_panel(image) is not None or
+                find_confirmation_button(self.adb, image) is not None or
+                any(self.adb.is_visible(tpl, .65, image, region=QUICK_TRAIN_SLOT_1) is True
+                    for tpl in (T_USE, T_SAVE_ARMY)) or
+                (self.wall_mod is not None and self.wall_mod.blocks_handoff(image))):
+            return ModuleScreen.MODAL
+        if self._is_result_screen(image):
+            return ModuleScreen.RESULT
+        if self._is_scout_screen(image):
+            return ModuleScreen.SCOUT
+        if self._is_battle_screen(image):
+            return ModuleScreen.BATTLE
+        if self._is_home_screen(image):
+            return ModuleScreen.HOME
+        if any(self.adb.is_visible(tpl, .75, image) is True
+               for tpl in (T_FIND_MATCH2, T_FIND_MATCH_BACKUP, T_ARMY_ATTACK, T_ARMY_ATTACK2)):
+            return ModuleScreen.MENU
+        return ModuleScreen.UNKNOWN
+
+    def _state_recovering(self):
+        image = self._capture(use_cache=False)
+        self._confirmed_screen = self._classify_screen(image)
+        previous = self._recovery_previous_state
+        if self.confirmed_screen == ModuleScreen.HOME:
+            self._confirm_home_view()
+            self._home_verified = True
+            self.state = (FarmState.RESULT if previous in
+                          (FarmState.ATTACKING, FarmState.BATTLE_WAIT, FarmState.RESULT)
+                          else FarmState.COLLECT)
+        elif self.confirmed_screen == ModuleScreen.SCOUT:
+            self.state = FarmState.LOOT_CHECK
+        elif self.confirmed_screen == ModuleScreen.BATTLE:
+            # After reload, never replay a deployment whose outcome is unknown.
+            self.state = FarmState.BATTLE_WAIT
+            if not self.battle_start_ts:
+                self.battle_start_ts = time.time()
+        elif self.confirmed_screen == ModuleScreen.RESULT:
+            self.state = FarmState.RESULT
+        elif self.confirmed_screen == ModuleScreen.MENU:
+            self.state = FarmState.FIND_MATCH
+        elif self.confirmed_screen == ModuleScreen.MODAL and previous in (
+                FarmState.ATTACKING, FarmState.BATTLE_WAIT, FarmState.RESULT):
+            # Rewards/end-battle confirmation are owned by the battle handler.
+            self.state = FarmState.BATTLE_WAIT if previous == FarmState.ATTACKING else previous
+        else:
+            self._recovery_attempts += 1
+            if self._recovery_attempts >= 30:
+                self.halt_reason = "Không xác định được màn hình main sau phục hồi; kiểm tra làng/game."
+            self._wait(.5)
+
+    def _finish_home_work(self):
+        if (self._stopping() or self.halt_reason or self._pending_spells or
+                self._pending_ability_names or self._selected_battle_card is not None):
+            return
+        # HOME enum alone cannot authorize a wall purchase or handoff.
+        self._confirmed_screen = self._classify_screen(self._screenshot(use_cache=False))
+        if self.confirmed_screen != ModuleScreen.HOME:
+            self._home_verified = False
+            return
+        self._confirm_home_view()
+        if (self.wall_mod is not None and not self.settings.get("event_mode", False) and
+                self.settings.get("upgrade_walls", True) and not self.recovering_home):
+            self.wall_mod.run()
+            if self._stopping():
+                return
+            if self.wall_mod.last_interacted:
+                self.invalidate_ui_cache()
+                self._confirmed_screen = self._classify_screen(self._screenshot(use_cache=False))
+        self._handoff_ready = (self.confirmed_screen == ModuleScreen.HOME and
+                               not self._pending_spells and not self._pending_ability_names and
+                               self._selected_battle_card is None)
 
     # ─── State handlers ─────────────────────────────────────
 
     def _handle_state(self):
-        if self.state == FarmState.HOME:
+        if self.state == FarmState.RECOVERING:
+            self._state_recovering()
+        elif self.state == FarmState.HOME:
             self._state_home()
         elif self.state == FarmState.FIND_MATCH:
             self._state_find_match()
@@ -387,6 +719,14 @@ class FarmModule:
 
     def _state_home(self):
         """Ở màn hình chính -- tìm nút Attack! góc dưới trái để mở menu."""
+        # Check pending requests before both cached and discovered Attack taps.
+        # Startup also needs a real Home observation before opening Quick Train.
+        if self._switch_requested() or (self.settings.get("auto_train", True) and
+                                         not self._initial_trained):
+            self._confirmed_screen = self._classify_screen(self._screenshot(use_cache=False))
+            if self.confirmed_screen != ModuleScreen.HOME:
+                self._begin_recovery(FarmState.HOME)
+                return
         # Tự động luyện quân lần đầu khi bật bot nếu bật auto_train
         if self.settings.get("auto_train", True) and not self._initial_trained:
             print("[Farm] 🛡️ Khởi động: nạp đầy hàng đợi quân đội (TRAIN)...")
@@ -394,7 +734,12 @@ class FarmModule:
             self.state = FarmState.TRAIN
             return
 
+        if self._switch_requested():
+            return
+
         if self._home_verified and "home_attack" in self._button_cache:
+            if self._switch_requested():
+                return
             x, y = self._button_cache["home_attack"]
             if not self.adb.tap(x, y, delay=0.05):
                 return
@@ -402,7 +747,7 @@ class FarmModule:
             self._home_verified = False
             self._find_phase = "menu"
             self.state = FarmState.FIND_MATCH
-            time.sleep(0.35)
+            self._wait(0.35)
             return
 
         print("[Farm] HOME -- Tìm nút Attack!...")
@@ -417,14 +762,21 @@ class FarmModule:
                                       region=HOME_ATTACK_REGION) if anchor else None)
         home_template = T_BASE_ATTACK if pos else T_HOME_ATTACK
         pos = pos or anchor
+        if not pos:
+            native_home = self._native_main_home(img)
+            if native_home:
+                pos = native_home.points['attack']
+                home_template = T_HOME_ATTACK_LABEL
 
         if pos:
             self._button_cache["home_attack"] = pos
             self._button_templates["home_attack"] = home_template
+            if self._switch_requested():
+                return
             if not self.adb.tap(pos[0], pos[1], jitter=4):
                 return
             print(f"[Farm] --> Bấm nút Attack! tại ({pos[0]},{pos[1]}), chuyển FIND_MATCH")
-            time.sleep(0.35)
+            self._wait(0.35)
             self._home_verified = False
             self._find_phase = "menu"
             self.state = FarmState.FIND_MATCH
@@ -440,13 +792,13 @@ class FarmModule:
 
         if self._is_battle_screen(img):
             print("[Farm] Phát hiện trận đã bắt đầu, chuyển ATTACKING")
-            self._battle_plan = self.planner.plan(img)
+            self._battle_plan = self._make_battle_plan(img)
             self.battle_start_ts = time.time()
             self.state = FarmState.ATTACKING
             return
 
         print("[Farm] Không thấy nút Attack tại HOME; chờ màn hình ổn định.")
-        time.sleep(0.8)
+        self._wait(0.8)
 
     def _state_find_match(self):
         """
@@ -468,7 +820,7 @@ class FarmModule:
                 print(f"[Farm] --> Bấm Find a Match từ cache tại {self._button_cache['find_match']}")
                 self._home_attack_failures = 0
                 self._find_phase = "army"
-                time.sleep(0.35)
+                self._wait(0.35)
             return
         if self._find_phase == "menu":
             self._button_cache.pop("find_match", None)
@@ -478,7 +830,7 @@ class FarmModule:
                 print(f"[Farm] --> Bấm Army Attack từ cache tại {self._button_cache['army_attack']}")
                 self._home_attack_failures = 0
                 self._find_phase = "scout"
-                time.sleep(0.65)
+                self._wait(0.65)
             return
         if self._find_phase == "army":
             self._button_cache.pop("army_attack", None)
@@ -495,9 +847,15 @@ class FarmModule:
             # Recenter the learned point from the full button on failure.
             pos = self.adb.find_template(T_BASE_ATTACK, 0.65, img,
                                          region=HOME_ATTACK_REGION)
+            home_template = T_BASE_ATTACK
+            if not pos:
+                native_home = self._native_main_home(img)
+                if native_home:
+                    pos = native_home.points['attack']
+                    home_template = T_HOME_ATTACK_LABEL
             if pos:
                 self._button_cache["home_attack"] = pos
-                self._button_templates["home_attack"] = T_BASE_ATTACK
+                self._button_templates["home_attack"] = home_template
             else:
                 self._button_cache.pop("home_attack", None)
                 self._button_templates.pop("home_attack", None)
@@ -516,7 +874,7 @@ class FarmModule:
         if self._is_battle_screen(img):
             self._home_attack_failures = 0
             print("[Farm] --> Thời gian do thám đã hết, trận bắt đầu; chuyển ATTACKING")
-            self._battle_plan = self.planner.plan(img)
+            self._battle_plan = self._make_battle_plan(img)
             self.battle_start_ts = time.time()
             self.state = FarmState.ATTACKING
             return
@@ -532,7 +890,7 @@ class FarmModule:
                 self._home_attack_failures = 0
                 print("[Farm] --> Đã bấm 'Attack!' trên màn hình My Army")
                 self._find_phase = "scout"
-                time.sleep(0.65)
+                self._wait(0.65)
                 return
 
         # 3. Kiểm tra nút 'Find a Match' trên thẻ Battle trong menu Attack
@@ -541,11 +899,11 @@ class FarmModule:
                 self._home_attack_failures = 0
                 print("[Farm] --> Đã bấm 'Find a Match'")
                 self._find_phase = "army"
-                time.sleep(0.35)
+                self._wait(0.35)
                 return
 
         # Đang trong màn hình mây hoặc loading
-        time.sleep(0.3)
+        self._wait(0.3)
 
     def _state_loot_check(self):
         """Kiểm tra loot của đối thủ — đánh hoặc bấm Next."""
@@ -559,7 +917,7 @@ class FarmModule:
             if self._is_battle_screen(img):
                 print("[Farm] ⏱️ Hết thời gian do thám, trận đã tự bắt đầu -> TẤN CÔNG!")
                 self.state = FarmState.ATTACKING
-                self._battle_plan = self.planner.plan(img)
+                self._battle_plan = self._make_battle_plan(img)
                 self.battle_start_ts = time.time()
                 return
             # Nếu văng khỏi màn hình do thám
@@ -573,7 +931,15 @@ class FarmModule:
             self._skip_scout(img, "Loot chưa đủ")
             return
 
-        self._battle_plan = self.planner.plan(img)
+        img = self._prepare_camera(img)
+        if img is None:
+            fresh = self._screenshot(use_cache=False)
+            if fresh is not None and self._is_scout_screen(fresh) and self.camera.frame_clear(fresh):
+                self._skip_scout(fresh, "Camera/khung nhìn chưa xác nhận được")
+            elif fresh is not None:
+                self._begin_recovery(FarmState.LOOT_CHECK)
+            return
+        self._battle_plan = self._make_battle_plan(img)
         if self._battle_plan is None:
             self._skip_scout(img, "Không xác định được vùng thả quân hợp lệ")
             return
@@ -588,13 +954,17 @@ class FarmModule:
     def _skip_scout(self, screenshot, reason: str):
         self.skip_count += 1
         self._battle_plan = None
+        self._camera_prepared = False
+        self._selected_battle_card = None
+        self._standard_view = None
+        self.camera.zoom_limits.clear()
         print(f"[Farm] ❌ {reason} (skip #{self.skip_count}) -> Bấm Next...")
         if self._tap_ui("next", T_FIND_MATCH, 0.75, screenshot,
                         region=NEXT_REGION, trust_cache=True):
-            time.sleep(0.4)
+            self._wait(0.4)
         else:
             print("[Farm] Không thấy Next; chờ xác nhận màn hình trước khi thao tác.")
-            time.sleep(0.5)
+            self._wait(0.5)
 
     def _state_attacking(self):
         """Deploy the calibrated combo into this opponent's safe areas."""
@@ -602,8 +972,17 @@ class FarmModule:
         img = self._screenshot()
         if img is None:
             return
+        self._observe_camera_frame(img)
+        if self.settings.get("camera_auto_adjust", False) and not self._camera_prepared:
+            img = self._prepare_camera(img)
+            if img is None:
+                self._battle_plan = None
+            else:
+                self._battle_plan = self._make_battle_plan(img)
+        if self._battle_plan is not None and self._battle_plan.camera_revision != self.camera.revision:
+            self._camera_changed(self.camera.revision)
         if self._battle_plan is None:
-            self._battle_plan = self.planner.plan(img)
+            self._battle_plan = self._make_battle_plan(img)
         if self._battle_plan is None:
             print("[Farm] Không tìm được vùng thả an toàn; rút lui, không bấm tọa độ dự phòng.")
             if self._force_end_battle():
@@ -613,7 +992,7 @@ class FarmModule:
                 self.state = FarmState.BATTLE_WAIT
             return
 
-        self._attack_tactics = AttackTactics.from_battle(self._battle_plan, img)
+        self._attack_tactics = AttackTactics.from_battle(self._battle_plan, img, camera_revision=self.camera.revision)
         self._confirmed_main_points = []
         self._electro_drop_points = []
         self._hero_entry = None
@@ -648,7 +1027,7 @@ class FarmModule:
 
         speed_button = self.adb.find_template(T_4X, config.LOOSE_THRESHOLD, img)
         if speed_button:
-            self._battle_tap(*speed_button, delay=0.05)
+            self._battle_tap(*speed_button, hud=True, delay=0.05)
 
         self._deployment_rejected = False
         self._verified_battle_points.clear()
@@ -728,7 +1107,7 @@ class FarmModule:
                     self._combo_profile = candidate
                     return image
             if attempt < 3:
-                time.sleep(0.8)
+                self._wait(0.8)
                 image = self._screenshot()
                 if image is None:
                     self.halt_reason = "Mất ảnh màn hình khi chờ thanh quân sẵn sàng."
@@ -876,14 +1255,14 @@ class FarmModule:
                 print(f"[Farm] Ô {slot.x}: điểm {point} chưa làm giảm quân; đổi điểm thả.")
         if not verified:
             return image, []
-        for burst in range(12):
+        for burst in range(64):
             remaining = self._read_card_count(image, slot.x, slot.y)
             if remaining == 0 or self._card_depleted(image, slot):
                 return image, verified
             # A modal may swallow part of a burst. It cannot receive reward
             # clicks from these exterior points; fresh counts decide what to
             # resume after choosing the resource.
-            count = min(80, remaining) if remaining is not None else 20
+            count = min(16, remaining) if remaining is not None else 16
             targets = [verified[index % len(verified)] for index in range(count)]
             generation = self._reward_generation
             if not self._battle_tap_many(targets, interval=.02, fast=True, screenshot=image):
@@ -949,11 +1328,11 @@ class FarmModule:
         deployed = {p: 0 for p in confirmed}
         # A count is reliable enough to distribute the remaining group evenly;
         # uncertain counts use small bounded groups and the depletion check.
-        for _ in range(12):
+        for _ in range(64):
             remaining = self._read_card_count(image, slot.x, slot.y)
             if remaining == 0 or self._card_depleted(image, slot):
                 break
-            count = min(80, remaining) if remaining is not None else 9
+            count = min(16, remaining) if remaining is not None else 9
             targets = []
             for index in range(count):
                 point = min(confirmed, key=lambda p: deployed[p])
@@ -1027,7 +1406,7 @@ class FarmModule:
                     self._spell_check_frames.clear()
                 return after, True
             if attempt < 2:
-                time.sleep(0.25)
+                self._wait(0.25)
         if slot.role == "spell":
             self._spell_check_frames = frames
         return after, False
@@ -1196,13 +1575,13 @@ class FarmModule:
                     break
                 # The first health strip may lag behind the actual deployment.
                 # Wait for its redraw before a retry can become an ability tap.
-                time.sleep(.1)
+                self._wait(.1)
                 image = self._screenshot(use_cache=False)
                 if image is None:
                     self.halt_reason = "Mất ảnh khi xác nhận thanh máu tướng."
                     return
             if pending:
-                time.sleep(.1)
+                self._wait(.1)
         if pending:
             self.halt_reason = "Chưa xác nhận thả tướng: " + ", ".join(p[0] for p in pending)
 
@@ -1217,7 +1596,7 @@ class FarmModule:
         changed_frames = 0
         after = before
         for attempt in range(3):
-            time.sleep(.25)
+            self._wait(.25)
             after = self._screenshot(use_cache=False)
             if after is None:
                 self.halt_reason = "Mất ảnh màn hình khi đối soát số phép."
@@ -1267,11 +1646,12 @@ class FarmModule:
             progress.retry_at = time.monotonic() + 2.0
             print(f"[Spell] {slot.name} x={slot.x}: lưu phần chưa hoàn tất; kiểm tra tiếp khi chờ trận.")
 
-    def _record_spell_use(self, before, after, slot, progress):
+    def _record_spell_use(self, before, after, slot, progress, *, target=None):
         old_count = self._read_card_count(before, slot.x, slot.y)
         remaining = self._read_card_count(after, slot.x, slot.y)
         used = max(1, old_count - remaining) if old_count is not None and remaining is not None else 1
-        target = self._attack_tactics.spell_target(slot.name, progress.cast_index)
+        if target is None and self._attack_tactics is not None:
+            target = self._attack_tactics.spell_target(slot.name, progress.cast_index)
         progress.cast_index += used
         progress.resume_attempts = 0
         progress.unconfirmed_before = None
@@ -1289,7 +1669,7 @@ class FarmModule:
             return
         # Give troops and heroes time to cross the boundary before support casts.
         if not resume:
-            time.sleep(1.5)
+            self._wait(1.5)
         image = first_image if first_image is not None else self._screenshot(use_cache=False)
         if image is None:
             self.halt_reason = "Mất ảnh màn hình trước khi thả spell."
@@ -1331,6 +1711,9 @@ class FarmModule:
                         self.settings.get("farm_battle_timeout", 85)):
                     return
                 target = tactics.spell_target(slot.name, progress.cast_index)
+                if target is None:
+                    self._pending_spells.pop(slot, None)
+                    break
                 # Hero ability inputs can change the selected card. Select
                 # this spell again in the same command as every single cast.
                 if not self._battle_tap_many([(slot.x, slot.y), target], interval=.03,
@@ -1357,7 +1740,7 @@ class FarmModule:
                                 continue
                         self._defer_spell(slot, progress)
                         break
-                self._record_spell_use(image, after, slot, progress)
+                self._record_spell_use(image, after, slot, progress, target=target)
                 image = after
                 failed_casts = 0
                 if self._card_depleted(after, slot):
@@ -1385,7 +1768,7 @@ class FarmModule:
 
         img = self._screenshot()
         if img is None:
-            time.sleep(2)
+            self._wait(2)
             return
 
         if self._is_home_screen(img):
@@ -1420,7 +1803,7 @@ class FarmModule:
             if any(time.monotonic() >= progress.retry_at for progress in self._pending_spells.values()):
                 self._resume_pending_spells(img)
             else:
-                time.sleep(config.DELAY_BATTLE_CHECK)
+                self._wait(config.DELAY_BATTLE_CHECK)
             # Finish bounded recovery before early surrender, while retaining
             # the hard battle timeout above. Refresh elapsed time next tick.
             return
@@ -1434,7 +1817,7 @@ class FarmModule:
                     self.state = FarmState.RESULT
                 return
 
-        time.sleep(config.DELAY_BATTLE_CHECK)
+        self._wait(config.DELAY_BATTLE_CHECK)
 
     def _maybe_activate_hero_abilities(self, image):
         if not self._deployed_hero_slots or self._hero_abilities_used:
@@ -1508,7 +1891,7 @@ class FarmModule:
         confirmed = False
         for attempt in range(6):
             if image is None:
-                time.sleep(0.6)
+                self._wait(0.6)
                 image = self._screenshot()
             if image is None:
                 continue
@@ -1544,6 +1927,8 @@ class FarmModule:
         """Xử lý màn hình kết quả: bấm Return Home để về làng."""
         self._pending_spells.clear()
         self._spell_check_frames.clear()
+        self._camera_prepared = False
+        self.camera.zoom_limits.clear()
         img = self._screenshot()
         if img is None:
             return
@@ -1582,7 +1967,7 @@ class FarmModule:
 
         if tapped:
             for _ in range(3):
-                time.sleep(0.5)
+                self._wait(0.5)
                 home_img = self._screenshot()
                 if self._is_home_screen(home_img):
                     self.attack_count += 1
@@ -1595,7 +1980,7 @@ class FarmModule:
         print("[Farm] Chưa thấy nút Return Home; sẽ kiểm tra lại.")
         self._button_cache.pop("return_home", None)
         self._button_templates.pop("return_home", None)
-        time.sleep(2)
+        self._wait(2)
 
     def _state_train(self):
         """Tự động luyện quân qua Quick Train Slot 1."""
@@ -1614,12 +1999,12 @@ class FarmModule:
             if self._train_failures >= 3:
                 self.halt_reason = "Không mở được bảng quân đội sau 3 lần thử. Kiểm tra màn hình game và độ phân giải 1600x900."
             return
-        time.sleep(1.2)
+        self._wait(1.2)
 
         # 2. Chuyển sang tab Saved Recipes (Quick Train)
         # Ở giao diện 1600x900, (500, 95) là My Army; Saved Recipes ở (795, 95).
         self.adb.tap(*SAVED_RECIPES_TAB, jitter=5)
-        time.sleep(1.0)
+        self._wait(1.0)
 
         # 3. Chỉ nút Use trong vùng Slot 1 mới thực sự luyện quân.
         img_panel = self._screenshot()
@@ -1628,7 +2013,7 @@ class FarmModule:
         )
         if trained:
             print("[Farm] --> Đã bấm Use ở Quick Train Slot 1")
-            time.sleep(0.8)
+            self._wait(0.8)
         elif img_panel is not None and self.adb.is_visible(T_SAVE_ARMY, 0.65, img_panel,
                                                            region=QUICK_TRAIN_SLOT_1):
             self.halt_reason = "Quick Train Slot 1 đang trống (Save Army). Hãy lưu đội hình vào Slot 1 rồi chạy lại."
@@ -1640,7 +2025,7 @@ class FarmModule:
 
         # 4. Đóng panel bằng nút X đỏ góc trên phải (1565, 85) hoặc Back
         self.adb.tap(1565, 85, jitter=4)
-        time.sleep(1.0)
+        self._wait(1.0)
 
         if trained:
             self._train_failures = 0
@@ -1651,6 +2036,9 @@ class FarmModule:
     def _state_collect(self):
         """Thu thập tài nguyên và chuẩn bị chu kỳ mới."""
         print("[Farm] 🏠 COLLECT — Hoàn tất chu kỳ, trở về HOME...")
+        # The battle has ended; these selections/abilities cannot be resumed.
+        self._selected_battle_card = None
+        self._pending_ability_names.clear()
         self.state = FarmState.HOME
 
     # ─── Helpers ────────────────────────────────────────────
@@ -1702,50 +2090,84 @@ class FarmModule:
         self._home_attack_failures = 0
         self._find_phase = "menu"
         self._battle_plan = None
+        self._handoff_ready = False
+        self._confirmed_screen = ModuleScreen.UNKNOWN
 
     def _is_scout_screen(self, screenshot=None) -> bool:
         """Màn hình do thám còn nút Next; End Battle xuất hiện cả trong trận."""
         img = screenshot if screenshot is not None else self._screenshot()
         if img is None:
             return False
-        return self.adb.is_visible(T_FIND_MATCH, 0.75, img, region=NEXT_REGION)
+        found = self.adb.is_visible(T_FIND_MATCH, 0.75, img, region=NEXT_REGION) is True
+        if found:
+            self._confirmed_screen = ModuleScreen.SCOUT
+        return found
 
     def _is_battle_screen(self, screenshot=None) -> bool:
-        """Nhận diện nút End Battle thật trong vùng góc trái của trận."""
+        """Accept End Battle, or the pre-deployment Surrender + main timer."""
         img = screenshot if screenshot is not None else self._screenshot()
-        return img is not None and self.adb.is_visible(
-            T_END_BATTLE_BUTTON, 0.70, img, region=END_BATTLE_REGION
-        )
+        if img is not None and (
+            self.adb.is_visible(config.asset('dual_village/builder/defender.png'), .90,
+                                img, region=(50, 5, 190, 65)) is True and
+            self.adb.is_visible(config.asset('dual_village/builder/attacker.png'), .90,
+                                img, region=(1340, 5, 230, 65)) is True):
+            return False
+        found = img is not None and (
+            self.adb.is_visible(T_END_BATTLE_BUTTON, 0.70, img, region=END_BATTLE_REGION) is True or
+            (self.adb.is_visible(T_SURRENDER, 0.85, img, region=END_BATTLE_REGION) is True and
+             self._has_main_battle_timer(img)))
+        if found:
+            self._confirmed_screen = ModuleScreen.BATTLE
+        return found
+
+    def _has_main_battle_timer(self, image):
+        # Threshold the red channel: white and warning-red timer lettering
+        # share its shape, while the changing map behind it is discarded.
+        template = self.adb._load_template(config.asset('dual_village/main_battle_timer.png'))
+        if not isinstance(template, np.ndarray) or image.shape[:2] != (900, 1600):
+            return False
+        region = image[0:110, 650:970, 2]
+        ink = cv2.threshold(region, 220, 255, cv2.THRESH_BINARY)[1]
+        target = cv2.threshold(template[:, :, 2], 220, 255, cv2.THRESH_BINARY)[1]
+        return float(cv2.matchTemplate(ink, target, cv2.TM_CCOEFF_NORMED).max()) >= .90
 
     def _is_result_screen(self, screenshot=None) -> bool:
         img = screenshot if screenshot is not None else self._screenshot()
-        return img is not None and any(
+        found = img is not None and any(
             self.adb.is_visible(tpl, 0.70, img, region=RETURN_HOME_REGION) is True
             for tpl in [T_RETURN_HOME_NEW, T_RETURN_HOME, T_RETURN_HOME1, T_3STAR]
         )
+        if found:
+            self._confirmed_screen = ModuleScreen.RESULT
+        return found
 
     def _is_home_screen(self, screenshot=None) -> bool:
         img = screenshot if screenshot is not None else self._screenshot()
-        return img is not None and self.adb.is_visible(
+        found = img is not None and self.adb.is_visible(
             T_HOME_ATTACK, 0.80, img, region=HOME_ATTACK_REGION
         ) is True
+        if not found:
+            found = self._native_main_home(img) is not None
+        if found:
+            self._confirmed_screen = ModuleScreen.HOME
+        return found
+
+    def _native_main_home(self, image):
+        """Accept changed Attack artwork only with independent main Home HUD."""
+        if image is None or image.shape != (900, 1600, 3):
+            return None
+        if self._home_screen_reader is None:
+            self._home_screen_reader = BuilderScreenReader(self.adb)
+        reader = self._home_screen_reader
+        if reader.match('home_attack_label', image) is None:
+            return None
+        screen = reader.classify(image)
+        return screen if screen.kind == ScreenKind.MAIN_HOME else None
 
     def _go_home_safe(self):
-        """Thoát về màn hình chính an toàn."""
+        """Require a new classification; unknown UI never authorizes Back/Okay."""
         self.invalidate_ui_cache()
-        for _ in range(3):
-            img = self._screenshot()
-            if img is None:
-                time.sleep(2)
-                continue
-            for tpl in [T_RETURN_HOME_NEW, T_OK_HOME, T_RETURN_HOME, T_RETURN_HOME1, T_OKAY]:
-                if self.adb.find_and_tap(tpl, 0.70, img):
-                    time.sleep(2)
-                    break
-            else:
-                self.adb.back()
-                time.sleep(2)
-        self.state = FarmState.HOME
+        self._begin_recovery(self.state)
 
     @property
     def recovering_home(self) -> bool:

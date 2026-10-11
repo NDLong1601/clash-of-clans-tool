@@ -1,0 +1,31 @@
+{
+  "provenance": "Selected native receipts and offline Tk UI geometry; no raw account screenshots",
+  "raw_sources": {
+    "live-receipt-attempt1.json": "eb900713f9933b8a772f8d42ed9570162ce3c92b75b037e72babd8d71f04d5a3",
+    "live-receipt.json": "225b1e8c86d272b8ef9b619a91baf3f227350dec88201d8d75719abb298c9390",
+    "ui/receipt.json": "1ca8644a39dbdb8e2197512273bcf68d5b160ff9735cf8a9ef37a617c05a4cde"
+  },
+  "source_hashes_at_handoff": {
+    "cocmagic/adb_controller.py": "99d6d13d2649e676f7f4e83084db609028dfd497de7b0176df61a33a5c06dde8",
+    "cocmagic/bot_engine.py": "7666ad4ff206454f8685caf89cbb040b7d923ba79fb80c1b8691db5d40bf5dfd",
+    "cocmagic/builder_rewards.py": "4a27b6eed2bf23e204209fb5b3bd42c420a447cf63a7e58378c7eae81d0cc7ec",
+    "cocmagic/builder_screen_reader.py": "0e51ff5412a24fc95b41a3efec26d575b184046c45c6ce2b8b716b4f46199107",
+    "cocmagic/builder_vision.py": "ed0dfa86943edb0f3c4689837810487f500af0542377535ce2e28553b238f72c",
+    "cocmagic/camera_backend.py": "f3fc3227ca1a8c93b07795dfbdea20f5b58aa2d8a46687d32fa2750d8275d0e3",
+    "cocmagic/camera_controller.py": "de3d9b521e55e8fbc79acb7108e027fc8cb323c0fbe7f7a2b0a17774fb6b2cc6",
+    "cocmagic/recovery.py": "7f62c16b3c49ecb70958f7485b326666ba70cbf76199bb61e1636c7b9ad28f12",
+    "cocmagic/hybrid_coordinator.py": "3eb513fdc6e7fb2d711b064300c3edcebcb975562914eef20977f855fad079b4",
+    "cocmagic/hybrid_runtime.py": "458dacbd9343dbb1c5ba52da85161a4942841eb551f7ab5a6545fbfa9269622c",
+    "cocmagic/run_coordinator.py": "8f69e69413243d7d16e9cc3088e197e76250f56e0a2496ebc8c95a98df48095a",
+    "cocmagic/gui.py": "25fdbceb4160d39f32ef08a5863ddf07302f4203dcbef37918ef59d6bc4280fb"
+  },
+  "outputs": {
+    "live-receipt.json": "c275aec3a29b7389805b2e461802f34c2b27f52a10104aea10943d7122141118",
+    "ui-receipt.json": "1ca8644a39dbdb8e2197512273bcf68d5b160ff9735cf8a9ef37a617c05a4cde"
+  },
+  "limitations": [
+    "Only emulator-5556 was connected; no two independent live emulators",
+    "No native AVAILABLE/CLAIMABLE or new builder battle in this stage",
+    "Source hashes identify handoff code, not every intermediate probe revision"
+  ]
+}

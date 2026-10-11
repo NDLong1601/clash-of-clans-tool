@@ -1,4 +1,5 @@
 import sys
+from importlib import import_module
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -8,29 +9,14 @@ print("=== CocMagic Core -- Full Test ===")
 from cocmagic import config
 print("[OK] config")
 
-from cocmagic import adb_controller
-print("[OK] adb_controller")
-
-from cocmagic import screen_reader
-print("[OK] screen_reader")
-
-from cocmagic.modules.farm_module import FarmModule, FarmState
-print("[OK] farm_module")
-
-from cocmagic.battle_planner import BattlePlanner
-print("[OK] battle_planner")
-
-from cocmagic.modules.hero_module import HeroModule
-print("[OK] hero_module")
-
-from cocmagic.modules.wall_module import WallModule
-print("[OK] wall_module")
-
-from cocmagic.bot_engine import BotEngine
-print("[OK] bot_engine")
-
-from cocmagic import main
-print("[OK] main")
+for module_name in (
+    "adb_controller", "screen_reader", "modules.farm_module", "battle_planner",
+    "modules.hero_module", "modules.wall_module", "bot_engine", "main",
+    "builder_screen_reader", "builder_vision", "modules.builder_farm_module",
+    "camera_controller", "hybrid_coordinator", "hybrid_runtime", "village_navigator",
+):
+    import_module(f"cocmagic.{module_name}")
+    print(f"[OK] {module_name}")
 
 # The deployment planner now derives points from each opponent's red boundary.
 
@@ -58,3 +44,4 @@ if all_ok:
     print("=== ALL CHECKS PASSED ===")
 else:
     print("=== SOME ASSETS MISSING (check above) ===")
+    sys.exit(1)

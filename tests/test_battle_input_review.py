@@ -284,13 +284,14 @@ class BattleInterruptionTests(unittest.TestCase):
         self.assertEqual([find_reward_panel(panel).preferred().point, (179, 840), (250, 650)],
                          [c.args[:2] for c in farm.adb.tap.call_args_list])
 
-    def test_error_recovery_can_observe_result_without_escaping_tick_or_tapping(self, _sleep):
+    def test_unknown_exception_cancels_transaction_without_blind_home_inputs(self, _sleep):
         farm = self.make_farm(False)
         farm.adb.screenshot.return_value = button_screen(T_RETURN_HOME_NEW, RETURN_HOME_REGION)
         farm._handle_state = Mock(side_effect=RuntimeError("Interrupted operation"))
         with patch("traceback.print_exc"):
-            self.assertTrue(farm.tick())
-        self.assertEqual(FarmState.RESULT, farm.state)
+            self.assertFalse(farm.tick())
+        self.assertEqual(FarmState.RECOVERING, farm.state)
+        self.assertIn('Interrupted operation', farm.halt_reason)
         farm.adb.tap.assert_not_called()
         farm.adb.tap_many.assert_not_called()
 

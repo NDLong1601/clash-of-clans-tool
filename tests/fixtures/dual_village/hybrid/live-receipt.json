@@ -1,0 +1,139 @@
+{
+  "serial": "127.0.0.1:16416",
+  "elapsed": 149.1547741999966,
+  "completed": true,
+  "passes": 2,
+  "cancelled": false,
+  "budget_exhausted": false,
+  "builder_metrics": {
+    "attack_count": 0,
+    "battle_count": 0,
+    "stage_count": 0,
+    "deployed": 0,
+    "troop_abilities": 0,
+    "hero_abilities": 0,
+    "reward_claims": 0,
+    "cart_collections": 0,
+    "rejected_points": 0,
+    "unconfirmed_abilities": 0,
+    "recoveries": 0,
+    "wall_count": 0,
+    "stage": 0
+  },
+  "bonus": {
+    "state": "complete",
+    "captured_at": 93313.9294346,
+    "reason": "Hai ảnh Home mới ổn định, nút rõ và không sao",
+    "region": [
+      20,
+      690,
+      175,
+      70
+    ],
+    "progress": null,
+    "captures": [
+      73,
+      74
+    ]
+  },
+  "cart": {
+    "success": true,
+    "reason": "Xe trống/đang phòng thủ; kết thúc hữu hạn",
+    "collected": false,
+    "returned_home": true,
+    "defending": false,
+    "unavailable": true
+  },
+  "main_ticks": 2,
+  "probe_settings": {
+    "auto_train": false,
+    "upgrade_walls": false,
+    "event_mode": false
+  },
+  "probe_wall_clock_advanced": true,
+  "source_receipt": "diagnostics/dual_village_gd6/live-final/receipt.json",
+  "source_receipt_sha256": "f8b6ed0eb11f3732dea28a90468c1cf8398fb22040bb82d92e4a6f227b89dcd0",
+  "input_count": 8,
+  "events": [
+    {
+      "active_module": "builder",
+      "actual_village": "builder",
+      "confirmed_screen": "home",
+      "pending_reason": "startup",
+      "last_daily_check_date": null,
+      "last_daily_request_date": null,
+      "last_bonus_state": "unknown",
+      "builder_incomplete": true,
+      "last_error": "Runtime thiếu/hỏng; đang kiểm tra lại màn hình"
+    },
+    {
+      "active_module": "main",
+      "actual_village": "main",
+      "confirmed_screen": "unknown",
+      "pending_reason": null,
+      "last_daily_check_date": null,
+      "last_daily_request_date": null,
+      "last_bonus_state": "complete",
+      "builder_incomplete": false,
+      "last_error": null
+    },
+    {
+      "active_module": "main",
+      "actual_village": "main",
+      "confirmed_screen": "home",
+      "pending_reason": "daily",
+      "last_daily_check_date": null,
+      "last_daily_request_date": "2026-10-10",
+      "last_bonus_state": "complete",
+      "builder_incomplete": true,
+      "last_error": null
+    },
+    {
+      "active_module": "builder",
+      "actual_village": "builder",
+      "confirmed_screen": "unknown",
+      "pending_reason": "daily",
+      "last_daily_check_date": null,
+      "last_daily_request_date": "2026-10-10",
+      "last_bonus_state": "complete",
+      "builder_incomplete": true,
+      "last_error": null
+    },
+    {
+      "active_module": "main",
+      "actual_village": "main",
+      "confirmed_screen": "unknown",
+      "pending_reason": null,
+      "last_daily_check_date": "2026-10-10",
+      "last_daily_request_date": "2026-10-10",
+      "last_bonus_state": "complete",
+      "builder_incomplete": false,
+      "last_error": null
+    }
+  ],
+  "independent_final_inspect": {
+    "kind": "main_home",
+    "reason": "HUD chung + Attack riêng + chân dung thợ đúng làng",
+    "village": "main",
+    "panel": null,
+    "points": {
+      "attack": [
+        106,
+        808
+      ]
+    },
+    "language": "en"
+  },
+  "scope": "Final production code. Real engine/FarmModule/BuilderFarmModule/navigation/rewards/ADB; native COMPLETE only. No new battle or native reward claim. Scheduled pass advances only probe wall clock. Startup before cutoff does not consume daily.",
+  "source_sha256": {
+    "cocmagic/hybrid_coordinator.py": "df4c6e0d8d82e3117b7477d83db45388bbe74d90d0a5053c7c2ebc8d0bfdd79e",
+    "cocmagic/hybrid_runtime.py": "adb3971455ccef578f1eb90f49160ad0105f4e96f938d06340e9cd246210257f",
+    "cocmagic/run_coordinator.py": "29d8da20b78b998946f8adf19664a6e7d9e3bf7f7fef9bfc68c57231dec75dd1",
+    "cocmagic/bot_engine.py": "90492f3482c1239a2f9fcf01aa49bb9e51a8b4275a4ee1c7007ab713ed60675f",
+    "cocmagic/config.py": "8069f27256e508bb3d78bd772b58e833580927d415679cbb63b219f94eec507a",
+    "cocmagic/builder_screen_reader.py": "d0e96ad1aca76ed0cf9f972dfea57764939a10da88db4a8b2c5ca49ac6920257",
+    "cocmagic/builder_vision.py": "85082343975be5de49d6ace4329a1d7e12b891fb5aab5fa76cae45bef048e963",
+    "cocmagic/modules/builder_farm_module.py": "b84093d48760727b71c9f3984fb38f6b86c21f7508c498721e584c7473822688",
+    "tools/hybrid_probe.py": "48a222ead234b86aa4f25ebdafbf7cae26c22881f31075dd53f2931028aea0c7"
+  }
+}

@@ -129,7 +129,8 @@ class WorkerTests(unittest.TestCase):
                 break
         self.assertTrue(any(item.get("kind") == "log" and "worker A" in item["text"]
                             for item in items))
-        self.assertIn({"kind": "status", "status": "TRAIN", "wall_count": 2}, items)
+        self.assertIn({"kind": "status", "status": "TRAIN", "wall_count": 2,
+                       "serial": "127.0.0.1:16384"}, items)
         self.assertEqual("done", items[-1]["kind"])
 
     def test_two_processes_route_logs_and_stop_independently(self):

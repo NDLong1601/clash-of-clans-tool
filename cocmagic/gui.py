@@ -24,6 +24,38 @@ from cocmagic.instance_store import InstanceStore
 from cocmagic.license_client import LicenseClient, LicenseError, normalize_key
 from cocmagic.session_manager import BotSession
 
+
+def format_run_details(event, selected_mode='main'):
+    mode = config.RUN_MODE_LABELS.get(event.get('run_mode', selected_mode), selected_mode)
+    village = config.RUN_MODE_LABELS.get(event.get('actual_village'), 'chưa xác nhận')
+    progress = event.get('bonus_progress')
+    state = event.get('builder_bonus_state')
+    bonus = {'available':'còn sao', 'claimable':'chờ nhận thưởng',
+             'complete':'đã xác nhận hết sao', 'unknown':'chưa xác nhận'}.get(state, 'chưa đọc')
+    if progress is not None:
+        bonus += f' ({progress[0]}/{progress[1]})'
+    lines = [f'Chế độ: {mode} · Làng thực tế: {village} · Sao: {bonus}']
+    reason = event.get('hybrid_reason') or event.get('switch_reason')
+    if reason:
+        lines.append('Lý do: '+reason)
+    if event.get('run_mode') == 'hybrid':
+        from datetime import datetime
+        def local_time(value):
+            try:
+                return datetime.fromisoformat(value).strftime('%d/%m %H:%M:%S') if value else 'chưa có'
+            except (TypeError, ValueError):
+                return 'không hợp lệ'
+        lines.append('Kiểm tra gần nhất: '+local_time(event.get('last_valid_bonus_check_at'))+
+                     ' · Lịch tiếp: '+local_time(event.get('next_daily_check_at'))+' (UTC+7)')
+        pending = event.get('pending_reason') or event.get('switch_target') or 'không'
+        retry = local_time(event.get('next_retry_at'))
+        lines.append(f'Pending: {pending} · Thử lại: {retry}')
+        if event.get('builder_incomplete'):
+            lines.append('Thưởng Làng đêm: chưa hoàn thành / cần kiểm tra lại')
+        if event.get('last_error'):
+            lines.append('Lỗi: '+event['last_error'])
+    return '\n'.join(lines)
+
 # Enable Windows High-DPI Awareness for razor-sharp typography and UI lines
 try:
     ctypes.windll.shcore.SetProcessDpiAwareness(1)
@@ -87,77 +119,9 @@ def set_window_icon(window):
                 pass
 
 
-def parse_amount(raw: str) -> int:
-    """Accept 9000000, 9.000.000, 9tr, 1,5tr or 500k."""
-    value = raw.strip().lower().replace(" ", "").replace("_", "")
-    suffixes = (
-        ("triệu", 1_000_000),
-        ("trieu", 1_000_000),
-        ("tr", 1_000_000),
-        ("m", 1_000_000),
-        ("nghìn", 1_000),
-        ("nghin", 1_000),
-        ("k", 1_000),
-    )
-    for suffix, factor in suffixes:
-        if value.endswith(suffix):
-            number = value[:-len(suffix)].replace(",", ".")
-            if not re.fullmatch(r"\d+(?:\.\d+)?", number):
-                raise ValueError(f"Giá trị tài nguyên không hợp lệ: {raw}")
-            return round(float(number) * factor)
-    digits = value.replace(",", "").replace(".", "")
-    if not digits.isdigit():
-        raise ValueError(f"Giá trị tài nguyên không hợp lệ: {raw}")
-    return int(digits)
-
-
-def build_settings(existing: dict, fields: dict, upgrade_walls: bool) -> dict:
-    """Validate panel values and preserve settings not shown in the panel."""
-    updated = existing.copy()
-    labels = {
-        "min_gold": "Gold tối thiểu",
-        "min_elixir": "Elixir tối thiểu",
-        "wall_resource": "Ngưỡng nâng tường",
-    }
-    for key, label in labels.items():
-        amount = parse_amount(fields[key])
-        if not 0 <= amount <= 1_000_000_000_000:
-            raise ValueError(f"{label} phải từ 0 đến 1 nghìn tỷ.")
-        updated[key] = amount
-    for key, label, low, high in (
-        ("min_farm", "Thời gian surrender tối thiểu", 0, 3600),
-        ("star_target", "Số sao tối thiểu", 1, 3),
-        ("farm_battle_timeout", "Thời gian trận tối đa", 1, 3600),
-    ):
-        raw = fields[key].strip()
-        if not raw.isdigit() or not low <= int(raw) <= high:
-            raise ValueError(f"{label} phải là số nguyên từ {low} đến {high}.")
-        updated[key] = int(raw)
-    for key, label, low, high in (
-        ("electro_per_direction", "Electro mỗi hướng", 1, 9),
-        ("warden_ability_delay", "Độ trễ kỹ năng cả đội", 0, 120),
-    ):
-        if key not in fields:
-            continue
-        raw = fields[key].strip()
-        if not raw.isdigit() or not low <= int(raw) <= high:
-            raise ValueError(f"{label} phải là số nguyên từ {low} đến {high}.")
-        updated[key] = int(raw)
-    if updated["farm_battle_timeout"] < updated["min_farm"]:
-        raise ValueError(
-            "Thời gian trận tối đa phải bằng hoặc lớn hơn thời gian surrender tối thiểu."
-        )
-    wall_type = fields["wall_type"]
-    if wall_type not in ("gold", "elixir", "both"):
-        raise ValueError("Loại tài nguyên nâng tường không hợp lệ.")
-    updated["wall_type"] = wall_type
-    updated["upgrade_walls"] = bool(upgrade_walls)
-    updated["event_mode"] = not bool(upgrade_walls)
-    priority = fields.get("event_resource_priority", existing.get("event_resource_priority", "dark"))
-    if priority not in EVENT_RESOURCE_LABELS:
-        raise ValueError("Tài nguyên ưu tiên cho bonus không hợp lệ.")
-    updated["event_resource_priority"] = priority
-    return updated
+# Compatibility imports; the contract is shared with engine and CLI.
+parse_amount = config.parse_amount
+build_settings = config.build_settings
 
 
 # ============================================================================
@@ -422,50 +386,31 @@ class InstanceTab:
         self.root = owner.root
         self.serial = profile["serial"]
         self.name = profile["name"]
-        self.settings = profile["settings"].copy()
+        self.settings = config.migrate_settings(profile["settings"])
         self.session = BotSession(self.serial)
         self.online = False
         self.last_result = None
+        self._log_pending = ''
+        self._last_log_line = None
 
         self.frame = ttk.Frame(owner.notebook, style="Panel.TFrame")
         self.frame.rowconfigure(0, weight=1)
         self.frame.columnconfigure(0, weight=1)
 
-        self.canvas = tk.Canvas(
-            self.frame, bg=BG, highlightthickness=0, width=820, height=620
-        )
-        self.canvas.grid(row=0, column=0, sticky="nsew")
-
-        scrollbar = ttk.Scrollbar(
-            self.frame,
-            orient="vertical",
-            command=self.canvas.yview,
-            style="Vertical.TScrollbar",
-        )
-        scrollbar.grid(row=0, column=1, sticky="ns")
-        self.canvas.configure(yscrollcommand=scrollbar.set)
-
-        self.page = ttk.Frame(self.canvas, style="Panel.TFrame", padding=(14, 12))
-        content = self.canvas.create_window((0, 0), window=self.page, anchor="nw")
-
-        self.page.bind(
-            "<Configure>",
-            lambda _event: self.canvas.configure(scrollregion=self.canvas.bbox("all")),
-        )
-        self.canvas.bind(
-            "<Configure>",
-            lambda event: self.canvas.itemconfigure(content, width=event.width),
-        )
-
-        # Smooth mousewheel scrolling
-        def _on_mousewheel(event):
-            self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-
-        self.canvas.bind(
-            "<Enter>",
-            lambda _e: self.canvas.bind_all("<MouseWheel>", _on_mousewheel),
-        )
-        self.canvas.bind("<Leave>", lambda _e: self.canvas.unbind_all("<MouseWheel>"))
+        self.notebook = ttk.Notebook(self.frame)
+        self.notebook.grid(row=0, column=0, columnspan=2, sticky="nsew")
+        self.notebook.enable_traversal()
+        self.pages = {}
+        self.canvases = {}
+        for key, title in (("main", "Làng chính"), ("builder", "Làng đêm"), ("run", "Run")):
+            shell = ttk.Frame(self.notebook, style="Panel.TFrame")
+            self.notebook.add(shell, text=title)
+            self.pages[key], self.canvases[key] = self._scroll_page(shell)
+        self.page = self.pages["main"]
+        self.canvas = self.canvases["main"]
+        # Scope wheel/focus handling to this instance, without bind_all/unbind_all.
+        self._wheel_binding = self.root.bind("<MouseWheel>", self._mousewheel, add="+")
+        self._focus_binding = self.root.bind("<FocusIn>", self._focus_visible, add="+")
 
         self.inputs = []
         self.vars = {}
@@ -481,17 +426,23 @@ class InstanceTab:
             "warden_ability_delay",
         ):
             self.vars[key] = tk.StringVar(value=str(self.settings.get(key, 0)))
-        self.vars["min_gold"].set(f"{int(self.settings['min_gold']):,}")
-        self.vars["min_elixir"].set(f"{int(self.settings['min_elixir']):,}")
-        self.vars["wall_resource"].set(f"{int(self.settings['wall_resource']):,}")
+        for key in config.MAIN_AMOUNT_FIELDS:
+            value = self.settings[key]
+            self.vars[key].set(f"{value:,}" if type(value) is int else str(value))
+        for key in ("run_mode", "builder_deploy_mode", "hybrid_check_time", "hybrid_timezone"):
+            self.vars[key] = tk.StringVar(value=str(self.settings[key]))
+        for key in (*config.BUILDER_BOOL_FIELDS, "camera_auto_adjust"):
+            self.vars[key] = tk.BooleanVar(value=self.settings[key])
+        self.run_mode = self.vars["run_mode"]
 
         self.status = tk.StringVar(value="Đang dò ADB…")
         self.wall_count = tk.StringVar(value="0 viên")
+        self.run_details = tk.StringVar(value="Làng thực tế: chưa xác nhận · Sao: chưa đọc")
         self.wall_mode = tk.BooleanVar(
             value=bool(self.settings.get("upgrade_walls", True))
             and not bool(self.settings.get("event_mode", False))
         )
-        self.event_mode = tk.BooleanVar(value=not self.wall_mode.get())
+        self.event_mode = tk.BooleanVar(value=bool(self.settings["event_mode"]))
         self.event_resource_display = tk.StringVar(
             value=EVENT_RESOURCE_LABELS.get(
                 self.settings.get("event_resource_priority", "dark"), EVENT_RESOURCE_LABELS["dark"])
@@ -501,9 +452,169 @@ class InstanceTab:
         )
 
         self._build_ui()
+        self._build_builder_ui()
+        self._build_run_modes()
+        self.save_button = ttk.Button(
+            self.frame, text="Lưu cấu hình cả ba tab", style="Secondary.TButton", command=self._save)
+        self.save_button.grid(row=1, column=0, sticky="w", padx=14, pady=8)
+        self.inputs.append(self.save_button)
+        self.save_state = tk.StringVar(value='Đã đọc cấu hình')
+        ttk.Label(self.frame, textvariable=self.save_state, style='Muted.TLabel',
+                  wraplength=380).grid(row=1, column=1, sticky='e', padx=14, pady=8)
+        for variable in (*self.vars.values(), self.wall_mode, self.event_mode,
+                         self.event_resource_display, self.wall_type_display):
+            variable.trace_add('write', lambda *_: self.save_state.set('Có thay đổi chưa lưu'))
+        self._run_mode_changed()
+
+    def _scroll_page(self, shell):
+        shell.rowconfigure(0, weight=1)
+        shell.columnconfigure(0, weight=1)
+        canvas = tk.Canvas(shell, bg=BG, highlightthickness=0, width=820, height=500,
+                           takefocus=False)
+        canvas.grid(row=0, column=0, sticky="nsew")
+        scrollbar = ttk.Scrollbar(shell, orient="vertical", command=canvas.yview)
+        scrollbar.grid(row=0, column=1, sticky="ns")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        page = ttk.Frame(canvas, style="Panel.TFrame", padding=(14, 12))
+        content = canvas.create_window((0, 0), window=page, anchor="nw")
+
+        def resize(_event):
+            canvas.itemconfigure(content, width=canvas.winfo_width(),
+                                 height=max(page.winfo_reqheight(), canvas.winfo_height()))
+            canvas.configure(scrollregion=canvas.bbox("all"))
+
+        canvas.bind("<Configure>", resize)
+        page.bind("<Configure>", resize)
+        return page, canvas
+
+    def _page_for_widget(self, widget):
+        while widget is not None:
+            # Text has its own wheel scrolling. Leave it to the Tk class binding.
+            if widget is getattr(self, "log", None):
+                return None
+            for key, page in self.pages.items():
+                if widget is page or widget is self.canvases[key]:
+                    return key
+            widget = getattr(widget, "master", None)
+        return None
+
+    def _mousewheel(self, event):
+        key = self._page_for_widget(event.widget)
+        if key is not None and event.delta:
+            units = -int(event.delta / 120) or (-1 if event.delta > 0 else 1)
+            self.canvases[key].yview_scroll(units, "units")
+            return "break"
+
+    def _focus_visible(self, event):
+        # Tk also delivers FocusIn to ancestor frames/canvases when entering a
+        # notebook page. Scrolling those would jump to the bottom of the page.
+        if event.widget.winfo_class() not in (
+                "TEntry", "TCombobox", "TCheckbutton", "TRadiobutton", "TButton"):
+            return
+        key = self._page_for_widget(event.widget)
+        if key is None:
+            return
+        canvas = self.canvases[key]
+        widget = event.widget
+        top = widget.winfo_rooty() - canvas.winfo_rooty()
+        bottom = top + widget.winfo_height()
+        height = canvas.winfo_height()
+        shift = top - 8 if top < 0 else (bottom - height + 8 if bottom > height else 0)
+        if shift:
+            bounds = canvas.bbox("all")
+            if bounds and bounds[3]:
+                canvas.yview_moveto((canvas.canvasy(0) + shift) / bounds[3])
+
+    def _build_builder_ui(self):
+        page = self.pages["builder"]
+        page.columnconfigure(0, weight=1)
+        card = tk.Frame(page, bg=FIELD, padx=16, pady=14)
+        card.grid(row=0, column=0, sticky="ew")
+        tk.Label(card, text="LÀNG ĐÊM · RỒNG CON VÀ HAI KHU", bg=FIELD,
+                 fg=ACCENT, font=("Segoe UI Bold", 10)).pack(anchor="w", pady=(0, 8))
+        tk.Label(card, text=("Train Làng đêm độc lập · English 1600×900 · tiếp tục dù hết sao."
+                            if 'builder' in config.AVAILABLE_RUN_MODES else
+                            "Train Làng đêm đang kiểm chứng GĐ5. Có thể lưu cấu hình; Start chưa mở."),
+                 bg=FIELD, fg=MUTED, font=("Segoe UI", 9), wraplength=700,
+                 justify="left").pack(anchor="w", pady=(0, 12))
+        for key, title in (
+            ("builder_auto_setup_baby_dragons", "Tự thiết lập Rồng con cho các ô quân và tiếp viện khả dụng"),
+            ("builder_use_available_hero", "Dùng tướng khi sẵn sàng; không chờ tướng đang nâng cấp"),
+            ("builder_collect_cart", "Thu phần tài nguyên khả dụng trong Xe Tiên dược"),
+        ):
+            widget = ttk.Checkbutton(card, text=title, variable=self.vars[key],
+                                     style="Mode.TCheckbutton")
+            widget.pack(anchor="w", pady=5)
+            self.inputs.append(widget)
+        tk.Label(card, text="Cách thả Rồng con", bg=FIELD, fg=TEXT,
+                 font=("Segoe UI Semibold", 9)).pack(anchor="w", pady=(14, 4))
+        for key, title in (("around", "Thả xung quanh"),
+                           ("single_point", "Thả toàn bộ tại một điểm hợp lệ")):
+            widget = ttk.Radiobutton(card, text=title, value=key,
+                                     variable=self.vars["builder_deploy_mode"],
+                                     style="Mode.TRadiobutton")
+            widget.pack(anchor="w", pady=4)
+            self.inputs.append(widget)
+        tk.Label(card, text="Kỹ năng quân và tướng được xử lý tự động theo trạng thái thực tế.",
+                 bg=FIELD, fg=MUTED, font=("Segoe UI", 9), wraplength=700,
+                 justify="left").pack(anchor="w", pady=(8, 14))
+        schedule = tk.Frame(card, bg=FIELD)
+        schedule.pack(fill="x")
+        tk.Label(schedule, text="Giờ kiểm tra khi chạy kết hợp", bg=FIELD, fg=TEXT,
+                 font=("Segoe UI", 9)).pack(side="left", padx=(0, 12))
+        check_time = ttk.Entry(schedule, textvariable=self.vars["hybrid_check_time"], width=7)
+        check_time.pack(side="left")
+        self.inputs.append(check_time)
+        tk.Label(schedule, text="  UTC+7 · Asia/Ho_Chi_Minh", bg=FIELD, fg=MUTED,
+                 font=("Segoe UI", 9)).pack(side="left")
+        tk.Label(card, text="Mặc định 15:30 hằng ngày (UTC+7). Startup luôn kiểm tra thưởng trên màn hình thật.",
+                 bg=FIELD, fg=MUTED, font=("Segoe UI", 9), wraplength=700,
+                 justify="left").pack(anchor="w", pady=(6, 14))
+        camera = ttk.Checkbutton(card, text="Tự điều chỉnh camera (English 1600×900; mặc định tắt)",
+                                 variable=self.vars["camera_auto_adjust"], style="Mode.TCheckbutton")
+        camera.pack(anchor="w", pady=4)
+        self.inputs.append(camera)
+
+    def _build_run_modes(self):
+        box = tk.Frame(self.pages["run"], bg=FIELD, padx=14, pady=10)
+        box.grid(row=1, column=0, sticky="ew")
+        tk.Label(box, text="CHẾ ĐỘ CHẠY", bg=FIELD, fg=ACCENT,
+                 font=("Segoe UI Bold", 10)).pack(anchor="w", pady=(0, 4))
+        self.mode_buttons = {}
+        for key, title in config.RUN_MODE_LABELS.items():
+            suffix = " · chưa khả dụng" if key not in config.AVAILABLE_RUN_MODES else ""
+            widget = ttk.Radiobutton(box, text=title + suffix, value=key,
+                                     variable=self.run_mode, style="Mode.TRadiobutton")
+            widget.pack(anchor="w", pady=3)
+            self.inputs.append(widget)
+            self.mode_buttons[key] = widget
+        self.mode_hint = tk.StringVar()
+        tk.Label(box, textvariable=self.mode_hint, bg=FIELD, fg=MUTED, justify="left",
+                 font=("Segoe UI", 9), wraplength=700).pack(anchor="w", pady=(8, 0))
+        self.run_mode.trace_add("write", self._run_mode_changed)
+
+    def _run_mode_changed(self, *_args):
+        mode = self.run_mode.get()
+        available = mode in config.AVAILABLE_RUN_MODES
+        self.mode_hint.set(("Train Làng đêm liên tục; kỹ năng theo trạng thái thật, hết sao vẫn train."
+                            if mode == 'builder' else
+                            "Startup kiểm tra thưởng Làng đêm, sau đó ưu tiên Làng chính. Lịch 15:30 UTC+7; "
+                            "đến hạn giữa trận sẽ chờ điểm chuyển an toàn."
+                            if mode == 'hybrid' else
+                            "Chạy luồng Làng chính hiện có. Cấu hình bị khóa trong phiên chạy.")
+                           if available else "Chế độ đã chọn chưa khả dụng trong bản này. "
+                           "Có thể lưu cấu hình; chỉ bắt đầu khi chế độ được hỗ trợ.")
+        if available and not self.session.is_alive() and self.status.get() == "Chế độ chưa khả dụng":
+            self.status.set("Sẵn sàng" if self.online else "Giả lập chưa kết nối")
+        self.start_button.configure(state="normal" if available and self.online and
+                                    self.owner.license_valid and not self.session.is_alive()
+                                    else "disabled")
 
     def _build_ui(self):
         page = self.page
+        run = self.pages["run"]
+        run.columnconfigure(0, weight=1)
+        run.rowconfigure(4, weight=1)
         page.columnconfigure(0, weight=3)
         page.columnconfigure(1, weight=2)
         page.rowconfigure(3, weight=1)
@@ -511,7 +622,7 @@ class InstanceTab:
         # --------------------------------------------------------------------
         # 1. INSTANCE SUB-HEADER (Device Info & Live Status Pill)
         # --------------------------------------------------------------------
-        header_bar = tk.Frame(page, bg=CARD_HEADER, padx=14, pady=10)
+        header_bar = tk.Frame(run, bg=CARD_HEADER, padx=14, pady=10)
         header_bar.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 10))
 
         # Device info left
@@ -654,7 +765,7 @@ class InstanceTab:
         # Group 1: Operational Mode
         tk.Label(
             right,
-            text="⚙  CHẾ ĐỘ HOẠT ĐỘNG",
+            text="⚙  CHẾ ĐỘ LÀNG CHÍNH",
             bg=CARD,
             fg=ACCENT,
             font=("Segoe UI Bold", 10),
@@ -738,13 +849,13 @@ class InstanceTab:
         )
 
         # Group 3: Real-Time Session KPI Stat Tile
-        stat_border = tk.Frame(right, bg=CARD_BORDER, padx=1, pady=1)
-        stat_border.grid(row=8, column=0, sticky="ew")
-        stat_tile = tk.Frame(stat_border, bg="#0d1424", padx=14, pady=12)
+        stat_border = tk.Frame(run, bg=CARD_BORDER, padx=1, pady=1)
+        stat_border.grid(row=3, column=0, sticky="ew", pady=(0, 10))
+        stat_tile = tk.Frame(stat_border, bg="#0d1424", padx=14, pady=8)
         stat_tile.pack(fill="x")
 
         stat_header = tk.Frame(stat_tile, bg="#0d1424")
-        stat_header.pack(fill="x")
+        stat_header.pack(side="left")
         tk.Label(
             stat_header, text="🧱", bg="#0d1424", fg=SUCCESS, font=("Segoe UI", 12)
         ).pack(side="left")
@@ -761,33 +872,20 @@ class InstanceTab:
             textvariable=self.wall_count,
             bg="#0d1424",
             fg="#52d6a4",
-            font=("Segoe UI Bold", 26),
+            font=("Segoe UI Bold", 18),
         )
-        self.wall_label.pack(anchor="w", pady=(2, 0))
+        self.wall_label.pack(side="right")
+        tk.Label(stat_border, textvariable=self.run_details, bg=CARD, fg=TEXT,
+                 font=("Segoe UI", 9), justify="left", anchor="w", wraplength=730,
+                 padx=14, pady=8).pack(fill="x")
 
-        tk.Label(
-            stat_tile,
-            text="Tự động phát hiện và nâng cấp trong phiên farm",
-            bg="#0d1424",
-            fg=DIM,
-            font=("Segoe UI", 8),
-        ).pack(anchor="w")
-
-        self._mode_changed("wall" if self.wall_mode.get() else "event")
+        self._sync_main_inputs()
 
         # --------------------------------------------------------------------
         # 3. ACTION BAR (Save, Start, Stop, Remove)
         # --------------------------------------------------------------------
-        actions = tk.Frame(page, bg=BG)
+        actions = tk.Frame(run, bg=BG)
         actions.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(14, 10))
-
-        self.save_button = ttk.Button(
-            actions,
-            text="💾  Lưu cấu hình",
-            style="Secondary.TButton",
-            command=self._save,
-        )
-        self.save_button.pack(side="left")
 
         self.start_button = ttk.Button(
             actions,
@@ -817,8 +915,8 @@ class InstanceTab:
         # --------------------------------------------------------------------
         # 4. LIVE CONSOLE / LOG TERMINAL
         # --------------------------------------------------------------------
-        log_border = tk.Frame(page, bg=CARD_BORDER, padx=1, pady=1)
-        log_border.grid(row=3, column=0, columnspan=2, sticky="nsew")
+        log_border = tk.Frame(run, bg=CARD_BORDER, padx=1, pady=1)
+        log_border.grid(row=4, column=0, sticky="nsew")
         log_border.rowconfigure(1, weight=1)
         log_border.columnconfigure(0, weight=1)
 
@@ -916,24 +1014,33 @@ class InstanceTab:
         )
 
     def _mode_changed(self, source):
+        if self.session.is_alive():
+            return
         if source == "wall":
             self.wall_mode.set(True)
             self.event_mode.set(False)
         else:
             self.wall_mode.set(False)
             self.event_mode.set(True)
+        self._sync_main_inputs()
+
+    def _sync_main_inputs(self):
+        running = self.session.is_alive()
         self.wall_threshold.configure(
-            state="normal" if self.wall_mode.get() else "disabled"
+            state="normal" if self.wall_mode.get() and not running else "disabled"
         )
         self.wall_type.configure(
-            state="readonly" if self.wall_mode.get() else "disabled"
+            state="readonly" if self.wall_mode.get() and not running else "disabled"
         )
         self.event_resource.configure(
-            state="readonly" if self.event_mode.get() else "disabled"
+            state="readonly" if self.event_mode.get() and not running else "disabled"
         )
 
     def _save(self):
+        if self.session.is_alive():
+            return False
         fields = {key: value.get() for key, value in self.vars.items()}
+        fields["event_mode"] = self.event_mode.get()
         fields["wall_type"] = next(
             (
                 key
@@ -949,10 +1056,13 @@ class InstanceTab:
             updated = build_settings(self.settings, fields, self.wall_mode.get())
             self.owner.store.update_settings(self.serial, updated)
         except (ValueError, OSError, KeyError) as exc:
+            self.save_state.set('Lưu thất bại: '+str(exc))
+            self._append_log(f'[Panel] Lưu cấu hình {self.serial} thất bại: {exc}\n')
             messagebox.showerror("Cấu hình không hợp lệ", str(exc), parent=self.root)
             return False
         self.settings = updated
-        self._append_log("[Panel] Đã lưu cấu hình thành công.\n")
+        self.save_state.set('Đã lưu cả ba tab · '+config.RUN_MODE_LABELS[updated['run_mode']])
+        self._append_log(f"[Panel] Đã lưu cấu hình {self.serial} thành công.\n")
         return True
 
     def _set_running(self, running):
@@ -971,7 +1081,8 @@ class InstanceTab:
         self.save_button.configure(state="disabled" if running else "normal")
         self.start_button.configure(
             state="disabled"
-            if running or not self.online or not self.owner.license_valid
+            if running or not self.online or not self.owner.license_valid or
+            self.run_mode.get() not in config.AVAILABLE_RUN_MODES
             else "normal"
         )
         self.stop_button.configure(state="normal" if running else "disabled")
@@ -986,6 +1097,13 @@ class InstanceTab:
                 parent=self.root,
             )
             return
+        try:
+            config.require_available_mode(self.run_mode.get())
+        except ValueError as exc:
+            self.notebook.select(2)
+            self._append_log(f"[Panel] {exc}\n")
+            self.status.set("Chế độ chưa khả dụng")
+            return
         if not self._save():
             return
         try:
@@ -994,13 +1112,16 @@ class InstanceTab:
             messagebox.showerror("Không khởi động được bot", str(exc), parent=self.root)
             return
         self.last_result = None
+        self.notebook.select(2)
         self.wall_count.set("0 viên")
         self.status.set("Đang kết nối ADB…")
         self._set_running(True)
 
     def _stop(self):
         self.session.stop()
-        self.status.set("Đang dừng sau thao tác hiện tại…")
+        self.status.set("Đang dừng · chờ command hiện tại và release…")
+        self.run_details.set('Stop không gửi batch mới. Timeout command ADB 15s; cleanup có thể thêm 6–9s. '
+                             'Chụp ảnh tối đa 10s/command; probe/pinch tối đa 5s/command.')
         self.stop_button.configure(state="disabled")
 
     def _remove(self):
@@ -1024,6 +1145,8 @@ class InstanceTab:
             messagebox.showerror("Không lưu được", str(exc), parent=self.root)
             return
         self.owner.notebook.forget(self.frame)
+        self.root.unbind("<MouseWheel>", self._wheel_binding)
+        self.root.unbind("<FocusIn>", self._focus_binding)
         self.frame.destroy()
         del self.owner.tabs[self.serial]
         self.owner._show_empty_state()
@@ -1047,12 +1170,15 @@ class InstanceTab:
     def poll(self):
         chunks = []
         for event in self.session.poll():
+            if event.get('serial', self.serial) != self.serial:
+                continue
             kind = event.get("kind")
             if kind == "log":
                 chunks.append(event.get("text", ""))
             elif kind == "status" and self.session.is_alive():
                 if not (self.session.stop_event and self.session.stop_event.is_set()):
                     self.status.set(event.get("status", "Đang chạy"))
+                    self.run_details.set(format_run_details(event, self.run_mode.get()))
                 self.wall_count.set(f"{event.get('wall_count', 0)} viên")
             elif kind == "done":
                 self.last_result = event
@@ -1071,8 +1197,16 @@ class InstanceTab:
             self._append_log("".join(chunks))
 
     def _append_log(self, value: str):
+        value = self._log_pending + value
+        parts = value.splitlines(keepends=True)
+        self._log_pending = ''
+        if parts and not parts[-1].endswith(('\n', '\r')):
+            self._log_pending = parts.pop()[-8000:]
         self.log.configure(state="normal")
-        for line in value.splitlines(keepends=True):
+        for line in parts:
+            if line == self._last_log_line:
+                continue
+            self._last_log_line = line
             lower = line.lower()
             if any(k in lower for k in ("[ok]", "thành công", "success")):
                 tag = "ok"
@@ -1104,6 +1238,8 @@ class InstanceTab:
             self.root.clipboard_append(text)
 
     def _clear_log(self):
+        self._log_pending = ''
+        self._last_log_line = None
         self.log.configure(state="normal")
         self.log.delete("1.0", "end")
         self.log.configure(state="disabled")
@@ -1337,6 +1473,10 @@ class BotPanel:
             background=[("active", FIELD)],
             foreground=[("disabled", DIM)],
         )
+        style.configure("Mode.TRadiobutton", background=FIELD, foreground=TEXT,
+                        font=("Segoe UI", 9))
+        style.map("Mode.TRadiobutton", background=[("active", FIELD)],
+                  foreground=[("disabled", DIM)])
 
         # Notebook Tabs
         style.configure(
@@ -1770,11 +1910,7 @@ class BotPanel:
             self._stop_all()
         for tab in self.tabs.values():
             if not tab.session.is_alive():
-                tab.start_button.configure(
-                    state="normal"
-                    if tab.online and self.license_valid
-                    else "disabled"
-                )
+                tab._run_mode_changed()
 
     def _add_tab(self, profile):
         serial = profile["serial"]
@@ -1914,9 +2050,11 @@ class BotPanel:
                 for serial, tab in self.tabs.items():
                     tab.set_online(serial in online)
             else:
+                previous_error = self.discovery_error
                 self.discovery_error = value
-                for tab in self.tabs.values():
-                    tab.set_online(False)
+                if value != previous_error:
+                    for tab in self.tabs.values():
+                        tab._append_log(f'[Panel] Scan ADB lỗi, giữ trạng thái instance: {value}\n')
             if not self.closing:
                 self.refresh_job = self.root.after(5000, self._refresh)
         for tab in list(self.tabs.values()):

@@ -66,7 +66,7 @@ class BurstInputTests(unittest.TestCase):
         farm._hero_entry = (1160, 180)
         return farm, image
 
-    def test_large_army_probes_once_then_sends_remaining_twenty_nine_as_one_burst(self, _sleep):
+    def test_large_army_probes_once_then_reconciles_bounded_bursts(self, _sleep):
         farm, image = self.make_farm()
         slot = CardSlot(292, 840, "troop")
         ui = {"remaining": 30}
@@ -83,8 +83,8 @@ class BurstInputTests(unittest.TestCase):
         _, points = farm._deploy_regular_card(frame(), slot, [(1160, 180)])
         self.assertEqual(0, ui["remaining"])
         self.assertEqual([(1160, 180)], points)
-        self.assertEqual([1, 1, 29], [len(c.args[0]) for c in farm.adb.tap_many.call_args_list])
-        self.assertLessEqual(farm.adb.screenshot.call_count, 2)
+        self.assertEqual([1, 1, 16, 13], [len(c.args[0]) for c in farm.adb.tap_many.call_args_list])
+        self.assertEqual(3, farm.adb.screenshot.call_count)
         farm.adb.tap.assert_not_called()
 
     def test_next_card_reuses_verified_point_without_another_probe_or_selection_capture(self, _sleep):
@@ -100,8 +100,8 @@ class BurstInputTests(unittest.TestCase):
 
         farm.adb.tap_many.side_effect = inputs
         farm._deploy_regular_card(with_count(image, 30, slot.x), slot, [(1160, 180)])
-        self.assertEqual([1, 30], [len(c.args[0]) for c in farm.adb.tap_many.call_args_list])
-        self.assertEqual(1, farm.adb.screenshot.call_count)
+        self.assertEqual([1, 16, 14], [len(c.args[0]) for c in farm.adb.tap_many.call_args_list])
+        self.assertEqual(2, farm.adb.screenshot.call_count)
 
     def test_bonus_mid_troop_burst_resumes_only_unconsumed_units(self, _sleep):
         farm, image = self.make_farm()
@@ -139,7 +139,7 @@ class BurstInputTests(unittest.TestCase):
         farm._deploy_regular_card(frame(), slot, [(1160, 180)])
         self.assertEqual(30, ui["drops"])
         self.assertEqual(0, ui["remaining"])
-        self.assertEqual([1, 30, 26], [len(c.args[0]) for c in farm.adb.tap_many.call_args_list])
+        self.assertEqual([1, 16, 16, 10], [len(c.args[0]) for c in farm.adb.tap_many.call_args_list])
         self.assertEqual(1, farm._reward_generation)
         self.assertIsNone(farm.halt_reason)
 
