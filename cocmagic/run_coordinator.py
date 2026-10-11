@@ -124,12 +124,24 @@ class RunCoordinator:
                     self.active.suspend()
                     if self.stopping():
                         return True
+                    villages = {"main": "Làng chính", "builder": "Làng đêm"}
+                    print(
+                        "[Coordinator] Đang chuyển "
+                        + villages.get(source, source)
+                        + " → "
+                        + villages.get(request.target, request.target),
+                        flush=True,
+                    )
                     confirmed = self.switch_village(source, request.target)
                     if self.stopping():
                         return True
                     if confirmed is not True:
+                        navigator = getattr(self.switch_village, "__self__", None)
+                        result = getattr(navigator, "last_result", None)
+                        detail = getattr(result, "reason", None)
                         self._halt_reason = (
                             "Chuyển làng chưa xác nhận được đích; dừng để kiểm tra."
+                            + (" " + detail if isinstance(detail, str) else "")
                         )
                         return False
                     self.active_id = request.target

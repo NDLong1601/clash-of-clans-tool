@@ -2,7 +2,9 @@
 
 Cập nhật 11/10/2026, giờ Việt Nam (UTC+7). Nguồn yêu cầu: [plan](dual-village-plan.md), [prompts](dual-village-prompts.md). Không cần lịch sử chat để tiếp tục.
 
-**Kiểm thử và dọn source mới nhất:** bản cuối qua **519 test/362.975s, exit 0**, lint/syntax/asset/evidence/CLI đều đạt; kiểm checkout từ Git index cũng đạt. Đã sửa thêm nhận diện Attack/sao native, tướng đang nạp kỹ năng, camp đang chọn và plan sau chọn quân. Live có AVAILABLE và thu xe thật; phiên hybrid cuối xác nhận hai khu rồi Home nhưng thiếu receipt kết thúc, chưa nghiệm thu toàn chuỗi thưởng. Khóa production chặn alias thứ hai khi probe đang chạy. Xem [báo cáo kiểm thử 11/10](dual-village-verification-20261011.md).
+**Sửa hybrid sau khi người dùng chạy thử:** bản mới qua **529 test/368.462s, exit 0** và năm gate source còn lại. Sửa bảng Star Bonus native bị nhận thành Home, camera timeout ảnh ổn định và thông báo tiến độ/lý do navigation. Live thu xe rồi về main đạt, có receipt 72.426s; chưa tính là toàn chuỗi bot tự nhận thưởng. Xem [báo cáo sửa hybrid](dual-village-hybrid-fix-20261011.md).
+
+**Lượt kiểm thử và dọn source trước:** bản `c72db1b` qua **519 test/362.975s, exit 0**, lint/syntax/asset/evidence/CLI đều đạt; kiểm checkout từ Git index cũng đạt. Đã sửa thêm nhận diện Attack/sao native, tướng đang nạp kỹ năng, camp đang chọn và plan sau chọn quân. Live có AVAILABLE và thu xe thật; phiên hybrid cuối của lượt đó xác nhận hai khu rồi Home nhưng thiếu receipt kết thúc. Khóa production chặn alias thứ hai khi probe đang chạy. Xem [báo cáo kiểm thử 11/10](dual-village-verification-20261011.md).
 
 **Lượt sửa F1–F4 trước đó:** main giữ phương án dò khi camera=false sau chuyển làng, khóa input chung cho alias cùng VM, xen kẽ kỹ năng/deploy builder và xóa lịch sử pixel khi đổi view. Kết quả 503 test/309.939s và 17 regression được giữ trong [báo cáo sửa lỗi](dual-village-review-fixes-20261011.md). Các mục GĐ0–GĐ8 dưới đây giữ số liệu lịch sử; đọc cập nhật mới nhất trước khi dùng các giới hạn cũ.
 

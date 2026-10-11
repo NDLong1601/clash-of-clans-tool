@@ -176,8 +176,21 @@ class BuilderScreenReader:
         return best[1] if best else None
 
     @staticmethod
+    def _blue_reward_panel(image):
+        return (
+            cv2.inRange(
+                cv2.cvtColor(image[170:700, 430:1170], cv2.COLOR_BGR2HSV),
+                (95, 140, 130),
+                (135, 255, 255),
+            ).mean()
+            / 255
+        ) > 0.40
+
+    @staticmethod
     def _panel_blocks_home(image):
         # Blocking geometry only: this never authorizes a button tap.
+        if BuilderScreenReader._blue_reward_panel(image):
+            return True
         center = cv2.cvtColor(image[240:540, 440:1160], cv2.COLOR_BGR2HSV)
         if np.mean((center[:, :, 1] < 65) & (center[:, :, 2] >= 65)) > 0.83:
             return True
@@ -276,19 +289,11 @@ class BuilderScreenReader:
                 "en",
             )
         reward_title, reward_star, reward_button = (
-            hit("reward_title"),
-            hit("reward_star"),
-            hit("reward_button"),
+            hit("reward_title") or hit("reward_title_native"),
+            hit("reward_star") or hit("reward_star_native"),
+            hit("reward_button") or hit("reward_button_native"),
         )
-        blue = (
-            cv2.inRange(
-                cv2.cvtColor(image[170:700, 430:1170], cv2.COLOR_BGR2HSV),
-                (95, 140, 130),
-                (135, 255, 255),
-            ).mean()
-            / 255
-        )
-        if reward_title and reward_star and blue > 0.40:
+        if reward_title and reward_star and self._blue_reward_panel(image):
             # A main Star Bonus panel must never become builder CLAIMABLE.
             points = (
                 {"claim": reward_button}
@@ -358,16 +363,6 @@ class BuilderScreenReader:
         if self._panel_blocks_home(image):
             return False
         if self.match("cart_title", image) or self.match("connection_title", image):
-            return False
-        blue = (
-            cv2.inRange(
-                cv2.cvtColor(image[170:700, 430:1170], cv2.COLOR_BGR2HSV),
-                (95, 140, 130),
-                (135, 255, 255),
-            ).mean()
-            / 255
-        )
-        if blue > 0.40:
             return False
         portrait = "master_builder" if village == Village.BUILDER else "main_builder"
         if village == Village.BUILDER:

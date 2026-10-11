@@ -202,7 +202,9 @@ class HybridCoordinator(RunCoordinator):
     def _cart_before_main(self, builder):
         # Hybrid departure always checks the cart, even with builder-only
         # collection disabled. No waiting for unfinished defenses.
+        print("[Hybrid] Kiểm tra xe tài nguyên trước khi về Làng chính...", flush=True)
         cart = builder.rewards.collect_cart()
+        print("[Hybrid] Xe tài nguyên: " + cart.reason, flush=True)
         builder.last_cart = cart
         builder._metrics["cart_collections"] += int(cart.collected)
         if self.stopping():

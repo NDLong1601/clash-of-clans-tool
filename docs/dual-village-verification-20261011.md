@@ -1,5 +1,7 @@
 # Kiểm thử, sửa lỗi live và dọn source — 11/10/2026
 
+Báo cáo này ghi bản `c72db1b` với 519 test. Lượt sửa tiếp theo sau phản hồi người dùng có **529 test đạt** và receipt thu xe → main thành công; xem [sửa hybrid](dual-village-hybrid-fix-20261011.md).
+
 Nhánh bàn giao: `codex/source-update`. Đợt này tiếp nối [sửa F1–F4](dual-village-review-fixes-20261011.md), kiểm thử lại toàn bộ GĐ0–GĐ8 và các thay đổi phát hiện trên game thật. **519 test đạt; chưa nghiệm thu toàn bộ chuỗi hybrid nhận thưởng sao.**
 
 ## Kết quả trên bản source cuối

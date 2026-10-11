@@ -1114,6 +1114,81 @@
       "sha256": "d05087102bd73036bfb5dfb138c512e6f89feef2c15cafb882608192b8982ba4",
       "language": "independent_star_art",
       "live_verified": true
+    },
+    "reward_title_native": {
+      "path": "reward_title_native.png",
+      "region": [
+        430,
+        100,
+        740,
+        160
+      ],
+      "threshold": 0.93,
+      "dimensions": [
+        349,
+        59
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/hybrid_hang_fix_20261011/initial.png",
+      "parent_sha256": "c120732a62d18f67e0443e4cdcb4b3b207434975fbafd7fdee1aba079b2b74c1",
+      "crop_xyxy": [
+        627,
+        151,
+        976,
+        210
+      ],
+      "sha256": "b457463ca50dec27c57d27f0c5bc53c54502cf94c1196a89aabae2665620740d",
+      "language": "en"
+    },
+    "reward_star_native": {
+      "path": "reward_star_native.png",
+      "region": [
+        580,
+        160,
+        430,
+        310
+      ],
+      "threshold": 0.93,
+      "dimensions": [
+        220,
+        204
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/hybrid_hang_fix_20261011/initial.png",
+      "parent_sha256": "c120732a62d18f67e0443e4cdcb4b3b207434975fbafd7fdee1aba079b2b74c1",
+      "crop_xyxy": [
+        693,
+        218,
+        913,
+        422
+      ],
+      "sha256": "7c397dd2bdec2611e955f0ae528a5bab3a3235d00b464875fef896f86b951574",
+      "language": "en"
+    },
+    "reward_button_native": {
+      "path": "reward_button_native.png",
+      "region": [
+        450,
+        560,
+        710,
+        215
+      ],
+      "threshold": 0.93,
+      "dimensions": [
+        229,
+        79
+      ],
+      "source_kind": "adb_native_crop",
+      "parent": "diagnostics/hybrid_hang_fix_20261011/initial.png",
+      "parent_sha256": "c120732a62d18f67e0443e4cdcb4b3b207434975fbafd7fdee1aba079b2b74c1",
+      "crop_xyxy": [
+        686,
+        662,
+        915,
+        741
+      ],
+      "sha256": "9ec0d44fe8d47a5ee64e1363e9786148109d6372b8a01229f40567eae1d28270",
+      "language": "en"
     }
   },
   "variants": {

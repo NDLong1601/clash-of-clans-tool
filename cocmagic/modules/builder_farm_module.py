@@ -634,7 +634,20 @@ class BuilderFarmModule:
                 result = self.camera.zoom(0.65, context="battle", troop_selected=False)
                 self.camera_operations += 1
                 if result.status not in (CameraStatus.SUCCESS, CameraStatus.UNCHANGED):
-                    return self._fail("Camera builder: " + str(result.status.value))
+                    if result.status == CameraStatus.STOPPED or self.stopping():
+                        return True
+                    reason = getattr(result, "reason", "")
+                    if result.status == CameraStatus.ERROR and reason in (
+                        "Ảnh trước chưa ổn định",
+                        "Ảnh sau chưa ổn định hoặc không xác nhận được camera",
+                    ):
+                        # No map input is authorized by an unsettled camera.
+                        # Retry only from a fresh tick, within existing budgets.
+                        self.last_warning = "Camera chưa ổn định; chờ ảnh mới"
+                        return self._bounded_battle(self.last_warning, geometry=True)
+                    return self._fail(
+                        "Camera builder: " + str(result.status.value) + " · " + reason
+                    )
                 return True
             if plan is None and not self.selected:
                 # Selecting an undeployed camp reveals the red boundary. It is
@@ -648,6 +661,7 @@ class BuilderFarmModule:
                     "Không lập được biên hiện tại; không thả mù", geometry=True
                 )
         self.geometry_unclear_since = None
+        self.last_warning = None
         # Fresh card state immediately before selection (never ability-tap a
         # deployed card) and fresh geometry before the map input.
         if self.tactics.point(slot, self.adb.camera_revision) is None:

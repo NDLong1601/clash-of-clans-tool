@@ -32,6 +32,7 @@ from cocmagic.builder_screen_reader import (
 from cocmagic.modules.builder_farm_module import BuilderFarmModule, BuilderPhase
 from cocmagic.village_module import ModuleScreen
 from cocmagic.battle_planner import BattlePlan
+from cocmagic.camera_controller import CameraStatus
 
 FIXTURES = Path(config.BASE_DIR) / "tests/fixtures/dual_village/builder"
 
@@ -419,6 +420,43 @@ class ModuleTests(unittest.TestCase):
         self.adb.tap.assert_called_once_with(100, 800, jitter=0, delay=0.1)
         self.assertIsNone(self.module.halt_reason)
         self.assertEqual(BuilderPhase.SEARCH, self.module.phase)
+
+    def test_unsettled_camera_waits_for_new_geometry_with_a_bounded_retry(self):
+        self.battle_screen()
+        self.module.settings["camera_auto_adjust"] = True
+        self.module.tactics.build = Mock(return_value=None)
+        self.camera.zoom.return_value = SimpleNamespace(
+            status=CameraStatus.ERROR,
+            reason="Ảnh sau chưa ổn định hoặc không xác nhận được camera",
+        )
+        self.assertTrue(self.module._deploy(self.reader.capture.return_value, slot()))
+        self.assertIsNone(self.module.halt_reason)
+        self.assertIsNotNone(self.module.geometry_unclear_since)
+        self.adb.tap.assert_not_called()
+        self.now += self.module.settings["builder_transition_timeout"] + 1
+        self.assertFalse(self.module._deploy(self.reader.capture.return_value, slot()))
+        self.adb.tap.assert_not_called()
+
+    def test_camera_input_release_failure_still_halts_with_the_actual_reason(self):
+        self.battle_screen()
+        self.module.settings["camera_auto_adjust"] = True
+        self.module.tactics.build = Mock(return_value=None)
+        self.camera.zoom.return_value = SimpleNamespace(
+            status=CameraStatus.ERROR,
+            reason="Input/release thất bại; bỏ tọa độ cũ",
+        )
+        self.assertFalse(self.module._deploy(self.reader.capture.return_value, slot()))
+        self.assertIn("Input/release thất bại", self.module.halt_reason)
+        self.adb.tap.assert_not_called()
+
+    def test_stop_during_camera_does_not_report_a_builder_failure(self):
+        self.battle_screen()
+        self.module.settings["camera_auto_adjust"] = True
+        self.module.tactics.build = Mock(return_value=None)
+        self.camera.zoom.return_value = SimpleNamespace(status=CameraStatus.STOPPED)
+        self.assertTrue(self.module._deploy(self.reader.capture.return_value, slot()))
+        self.assertIsNone(self.module.halt_reason)
+        self.adb.tap.assert_not_called()
 
     def test_yield_only_after_postprocessing_and_home_proof(self):
         self.assertTrue(self.module.tick(yield_requested=lambda: True))

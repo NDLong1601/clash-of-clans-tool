@@ -224,6 +224,25 @@ class CoordinatorTests(unittest.TestCase):
         self.assertIsNotNone(c.pending)
         self.assertIn("chưa xác nhận", c.halt_reason)
 
+    def test_navigation_failure_keeps_the_underlying_reason_in_status(self):
+        c, main, builder, adb, nav = self.make_coordinator()
+
+        class Navigator:
+            class Result:
+                reason = "Không tìm được thuyền an toàn trong ngân sách"
+
+            last_result = Result()
+
+            def switch_village(self, source, target):
+                return False
+
+        c.switch_village = Navigator().switch_village
+        c.request_switch("builder", "test")
+        self.assertFalse(c.tick())
+        self.assertIn("Không tìm được thuyền", c.halt_reason)
+        self.assertEqual("main", c.active_id)
+        self.assertEqual(0, builder.resumes + builder.ticks)
+
     def test_request_arriving_during_tick_is_seen_at_match_boundary(self):
         c, main, builder, adb, nav = self.make_coordinator()
         main.on_tick = lambda: c.request_switch("builder", "arrived during tick")
