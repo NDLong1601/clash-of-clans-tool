@@ -142,3 +142,8 @@ Các phiên main/builder dùng tìm đối thủ, Quick Train, đánh trận và
 - Kiểm bàn giao: compileall và diff whitespace đạt; 61 link local hợp lệ; không có mã harness/serial thử hardcode mới trong production, không có diagnostics/data/runtime mới ở git status. Toàn bộ 12 phiên công bố chọn lọc tại [live receipt](../tests/fixtures/dual_village/acceptance/live-receipt.json), gồm phiên lỗi/gián đoạn; 9 manifest/160 file/163 nguồn riêng đối chiếu đạt.
 - Để chẩn đoán: dừng phiên, chọn `run_mode=main`, `camera_auto_adjust=false`; giữ file cấu hình cũ để quay lại. Xem [README](../README.md), [mẫu settings](dual-village-settings.example.json). Đây không phải cách biến nhánh lỗi thành nghiệm thu thành công.
 - Không commit/push/deploy; không thêm runtime, video hoặc log/ảnh riêng tư vào git. Archive `CocMagic_Release.zip` có sẵn không phải đầu ra GĐ8.
+
+
+## Bổ sung mở rương — 13/10/2026
+
+Đã tích hợp nhận/mở rương sau trận, cache vị trí có xác minh và giới hạn retry, độc lập với `event_mode`. Gate cuối **568 test đạt**, thêm 30 test rương; lint, syntax, assets, evidence và CLI help đều đạt. Sau sửa nhận diện Claim có Sour Elixir, live thêm đúng ba trận mới/316.941 giây về Home (counter 4 gồm một kết quả kế thừa). Hai rương mở đủ bốn click mỗi rương, cache tái dùng thành công một lần, error=null. Lượt lỗi guard camera trước đó được giữ và chưa xác định nguyên nhân chuyển động; không tính PASS cho lượt lỗi. Chi tiết tại [báo cáo mở rương](event-chests-20261013.md). Các giới hạn nghiệm thu GĐ8 khác vẫn giữ nguyên.

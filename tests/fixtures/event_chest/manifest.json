@@ -1,0 +1,222 @@
+{
+  "source": "User-provided bandicam 2026-10-11 20-59-43-031.mp4",
+  "source_sha256": "cd7d12b057b9adb9fde02ad88deae05f0bfff2bba6e8650754f3b257361a6537",
+  "game_crop_in_video": [
+    205,
+    100,
+    1058,
+    595
+  ],
+  "reference_dimensions": [
+    1050,
+    591
+  ],
+  "fixtures": [
+    {
+      "path": "claim.png",
+      "time_seconds": 0.0,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Player name and resource HUD removed on Claim; top HUD removed on Home",
+      "sha256": "26ea75212c0c5d05cdccf56ff1b27810bce2943e65451b0b447306b0db96eb6c"
+    },
+    {
+      "path": "room_loading.png",
+      "time_seconds": 6.0,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "32657d425be42446a87062ee53da34888e47971b0d0c733129fc3e504f079fa8"
+    },
+    {
+      "path": "closed.png",
+      "time_seconds": 6.8,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "8e16182a42d8b761994559df6d155a45b94a765095bf807f1f943a355a19b0dd"
+    },
+    {
+      "path": "hit_1.png",
+      "time_seconds": 7.2,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "9eb4cf79b64a5b7bdc7c19ab06d6245cff804767b584587b8a14675e1446000c"
+    },
+    {
+      "path": "hit_2.png",
+      "time_seconds": 7.6,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "b12795c475f743ac00b7448e4240f3e810aec4bb6b73a3e11d11468644409745"
+    },
+    {
+      "path": "hit_3.png",
+      "time_seconds": 8.0,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "2b7812969b4b22b935921196b47c8c2a84566bb5000075e91cd417c696374956"
+    },
+    {
+      "path": "hit_3_flash.png",
+      "time_seconds": 8.2,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "0e3e39e9fcd497a6ab4ad0836d2be18758e17dd0e0d9e49674db61675c3e7548"
+    },
+    {
+      "path": "opening.png",
+      "time_seconds": 9.0,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "92beb732d5e302fbac6fadf5d71843e3c352a01ac7d407c49c36f87710416869"
+    },
+    {
+      "path": "reward_loading.png",
+      "time_seconds": 10.0,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "61ad95dc0ea009fe92f4091cd017c024d3ad295a3c8481ee87e66f1c4f500cac"
+    },
+    {
+      "path": "reward.png",
+      "time_seconds": 10.6,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Game only; desktop cropped out",
+      "sha256": "a314a7be065c36680bad41c6268eb0bd427ef35066c465991467ae6651370b7b"
+    },
+    {
+      "path": "home.png",
+      "time_seconds": 11.2,
+      "dimensions": [
+        1050,
+        591
+      ],
+      "redactions": "Player name and resource HUD removed on Claim; top HUD removed on Home",
+      "sha256": "e898a24cf160acd0532ac69cb548dbafe26fbd526b5a537755b69b51af7cccc5"
+    },
+    {
+      "path": "claim_native.png",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-progress-2.png",
+      "parent_sha256": "d45832bb0a7c3f190ea11d5a0500c6fa13b9bd165f720fdcf6fc217d6fc037af",
+      "source": "Native ADB frame after first live probe battle; failed video-only calibration retained in diagnostics",
+      "redactions": "Opponent names/clan and player resources removed",
+      "sha256": "39a62e1659ad494ef90c8c32c5ce76f35497048d02f487be94f8bf4f257d7352"
+    },
+    {
+      "path": "reward_native_ore.png",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-progress-3.png",
+      "parent_sha256": "787606b0e81ddba40fc84101508e690fe544cb07025b59668a1c4d73f33ce47f",
+      "source": "Native Shiny Ore reward after four live clicks; earlier Continue calibration failure retained",
+      "redactions": "None needed; game reward scene without account data",
+      "sha256": "787606b0e81ddba40fc84101508e690fe544cb07025b59668a1c4d73f33ce47f"
+    },
+    {
+      "path": "room_loading_native.png",
+      "dimensions": [
+        1050,
+        591
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-final/scene-001.png",
+      "parent_sha256": "bc428e28c642d5810388ec354fcc1b453808a98ae02fa285011bb658b9eb8fd9",
+      "source": "Native live chest frame, resized to reference dimensions",
+      "redactions": "None needed; game event scene without account HUD",
+      "sha256": "b924e7b8ab965ce3454794b88684be75dd04b83e9767734513adf4364f647f2a"
+    },
+    {
+      "path": "hit_1_native.png",
+      "dimensions": [
+        1050,
+        591
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-final/scene-002.png",
+      "parent_sha256": "d659858184d51fc2b4b68d814016ea3705094d4201a256665f97d0e61258a231",
+      "source": "Native live chest frame, resized to reference dimensions",
+      "redactions": "None needed; game event scene without account HUD",
+      "sha256": "7d0359e87250058c1a62cf90f7a9a715d8ebab28cf8f0ccb8baa3f3711202875"
+    },
+    {
+      "path": "hit_2_native.png",
+      "dimensions": [
+        1050,
+        591
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-final/scene-003.png",
+      "parent_sha256": "cf94001a7bf523c9a07ec14945a9742c8fc6e8f64925be715c365bea9bb9e7ab",
+      "source": "Native live chest frame, resized to reference dimensions",
+      "redactions": "None needed; game event scene without account HUD",
+      "sha256": "2d6985396074fcbd941320143add36b58da3cc855b81388a948895365eae5e16"
+    },
+    {
+      "path": "hit_3_native.png",
+      "dimensions": [
+        1050,
+        591
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-final/scene-004.png",
+      "parent_sha256": "871c9a0ad213347677cdca95e4cfa433f22ae47bcb488f15262c0612b31e9a9e",
+      "source": "Native live chest frame, resized to reference dimensions",
+      "redactions": "None needed; game event scene without account HUD",
+      "sha256": "3429dcf7fdd97313d2543b69f8a392297e25155a6da1310fce3781cce6c6578a"
+    },
+    {
+      "path": "opening_native.png",
+      "dimensions": [
+        1050,
+        591
+      ],
+      "parent": "diagnostics/event_chest_20261011/live-final/scene-005.png",
+      "parent_sha256": "24191e2270aa15be131e975fad0f925011508525c6dd9022236fe6297d4f877e",
+      "source": "Native live chest frame, resized to reference dimensions",
+      "redactions": "None needed; game event scene without account HUD",
+      "sha256": "8e10019182d5d7aa4a80d167365ebcf9fb5bbf36bef229c411fc226734485cd8"
+    },
+    {
+      "path": "claim_native_sour.png",
+      "dimensions": [
+        1600,
+        900
+      ],
+      "source": "Native ADB Claim with Sour Elixir bonus, Oct 13 live recognition regression",
+      "parent": "diagnostics/event_chest_20261011/extra-progress.png",
+      "parent_sha256": "9f722ef2dda00c6f76901febf27536dfedfbe3efac26f69050c6e28b6fea68a5",
+      "sha256": "2b7589b296bff4f597a4d7901f7789cccadd292bb3bee6cc8e230d64ed88c3fe",
+      "redactions": "Opponent name/clan and resource HUD blacked out"
+    }
+  ]
+}

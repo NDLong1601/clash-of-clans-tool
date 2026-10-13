@@ -26,6 +26,7 @@ from cocmagic.modules.wall_module import WallModule
 from cocmagic.modules.builder_farm_module import BuilderFarmModule
 from cocmagic.ui_dialogs import find_connection_retry, find_inactivity_reload
 from cocmagic.event_rewards import find_reward_panel
+from cocmagic.event_chests import find_chest_screen
 from cocmagic.run_coordinator import RunCoordinator
 from cocmagic.hybrid_coordinator import HybridCoordinator
 from cocmagic.hybrid_runtime import HybridRuntimeStore
@@ -399,7 +400,7 @@ class BotEngine:
 
         if self._handle_connection_lost(img):
             return True
-        if find_reward_panel(img) is not None:
+        if find_reward_panel(img) is not None or find_chest_screen(img) is not None:
             # The active module owns rewards. A dark reward panel must not be
             # mistaken for the older inactivity popup below.
             return False

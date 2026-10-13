@@ -1,4 +1,4 @@
-"""Audit published dual-village evidence; private parents are optional.
+"""Audit published village/chest vision evidence; private parents are optional.
 
 Checks bytes/dimensions/provenance, not correctness of labels or live behavior.
 """
@@ -33,6 +33,8 @@ def audit(root=ROOT):
 
     manifests = sorted((root / "assets/dual_village").rglob("manifest.json"))
     manifests += sorted((root / "tests/fixtures/dual_village").rglob("manifest.json"))
+    manifests += sorted((root / "assets/event_chest").rglob("manifest.json"))
+    manifests += sorted((root / "tests/fixtures/event_chest").rglob("manifest.json"))
     if not manifests:
         errors.append("No dual-village manifests")
     for path in manifests:

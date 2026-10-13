@@ -1,0 +1,172 @@
+{
+  "source": "User-provided bandicam 2026-10-11 20-59-43-031.mp4",
+  "source_sha256": "cd7d12b057b9adb9fde02ad88deae05f0bfff2bba6e8650754f3b257361a6537",
+  "game_crop_in_video": [
+    205,
+    100,
+    1058,
+    595
+  ],
+  "reference_dimensions": [
+    1050,
+    591
+  ],
+  "assets": [
+    {
+      "path": "claim_button.png",
+      "time_seconds": 0.0,
+      "crop": [
+        435,
+        481,
+        187,
+        57
+      ],
+      "dimensions": [
+        187,
+        57
+      ],
+      "sha256": "23a0442d2e2126a26b45ea56e8846f7452aa60728884290f472fbec5dc9972f9"
+    },
+    {
+      "path": "result_troops.png",
+      "time_seconds": 0.0,
+      "crop": [
+        470,
+        382,
+        123,
+        18
+      ],
+      "dimensions": [
+        123,
+        18
+      ],
+      "sha256": "2f3408afa5f0e5a89fcc97c4dba87797df22ccbfefb9cc619f2341161f5bca10"
+    },
+    {
+      "path": "room_torch.png",
+      "time_seconds": 6.8,
+      "crop": [
+        298,
+        13,
+        78,
+        242
+      ],
+      "dimensions": [
+        78,
+        242
+      ],
+      "sha256": "fdce5d028e08cae8a5385af9d855be9afeeb81ab65b71af465e5b6686b0eb408"
+    },
+    {
+      "path": "chest_lock.png",
+      "time_seconds": 6.8,
+      "crop": [
+        501,
+        270,
+        67,
+        59
+      ],
+      "dimensions": [
+        67,
+        59
+      ],
+      "sha256": "d03a33d60abb3785c8a516af9af34652c23999c893a719e7a4e230c5ab886a77"
+    },
+    {
+      "path": "continue_button.png",
+      "time_seconds": 10.6,
+      "crop": [
+        459,
+        509,
+        151,
+        51
+      ],
+      "dimensions": [
+        151,
+        51
+      ],
+      "sha256": "34987fe203bbf191be2645ec6009f758cb56fc7c2043d2af2cc26b80c87e618c"
+    },
+    {
+      "path": "reward_torch.png",
+      "time_seconds": 10.6,
+      "crop": [
+        247,
+        0,
+        55,
+        122
+      ],
+      "dimensions": [
+        55,
+        122
+      ],
+      "sha256": "f1bd9ef5502010438fc4aac21b6706528b9066e39db09564ff180b2e0902746e"
+    },
+    {
+      "path": "reward_column.png",
+      "time_seconds": 10.6,
+      "crop": [
+        865,
+        8,
+        62,
+        270
+      ],
+      "dimensions": [
+        62,
+        270
+      ],
+      "sha256": "e3fdb0397371ec11869d04b3bfe589d2d731e3feef2673c08b297eba2d94f6f0"
+    },
+    {
+      "path": "room_door.png",
+      "crop": [
+        33,
+        30,
+        115,
+        280
+      ],
+      "time_seconds": 6.8,
+      "dimensions": [
+        115,
+        280
+      ],
+      "sha256": "421760a443957a99ac7b7cb696038556f5a7a3fda04d8975674048b3aa0cec61"
+    },
+    {
+      "path": "chest_lock_glow.png",
+      "crop": [
+        487,
+        287,
+        90,
+        75
+      ],
+      "time_seconds": 8.2,
+      "dimensions": [
+        90,
+        75
+      ],
+      "sha256": "8f09df3ba05b274135871f23f07fa0c3c89ac054d265ce1cf9613bb7f95b17b0"
+    },
+    {
+      "path": "result_troops_native.png",
+      "dimensions": [
+        123,
+        18
+      ],
+      "source": "Native ADB Claim with Sour Elixir bonus, Oct 13 live recognition regression",
+      "parent": "diagnostics/event_chest_20261011/extra-progress.png",
+      "parent_sha256": "9f722ef2dda00c6f76901febf27536dfedfbe3efac26f69050c6e28b6fea68a5",
+      "sha256": "b1360f004e30945cb50295d36d87afecba711f2d3ba1b38e3d3910b667af207b",
+      "crop": [
+        469,
+        382,
+        123,
+        18
+      ],
+      "reference_dimensions": [
+        1050,
+        591
+      ]
+    }
+  ]
+}

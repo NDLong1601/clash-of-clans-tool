@@ -30,6 +30,8 @@ Sau khi mở game trên màn hình Android 1600 × 900, bảng điều khiển c
 
 Thiết lập này lưu riêng cho từng giả lập. Khi chạy bằng dòng lệnh, đặt `"event_mode": true`, `"upgrade_walls": false` và `"event_resource_priority": "dark"` (hoặc `"elixir"`, `"gold"`) trong `data/settings.json`. Chế độ mặc định có `event_mode=false`. Nhận diện bonus dựa trên giao diện tiếng Anh trong ảnh mẫu; bot xử lý khi thấy bảng, không cần đọc phần trăm phá hủy.
 
+Rương sự kiện sau trận được xử lý tự động, kể cả khi tắt **Đánh sự kiện**: bot nhận **Claim Reward**, chờ rương xuất hiện, bấm mở theo số búa còn lại (thông thường bốn click), nhận **Continue** rồi train tiếp. Vị trí rương được cache và đối chiếu lại trên ảnh mới. Không có rương thì chạy như thường; không cần thêm cấu hình. Xem [triển khai và kiểm thử mở rương](docs/event-chests-20261013.md).
+
 ## Hai làng: sử dụng và phạm vi đã kiểm chứng
 
 Mỗi giả lập có **Làng chính**, **Làng đêm**, **Run**. Cấu hình train/farm và nâng tường/sự kiện nằm trong Làng chính; cấu hình Rồng con, cách thả, tướng sẵn sàng, thu xe, lịch và camera nằm trong Làng đêm. Tab Run chọn chế độ, bắt đầu/dừng và hiển thị trạng thái, thống kê, log. Nút **Lưu cấu hình cả ba tab** lưu toàn bộ cấu hình của giả lập đang chọn. Khi chạy, cấu hình bị khóa nhưng vẫn chuyển tab để xem được.

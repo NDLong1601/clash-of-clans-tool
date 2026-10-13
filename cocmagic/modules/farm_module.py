@@ -39,6 +39,7 @@ from cocmagic.modules.hero_module import HeroModule
 from cocmagic.ui_dialogs import find_confirmation_button, find_inactivity_reload, find_connection_retry
 from cocmagic.recovery import RecoveryInterrupted, RuntimeWriteError
 from cocmagic.event_rewards import find_reward_panel
+from cocmagic.event_chests import EventChestOpener, find_chest_screen
 from cocmagic.village_module import ModuleScreen
 from cocmagic.builder_screen_reader import BuilderScreenReader, ScreenKind
 
@@ -198,6 +199,7 @@ class FarmModule:
         self._spell_templates = None
         self._selected_battle_card = None
         self._reward_generation = 0
+        self.chests = EventChestOpener(adb)
         self._verified_battle_points = set()
         self._pending_ability_names = []
         self._pending_spells: dict[CardSlot, SpellProgress] = {}
@@ -1783,7 +1785,10 @@ class FarmModule:
             return
 
         # 1. Kiểm tra trận đã kết thúc tự nhiên trước khi xét timeout.
-        for tpl in [T_RETURN_HOME_NEW, T_RETURN_HOME, T_RETURN_HOME1, T_3STAR, T_OKAY_STAR, T_OK_HOME]:
+        if self._is_result_screen(img):
+            self.state = FarmState.RESULT
+            return
+        for tpl in [T_OKAY_STAR, T_OK_HOME]:
             if self.adb.is_visible(tpl, 0.70, img, region=RETURN_HOME_REGION):
                 stars = self._count_stars(img)
                 print(f"[Farm] 🌟 Trận kết thúc tự nhiên — {stars} sao")
@@ -1924,7 +1929,7 @@ class FarmModule:
         return 0
 
     def _state_result(self):
-        """Xử lý màn hình kết quả: bấm Return Home để về làng."""
+        """Claim/open optional event chests, then finish the ordinary result."""
         self._pending_spells.clear()
         self._spell_check_frames.clear()
         self._camera_prepared = False
@@ -1932,6 +1937,16 @@ class FarmModule:
         img = self._screenshot()
         if img is None:
             return
+
+        chest = self.chests.open(img, capture=lambda: self._capture(use_cache=False),
+                                 wait=self._wait, stopping=self._stopping,
+                                 terminal=lambda frame: self._is_home_screen(frame) or self._is_result_screen(frame))
+        if chest.handled:
+            if chest.error:
+                self._stop_reward_input(chest.error)
+            if self._stopping() or chest.image is None:
+                return
+            img = chest.image
 
         if self._is_home_screen(img):
             self.attack_count += 1
@@ -2133,10 +2148,10 @@ class FarmModule:
 
     def _is_result_screen(self, screenshot=None) -> bool:
         img = screenshot if screenshot is not None else self._screenshot()
-        found = img is not None and any(
+        found = img is not None and (find_chest_screen(img) is not None or any(
             self.adb.is_visible(tpl, 0.70, img, region=RETURN_HOME_REGION) is True
             for tpl in [T_RETURN_HOME_NEW, T_RETURN_HOME, T_RETURN_HOME1, T_3STAR]
-        )
+        ))
         if found:
             self._confirmed_screen = ModuleScreen.RESULT
         return found

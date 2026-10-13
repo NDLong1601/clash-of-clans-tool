@@ -12,6 +12,7 @@ from cocmagic.builder_rewards import BuilderRewards
 from cocmagic.village_navigator import VillageNavigator
 from cocmagic.camera_controller import CameraController, CameraStatus, measure_motion
 from cocmagic.village_module import ModuleScreen
+from cocmagic.event_chests import EventChestOpener, find_chest_screen
 
 
 class BuilderPhase(str, Enum):
@@ -60,6 +61,7 @@ class BuilderFarmModule:
             adb, self.reader, self.navigator, timeout=90.0
         )
         self.recovery_handler = recovery_handler
+        self.chests = EventChestOpener(adb)
         self.tactics = BuilderTactics(self.settings["builder_deploy_mode"])
         self.halt_reason = None
         self._metrics = {
@@ -237,6 +239,17 @@ class BuilderFarmModule:
         frame = self.reader.capture()
         if self.stopping():
             return True
+        if find_chest_screen(frame.image) is not None:
+            self._set_phase(BuilderPhase.RESULT)
+            self._screen = ModuleScreen.RESULT
+            self.battle_at = None
+            chest = self.chests.open(
+                frame.image, capture=lambda: self.reader.capture().image,
+                wait=self.wait, stopping=self.stopping,
+                terminal=lambda image: self.reader.classify(image).kind in (
+                    ScreenKind.MAIN_HOME, ScreenKind.BUILDER_HOME, ScreenKind.RESULT),
+            )
+            return self._fail(chest.error) if chest.error else True
         screen = self.reader.classify(frame.image)
         self.confirmed_village = screen.village
         self._screen = {
